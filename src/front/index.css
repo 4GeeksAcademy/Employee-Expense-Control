@@ -1,0 +1,21 @@
+.button.logout {
+  background-color: white;
+  color: #007bff; /* Azul Bootstrap */
+  border: 2px solid #007bff;
+  padding: 8px 16px;
+  border-radius: 5px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.button.logout i {
+  font-size: 1rem;
+}
+
+.button.logout:hover {
+  background-color: #007bff;
+  color: white;
+}
