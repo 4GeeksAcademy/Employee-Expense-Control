@@ -3,6 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, Employee, Bill, Department, Budget
+from api.models import db, Employee, Bill, Department, Budget
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
@@ -119,12 +120,12 @@ def login_user():
     if user is None:
         return jsonify({"msg": "Invalid credentials"}), 401
 
-    # password_hashed = bcrypt.check_password_hash(user.password,password)
-    # if not password_hashed:
-    #     return jsonify({"msg":"Incorrect data"}),404
+    password_hashed = bcrypt.check_password_hash(user.password, password)
+    if not password_hashed:
+        return jsonify({"msg": "Incorrect data"}), 404
 
-    if user.password != password:
-        return jsonify({"msg": "Invalid credentials"}), 401
+    # if user.password != password:
+    #     return jsonify({"msg": "Invalid credentials"}), 401
 
     access_token = create_access_token(identity=str(user.id))
 
