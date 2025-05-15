@@ -23,44 +23,41 @@ jwt = JWTManager(app)
 
 revoked_tokens = set()
 
-
-
 @api.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
 
     if data is None:
-         return jsonify({"Error": "Data Not Provided"}), 400
-    
+        return jsonify({"Error": "Data Not Provided"}), 400
+
     name = data.get("name", None)
     last_name = data.get("last_name", None)
     email = data.get("email", None)
     password = data.get("password", None)
     is_supervisor = data.get("is_supervisor", False)
-   
-    
+
     if not email or not password:
         return jsonify({"Error": "Email and Password are required"}), 400
     if "@" not in email or "." not in email:
         return jsonify({"Error": "Invalid email format"}), 400
     if len(password) < 8:
         return jsonify({"Error": "Password must be at least 8 characters long"}), 400
-    
-    #check if an employee already exist 
-    existing_employee = Employee.query.filter_by(email = email).first()
+
+    # check if an employee already exist
+    existing_employee = Employee.query.filter_by(email=email).first()
     if existing_employee:
         return jsonify({"Msg": "This employee already exists. Please go to login."}), 409
-    
+
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-    #Create new user with the data obtained
+    # Create new user with the data obtained
     new_employee = Employee(
-        name = name, 
-        last_name = last_name, 
-        email = email, 
-        password = hashed_password,
-        is_supervisor = is_supervisor,
-        is_active = True)
+        name=name,
+        last_name=last_name,
+        email=email,
+        password=hashed_password,
+        is_supervisor=is_supervisor,
+        is_active=True)
 
     db.session.add(new_employee)
     db.session.commit()
@@ -115,6 +112,16 @@ def login_user():
     refresh_token = create_refresh_token(identity=str(user.id))
 
     return jsonify({"token": access_token, "refresh_token": refresh_token}), 201
+
+
+@api.route("/me", methods=["POST"])
+@jwt_required()
+def me():
+    user_id = get_jwt_identity()
+    user = Employee.query.filter_by(id=user_id).first()
+    if user is None:
+        return jsonify({"msg": "not found"}), 404
+    return jsonify({"name": user.name, "supervisor": bool(user.is_supervisor)})
 
 
 @api.route("/refresh", methods=["POST"])

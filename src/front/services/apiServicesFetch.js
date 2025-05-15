@@ -1,5 +1,4 @@
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
 // Check if the backend URL is defined
 if (!backendUrl) {
   throw new Error("VITE_BACKEND_URL is not defined in .env file");
@@ -90,8 +89,29 @@ export const fetchLogin = async (email, password) => {
 
     localStorage.setItem("token", token);
     localStorage.setItem("refreshToken", refreshToken);
+    if (token) {
+      const responseMe = await fetch(`${backendUrl}api/me`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${data.token}`,
+        },
+        body: token,
+      });
+      if (!responseMe.ok) {
+        throw new Error(`Error verifying role`);
+      }
+      const dataMe = await responseMe.json();
+      if (dataMe.name == null || dataMe.supervisor == null) {
+        throw new Error("the role has not been sent");
+      }
+      if (dataMe) {
+        return dataMe;
+      }
+    }
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };
 
