@@ -2,13 +2,23 @@ import useLoginForm from "../hooks/useLoginForm"
 import { fetchLogin } from "../services/apiServicesFetch"
 const LoginForm = () => {
 
-    const { email, setEmail, password, setPassword } = useLoginForm()
+    const { email, setEmail, password, setPassword, rolNavigate } = useLoginForm()
 
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        fetchLogin(email, password)
-    }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const userData = await fetchLogin(email, password);
+            rolNavigate(userData);
+        } catch (error) {
+            console.error("Login failed:", error.message);
+
+        }
+    };
+
+
+
+
 
     return (
         <>
