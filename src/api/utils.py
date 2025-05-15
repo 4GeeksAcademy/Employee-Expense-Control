@@ -30,6 +30,66 @@ def generate_sitemap(app):
             if "/admin/" not in url:
                 links.append(url)
 
+
+def generate_reset_token(user_id):
+    serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+    return serializer.dumps(user_id, salt='reset-password-salt')
+
+def verify_reset_token(token, expiration=3600):
+    serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+    try:
+        return serializer.loads(token, salt='reset-password-salt', max_age=expiration)
+    except Exception:
+        return None
+
+def generate_password_hash(password):
+    return werkzeug_hash(password)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     links_html = "".join(["<li><a href='" + y + "'>" + y + "</a></li>" for y in links])
     return """
         <div style="text-align: center;">
