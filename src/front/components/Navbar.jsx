@@ -1,6 +1,7 @@
 import { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import LoginButton from "./LoginButton";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -17,27 +18,28 @@ export const Navbar = () => {
 		setAuthenticated(!!token);
 	}, [])
 
-	const handleLogin= async ()=> {
-		setLoading(true);
-		try {
-			const resp = await fetch(`${backendUrl}/token/test`,{
-				method: 'GET'
-			});
-			if (!resp.ok) throw new error ('Error obtaining token');
+	// const handleLogin= async ()=> {
+	// 	setLoading(true);
+	// 	try {
+	// 		const resp = await fetch(`${backendUrl}/login`,{
+	// 			method: 'POST'
+	// 		});
+	// 		if (!resp.ok) throw new error ('Error obtaining token');
 
-			const data = await resp.json();
-			localStorage.setItem('jwt_token', data.access_token);
-			setAuthenticated(true);
-			navigate('')
-		}catch (error){
-			console.error('error:',error)
-			alert('login error')
-		} finally {
-			setLoading(false)
-		}
-	};
+	// 		const data = await resp.json();
+	// 		localStorage.setItem('jwt_token', data.access_token);
+	// 		setAuthenticated(true);
+	// 		navigate('')
+	// 	}catch (error){
+	// 		console.error('error:',error)
+	// 		alert('login error')
+	// 	} finally {
+	// 		setLoading(false)
+	// 	}
+	// };
 
 	const handleLogout = async ()=> {
+		setLoading(true)
 		const token = localStorage.getItem('jwt_token');
 		if (!token) return 
 		try {
@@ -52,7 +54,8 @@ export const Navbar = () => {
 		} finally {
 			localStorage.removeItem('jwt_token');
 			setAuthenticated(false);
-			navigate('/demo');
+			setLoading(false);
+			navigate('/login');
 		}
 
 	};
@@ -78,13 +81,16 @@ export const Navbar = () => {
             </button>
           </>
         ) : (
-          <button
-            onClick={handleLogin}
-            className="nav-button login"
-            disabled={Loading}
-          >
-            {Loading ? 'Cargando...' : 'Iniciar Sesión de Prueba'}
-          </button>
+        //   <Link to="/login">
+        //   <button
+		//   	onClick={handleLogin}
+        //     className="nav-button login"
+        //     disabled={Loading}
+        //   > 
+        //     {Loading ? 'Cargando...' : 'Iniciar Sesión'}
+        //   </button>
+		//   </Link>
+		<LoginButton />
         )}
       </div>
     </nav>

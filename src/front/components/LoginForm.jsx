@@ -1,13 +1,17 @@
 import useLoginForm from "../hooks/useLoginForm"
 import { fetchLogin } from "../services/apiServicesFetch"
+import { useNavigate } from "react-router-dom"
+
 const LoginForm = () => {
 
     const { email, setEmail, password, setPassword } = useLoginForm()
+    const navigate = useNavigate()
 
 
     const handleSubmit = (e) => {
         e.preventDefault()
         fetchLogin(email, password)
+        navigate("/")
     }
 
     return (

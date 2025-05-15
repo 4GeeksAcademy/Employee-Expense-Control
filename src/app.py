@@ -27,10 +27,8 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 
-app.config["JWT_SECRET_KEY"]= os.getenv("FLASK_APP_KEY")
-jwt = JWTManager(app)
 
-revoked_tokens= set()#LISTA SOLO PARA PRUEBAS
+revoked_tokens= set()
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
@@ -45,7 +43,6 @@ MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
 
 bcrypt = Bcrypt(app)
-jwt = JWTManager(app)
 
 # add the admin
 setup_admin(app)

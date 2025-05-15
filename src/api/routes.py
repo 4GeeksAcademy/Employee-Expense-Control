@@ -24,23 +24,6 @@ jwt = JWTManager(app)
 revoked_tokens = set()
 
 
-@api.route("token/test", methods=['GET'])
-def token_test():
-    token= create_access_token(identity="Usuario_Test")
-    return jsonify(access_token=token),200
-
-@api.route("/logout",methods=['POST'])
-@jwt_required()
-def logout():
-    jti = get_jwt()["jti"]
-    revoked_tokens.add(jti)
-    return jsonify({"msg": "User logged out"})
-
-@jwt.token_in_blocklist_loader
-def check_if_token_revoked(jwt_header,jwt_payload):
-    jti = jwt_payload["jti"]
-    return jti in revoked_tokens
-
 
 @api.route('/signup', methods=['POST'])
 def signup():
@@ -157,3 +140,16 @@ def upload():
     except Exception as e:
 
         return jsonify({"error": str(e)}), 500
+    
+
+@api.route("/logout",methods=['POST'])
+@jwt_required()
+def logout():
+    jti = get_jwt()["jti"]
+    revoked_tokens.add(jti)
+    return jsonify({"msg": "User logged out"})
+
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(jwt_header,jwt_payload):
+    jti = jwt_payload["jti"]
+    return jti in revoked_tokens
