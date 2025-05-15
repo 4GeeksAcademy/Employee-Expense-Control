@@ -11,7 +11,7 @@ const LoginForm = () => {
             const userData = await fetchLogin(email, password);
             rolNavigate(userData);
         } catch (error) {
-            console.error("Login failed:", error.message);
+            console.error(error);
 
         }
     };
