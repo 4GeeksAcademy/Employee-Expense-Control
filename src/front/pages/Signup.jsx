@@ -45,7 +45,7 @@ const SignUp = () => {
         const response = await createSignup(dispatch, dataToSend);
         // Check if the response indicates success
         if (response.success) {
-            navigate("/home"); // Navigate after successful signup
+            navigate("/"); // Navigate after successful signup
         } else {
             setError(response.message || "Something went wrong during signup.");
         }

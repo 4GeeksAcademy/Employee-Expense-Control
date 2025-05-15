@@ -37,8 +37,6 @@ MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
 
 bcrypt = Bcrypt(app)
-jwt = JWTManager(app)
-
 # add the admin
 setup_admin(app)
 
@@ -48,7 +46,6 @@ setup_commands(app)
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
 
-# Handle/serialize errors like a JSON object
 
 # JWT config
 app.config["JWT_SECRET_KEY"] = os.getenv("FLASK_APP_KEY")
