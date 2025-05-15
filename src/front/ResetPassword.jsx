@@ -43,3 +43,5 @@ function ResetPassword() {
     </form>
   );
 }
+
+export default ResetPassword

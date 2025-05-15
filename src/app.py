@@ -10,7 +10,11 @@ from api.models import db
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
-from flask_mail import Mail
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_bcrypt import Bcrypt
+from datetime import timedelta
+import cloudinary 
+from extensions import mail
 from dotenv import load_dotenv
 import os
 
@@ -27,8 +31,9 @@ app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
-mail = Mail(app)
+
 FRONTEND_URL = os.getenv('FRONTEND_URL')
+
 
 # from models import Person
 
@@ -50,6 +55,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
 
+bcrypt = Bcrypt(app)
 # add the admin
 setup_admin(app)
 
@@ -59,7 +65,20 @@ setup_commands(app)
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
 
-# Handle/serialize errors like a JSON object
+
+# JWT config
+app.config["JWT_SECRET_KEY"] = os.getenv("FLASK_APP_KEY")
+
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=10)
+
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=1)
+
+jwt = JWTManager(app)
+mail.init_app(app)
+# Cloudinary config
+
+cloudinary.config(cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+                  api_key=os.getenv("CLOUDINARY_API_KEY"), api_secret=os.getenv("CLOUDINARY_API_SECRET"))
 
 
 @app.errorhandler(APIException)
@@ -71,11 +90,16 @@ def handle_invalid_usage(error):
 
 @app.route('/')
 def sitemap():
+    print('sitemap')
     if ENV == "development":
+        print('test')
         return generate_sitemap(app)
+    print('test2')
     return send_from_directory(static_file_dir, 'index.html')
 
 # any other endpoint will try to serve it like a static file
+
+
 @app.route('/<path:path>', methods=['GET'])
 def serve_any_other_file(path):
     if not os.path.isfile(os.path.join(static_file_dir, path)):

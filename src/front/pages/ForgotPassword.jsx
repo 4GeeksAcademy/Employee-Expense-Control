@@ -31,3 +31,5 @@ function ForgotPassword() {
     </form>
   );
 }
+
+export default ForgotPassword
