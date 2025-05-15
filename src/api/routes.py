@@ -3,6 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, Employee, Bill, Department, Budget
+from api.models import db, Employee, Bill, Department, Budget
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
@@ -16,38 +17,42 @@ bcrypt = Bcrypt(app)
 # Allow CORS requests to this API
 CORS(api)
 
-
 @api.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
 
     if data is None:
-        return jsonify({"Error": "Data Not Provided"}), 400
-
+         return jsonify({"Error": "Data Not Provided"}), 400
+    
     name = data.get("name", None)
     last_name = data.get("last_name", None)
     email = data.get("email", None)
     password = data.get("password", None)
     is_supervisor = data.get("is_supervisor", False)
-
+   
+    
     if not email or not password:
         return jsonify({"Error": "Email and Password are required"}), 400
-
-    # check if an employee already exist
-    existing_employee = Employee.query.filter_by(email=email).first()
+    if "@" not in email or "." not in email:
+        return jsonify({"Error": "Invalid email format"}), 400
+    if len(password) < 8:
+        return jsonify({"Error": "Password must be at least 8 characters long"}), 400
+    
+    #check if an employee already exist 
+    existing_employee = Employee.query.filter_by(email = email).first()
     if existing_employee:
-        return jsonify({"Msg": "Employee already exists. Please go to login."}), 409
-
+        return jsonify({"Msg": "This employee already exists. Please go to login."}), 409
+    
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-    # Create new user with the data obtained
+    #Create new user with the data obtained
     new_employee = Employee(
-        name=name,
-        last_name=last_name,
-        email=email,
-        password=hashed_password,
-        is_supervisor=is_supervisor,
-        is_active=True)
+        name = name, 
+        last_name = last_name, 
+        email = email, 
+        password = hashed_password,
+        is_supervisor = is_supervisor,
+        is_active = True)
 
     db.session.add(new_employee)
     db.session.commit()

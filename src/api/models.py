@@ -1,9 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean, Integer, DateTime, ForeignKey, Enum, Numeric
+from sqlalchemy import String, Boolean, Integer, DateTime, ForeignKey, Enum, Numeric, Integer, DateTime, ForeignKey, Enum, Numeric
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from typing import List
-
+from datetime import datetime
+from typing import List
 import enum
 
 db = SQLAlchemy()
@@ -13,7 +14,6 @@ class state_type(enum.Enum):
     APPROVED = 'approved'
     DENEGATED = 'denegated'
     PENDING = 'pending'
-
 
 class Employee(db.Model):
     __tablename__ = "employees"
@@ -39,9 +39,12 @@ class Employee(db.Model):
         back_populates="employee"
     )
 
+
     def serialize(self):
         return {
             "id": self.id,
+            "name": self.name,
+            "last_name": self.last_name,
             "name": self.name,
             "last_name": self.last_name,
             "email": self.email,
