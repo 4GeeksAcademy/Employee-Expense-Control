@@ -9,6 +9,8 @@ import enum
 
 db = SQLAlchemy()
 
+ 
+
 
 class state_type(enum.Enum):
     APPROVED = 'approved'
@@ -53,19 +55,18 @@ class Employee(db.Model):
             # password not included for security reasons
         }
 
-
 class Department(db.Model):
     __tablename__ = "departments"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(250), nullable=False)
     budgets: Mapped[List['Budget']] = relationship(
+
         back_populates="department"
     )
     employees: Mapped[List['Employee']] = relationship(
         back_populates="department"
     )
-
 
 class Bill(db.Model):
     __tablename__ = "bills"
@@ -90,7 +91,6 @@ class Bill(db.Model):
 
 class Budget(db.Model):
     __tablename__ = "budgets"
-
     id: Mapped[int] = mapped_column(primary_key=True)
     budget_description: Mapped[str] = mapped_column(
         String(250), nullable=False)
@@ -101,3 +101,4 @@ class Budget(db.Model):
     department: Mapped["Department"] = relationship(back_populates="budgets")
     bills: Mapped[List["Bill"]] = relationship(back_populates="budget")
     employee: Mapped['Employee'] = relationship(back_populates="budgets")
+

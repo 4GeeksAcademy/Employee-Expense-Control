@@ -1,19 +1,55 @@
-import { Link } from "react-router-dom";
+import { useState,useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import LoginButton from "./LoginButton";
+import { useAuth } from "../hooks/AuthContext";
+
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 
 export const Navbar = () => {
 
+	const{isAuthenticated, logout}= useAuth();
+	const[Loading,setLoading]= useState(false)
+	const navigate=useNavigate();
+	
+	const handleLogout = async ()=> {
+		setLoading(true)
+		try {
+			await logout();
+			navigate("/login");
+			}
+			catch(error){
+			console.error("error when closing session:",error)
+		} finally {
+			setLoading(false);
+		}
+
+	};
+
+
+
 	return (
-		<nav className="navbar navbar-light bg-light">
-			<div className="container">
-				<Link to="/">
-					<span className="navbar-brand mb-0 h1">React Boilerplate</span>
-				</Link>
-				<div className="ml-auto">
-					<Link to="/demo">
-						<button className="btn btn-primary">Check the Context in action</button>
-					</Link>
-				</div>
-			</div>
-		</nav>
+		  <nav className="navbar">
+      <div className="navbar-brand">Spending Control</div>
+      <div className="navbar-actions">
+        {isAuthenticated ? (
+          <>
+		    <button onClick={() => navigate("/")} className="button">
+              Área Prueba
+            </button>
+            <button
+              onClick={handleLogout}
+              className="button logout"
+              disabled={Loading}
+            >
+              <i className="fas fa-door-open" style={{ marginRight: "8px" }}></i>
+              Logout
+            </button>
+          </>
+        ) : (
+		<LoginButton />
+        )}
+      </div>
+    </nav>
 	);
 };

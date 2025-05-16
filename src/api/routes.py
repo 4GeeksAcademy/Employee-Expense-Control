@@ -7,9 +7,11 @@ from api.models import db, Employee, Bill, Department, Budget
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt, get_jwt_identity
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt, get_jwt_identity,JWTManager
 import re
 import cloudinary.uploader
+
+
 
 api = Blueprint('api', __name__)
 app = Flask(__name__)
@@ -17,6 +19,9 @@ bcrypt = Bcrypt(app)
 # Allow CORS requests to this API
 CORS(api)
 
+jwt = JWTManager(app)
+
+revoked_tokens = set()
 
 @api.route('/signup', methods=['POST'])
 def signup():
@@ -142,3 +147,16 @@ def upload():
     except Exception as e:
 
         return jsonify({"error": str(e)}), 500
+    
+
+@api.route("/logout",methods=['POST'])
+@jwt_required()
+def logout():
+    jti = get_jwt()["jti"]
+    revoked_tokens.add(jti)
+    return jsonify({"msg": "User logged out"})
+
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(jwt_header,jwt_payload):
+    jti = jwt_payload["jti"]
+    return jti in revoked_tokens
