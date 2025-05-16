@@ -1,61 +1,27 @@
 import { useState,useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import LoginButton from "./LoginButton";
+import { useAuth } from "../hooks/AuthContext";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 
-
 export const Navbar = () => {
 
-	const[isAuthenticated,setAuthenticated]=useState(false)
+	const{isAuthenticated, logout}= useAuth();
 	const[Loading,setLoading]= useState(false)
-	const navigate=useNavigate()
-
-	useEffect(()=> {
-		const token = localStorage.getItem('jwt_token')
-		setAuthenticated(!!token);
-	}, [])
-
-	// const handleLogin= async ()=> {
-	// 	setLoading(true);
-	// 	try {
-	// 		const resp = await fetch(`${backendUrl}/login`,{
-	// 			method: 'POST'
-	// 		});
-	// 		if (!resp.ok) throw new error ('Error obtaining token');
-
-	// 		const data = await resp.json();
-	// 		localStorage.setItem('jwt_token', data.access_token);
-	// 		setAuthenticated(true);
-	// 		navigate('')
-	// 	}catch (error){
-	// 		console.error('error:',error)
-	// 		alert('login error')
-	// 	} finally {
-	// 		setLoading(false)
-	// 	}
-	// };
-
+	const navigate=useNavigate();
+	
 	const handleLogout = async ()=> {
 		setLoading(true)
-		const token = localStorage.getItem('jwt_token');
-		if (!token) return 
 		try {
-			await fetch(`${backendUrl}/logout`,{
-				method: 'POST',
-				headers: {
-					'Authorization': `Bearer ${token}`
-				}
-			});
-		} catch (error){
+			await logout();
+			navigate("/login");
+			}
+			catch(error){
 			console.error("error when closing session:",error)
 		} finally {
-			localStorage.removeItem('jwt_token');
-			setAuthenticated(false);
 			setLoading(false);
-			navigate('/login');
 		}
 
 	};
@@ -64,11 +30,11 @@ export const Navbar = () => {
 
 	return (
 		  <nav className="navbar">
-      <div className="navbar-brand">Mi Aplicación</div>
+      <div className="navbar-brand">Spending Control</div>
       <div className="navbar-actions">
         {isAuthenticated ? (
           <>
-		    <button onClick={() => navigate("/demo")} className="button">
+		    <button onClick={() => navigate("/")} className="button">
               Área Prueba
             </button>
             <button
@@ -81,15 +47,6 @@ export const Navbar = () => {
             </button>
           </>
         ) : (
-        //   <Link to="/login">
-        //   <button
-		//   	onClick={handleLogin}
-        //     className="nav-button login"
-        //     disabled={Loading}
-        //   > 
-        //     {Loading ? 'Cargando...' : 'Iniciar Sesión'}
-        //   </button>
-		//   </Link>
 		<LoginButton />
         )}
       </div>
