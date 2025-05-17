@@ -1,4 +1,8 @@
 from flask import jsonify, url_for
+from flask_jwt_extended import create_access_token
+from datetime import timedelta
+
+
 
 class APIException(Exception):
     status_code = 400
@@ -42,8 +46,9 @@ def generate_sitemap(app):
 
 
 def generate_reset_token(employee_id):
-    serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
-    return serializer.dumps(employee_id, salt='reset-password-salt')
+    token=create_access_token(identity= employee_id, expires_delta= timedelta(minutes=15))
+    
+    return token
 
 def verify_reset_token(token, expiration=900):
     serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])

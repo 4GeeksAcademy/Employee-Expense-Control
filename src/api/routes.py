@@ -78,6 +78,7 @@ def handle_hello():
 def forgot_password():
     # Obtiene el email del frontend
     email = request.json.get('email')
+    frontend_url="https://sturdy-telegram-g44v64v9vxq29xww-3000.app.github.dev"
     
     # Busca al empleado en la base de datos usando el email
     employee = Employee.query.filter_by(email=email).first()  
@@ -90,7 +91,7 @@ def forgot_password():
     token = generate_reset_token(employee.id)
     
     # Crea el enlace de restablecimiento de contraseña con el token generado
-    reset_link = f"{FRONTEND_URL}/reset-password/{token}" # Modifica este enlace según mi entorno
+    reset_link = f"{frontend_url}/reset-password/{token}" # Modifica este enlace según mi entorno
 
     # Crea el correo con el enlace de recuperación
     msg = Message("Restablecer contraseña", recipients=[email])
