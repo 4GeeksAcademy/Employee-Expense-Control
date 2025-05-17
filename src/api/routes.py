@@ -104,9 +104,10 @@ def forgot_password():
     return jsonify({"msg": "Correo enviado"}), 200
 
 
-@api.route('/reset-password/<token>', methods=['POST'])
-def reset_password(token):
-    employee_id = verify_reset_token(token)
+@api.route('/reset-password', methods=['POST'])
+@jwt_required()
+def reset_password():
+    employee_id = get_jwt_identity()
     if not employee_id:
         return jsonify({'msg': 'Token inválido o expirado'}), 400
 
@@ -120,7 +121,7 @@ def reset_password(token):
     if not employee:
         return jsonify({'msg': 'Empleado no encontrado'}), 404
 
-    employee.password = generate_password_hash(new_password)
+    employee.password = new_password
     db.session.commit()
 
     return jsonify({'msg': 'Contraseña actualizada correctamente'}), 200

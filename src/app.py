@@ -14,10 +14,10 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
 import cloudinary 
-#from extensions import mail
+from extensions import mail
 from dotenv import load_dotenv
 import os
-from flask_mail import Mail, Message
+
 
 #recover password
 load_dotenv()  # Carga las variables desde .env
@@ -25,13 +25,13 @@ load_dotenv()  # Carga las variables desde .env
 app = Flask(__name__)
 
 # Configurar correo desde .env
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = os.getenv('MAIL_PORT')
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = 
-app.config['MAIL_PASSWORD'] = 
-app.config['MAIL_DEFAULT_SENDER'] = 
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
 
 FRONTEND_URL = os.getenv('FRONTEND_URL')
@@ -42,7 +42,7 @@ FRONTEND_URL = os.getenv('FRONTEND_URL')
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../public/')
-app = Flask(__name__)
+
 app.url_map.strict_slashes = False
 
 # database condiguration
@@ -76,8 +76,8 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=10)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=1)
 
 jwt = JWTManager(app)
-mail=Mail(app)
-#mail.init_app(app)
+
+mail.init_app(app)
 # Cloudinary config
 
 cloudinary.config(cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
@@ -93,16 +93,10 @@ def handle_invalid_usage(error):
 
 @app.route('/')
 def sitemap():
-    msg=Message(
-        "Recuperar contraseña", 
-        recipients= ["digitaljpvv@gmail.com"],
-        body="Recuperar contraseña"
-    )
-    mail.send(msg)
+    
     if ENV == "development":
         print('test')
         return generate_sitemap(app)
-    print('test2')
     return send_from_directory(static_file_dir, 'index.html')
 
 # any other endpoint will try to serve it like a static file

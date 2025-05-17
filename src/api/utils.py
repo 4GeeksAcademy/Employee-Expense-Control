@@ -46,7 +46,7 @@ def generate_sitemap(app):
 
 
 def generate_reset_token(employee_id):
-    token=create_access_token(identity= employee_id, expires_delta= timedelta(minutes=15))
+    token=create_access_token(identity= str(employee_id), expires_delta= timedelta(minutes=15))
     
     return token
 
