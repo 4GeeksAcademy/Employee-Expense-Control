@@ -7,9 +7,9 @@ from api.models import db, Employee, Bill, Department, Budget
 from api.utils import generate_sitemap, APIException, generate_reset_token, generate_password_hash, verify_reset_token
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt, get_jwt_identity
 from flask_mail import Message
 from extensions import mail 
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt, get_jwt_identity,JWTManager
 import re
 import cloudinary.uploader
 
@@ -19,6 +19,9 @@ bcrypt = Bcrypt()
 # Allow CORS requests to this API
 CORS(api)
 
+jwt = JWTManager(app)
+
+revoked_tokens = set()
 
 @api.route('/signup', methods=['POST'])
 def signup():
@@ -156,15 +159,42 @@ def login_user():
     password_hashed = bcrypt.check_password_hash(user.password, password)
     if not password_hashed:
         return jsonify({"msg": "Incorrect data"}), 404
+    
+    code_r = "CBJ-G13" if user.is_supervisor else "NTO-824" 
+    access_level = 2 if user.is_supervisor else 1 
+
+    token_payload = {
+        "sub": str(user.id),
+        "rol": code_r,
+        "lvl": access_level,
+    }
 
     # if user.password != password:
     #     return jsonify({"msg": "Invalid credentials"}), 401
 
-    access_token = create_access_token(identity=str(user.id))
+    access_token = create_access_token(identity=str(user.id), additional_claims=token_payload)
 
-    refresh_token = create_refresh_token(identity=str(user.id))
+    refresh_token = create_refresh_token(identity=str(user.id), additional_claims=token_payload)
 
-    return jsonify({"token": access_token, "refresh_token": refresh_token}), 201
+    return jsonify({"token": access_token,
+                    "refresh_token": refresh_token,
+                    "user": {"id":user.id,"name":user.name,
+                             }}), 201
+
+@api.route("/supervisor-area", methods=["GET"])
+@jwt_required()
+def supervisor_area():
+    claims = get_jwt()
+    rol = claims.get("rol")
+
+    if rol != "CBJ-G13":
+        return jsonify({"msg": "Unauthorized access"}), 403
+    
+    return jsonify({"msg":"Welcome",
+                    "data":{
+                        "rol": rol,
+                        "access_level": claims.get("lvl")}
+                        })
 
 
 @api.route("/me", methods=["POST"])
@@ -200,3 +230,16 @@ def upload():
     except Exception as e:
 
         return jsonify({"error": str(e)}), 500
+    
+
+@api.route("/logout",methods=['POST'])
+@jwt_required()
+def logout():
+    jti = get_jwt()["jti"]
+    revoked_tokens.add(jti)
+    return jsonify({"msg": "User logged out"})
+
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(jwt_header,jwt_payload):
+    jti = jwt_payload["jti"]
+    return jti in revoked_tokens

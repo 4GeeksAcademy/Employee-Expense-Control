@@ -1,4 +1,3 @@
-
 import os
 from flask_admin import Admin
 from .models import db, Employee, Bill, Department, Budget
@@ -12,9 +11,11 @@ def setup_admin(app):
 
     # Add your models here, for example this is how we add a the User model to the admin
 
+
     class EmployeeAdmin(ModelView):
         form_columns = ['name', 'last_name', 'email', 'is_supervisor',
                         'department_id', 'is_active', 'password']
+
     admin.add_view(EmployeeAdmin(Employee, db.session))
     admin.add_view(ModelView(Department, db.session))
     admin.add_view(ModelView(Budget, db.session))

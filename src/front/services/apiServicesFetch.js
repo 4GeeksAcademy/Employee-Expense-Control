@@ -89,6 +89,8 @@ export const fetchLogin = async (email, password) => {
 
     localStorage.setItem("token", token);
     localStorage.setItem("refreshToken", refreshToken);
+      
+
     if (token) {
       const responseMe = await fetch(`${backendUrl}api/me`, {
         method: "POST",
@@ -124,7 +126,7 @@ export const fetchImageBill = async (image) => {
     if (!formData.has("bill")) {
       throw new Error("The image has not been loaded correctly");
     }
-    const response = await fetch(`${backendUrl}api/upload`, {
+    const response = await authFetch(`${backendUrl}api/upload`, {
       method: "POST",
       body: formData,
     });
@@ -139,6 +141,7 @@ export const fetchImageBill = async (image) => {
 };
 
 
+
 export const sendResetEmail = async (email) => {
   const res = await fetch(process.env.BACKEND_URL + "/forgot-password", {
     method: "POST",
@@ -151,3 +154,55 @@ export const sendResetEmail = async (email) => {
   if (!res.ok) throw new Error("No se pudo enviar el correo");
   return await res.json();
 };
+
+export const refreshAccessToken = async ()=> { 
+const refreshToken = JSON.parse(localStorage.getItem("refreshToken"));
+
+  if (!refreshToken){
+    throw new Error ("no refresh token ivailable");
+  }
+
+const response = await fetch(`${backendUrl}api/refresh-token`,{
+method: "POST",
+headers: {"Content-Type": "application/json",},
+        body: JSON.stringify({refresh_token: refreshToken}),
+
+});
+
+  if (!response.ok){
+    throw new Error ("failed to refresh access token")
+  }
+const data = await response.json();
+
+  if (!data.token){
+    throw new Error("New access token not recived")
+  }
+
+  localStorage.setItem("token", JSON.stringify(data.token))
+  return data.token
+}
+
+export const authFetch = async (url, options = {}) => {
+  let token = JSON.parse(localStorage.getItem("token"));
+
+  options.headers = {
+    ...(options.headers || {}),
+    Authorization: `Bearer ${token}`,
+  };
+
+  let response = await fetch(url, options);
+
+  if (response.status === 401) {
+    try {
+      const newToken = await refreshAccessToken();
+      options.headers.Authorization = `Bearer ${newToken}`;
+      response = await fetch(url, options);
+    } catch (err) {
+      console.error("Token refresh failed", err);
+      throw new Error("Session expired. Please log in again..");
+    }
+  }
+
+  return response;
+};
+
