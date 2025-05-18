@@ -115,6 +115,31 @@ export const fetchLogin = async (email, password) => {
   }
 };
 
+export const budgetFetch = async (description) => {
+  try {
+    if (!description || description.trim() === "") {
+      throw new Error("Invalid description");
+    }
+    const rawData = JSON.stringify({ budget_description: description });
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${backendUrl}api/budget`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: rawData,
+    });
+    if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`);
+    }
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const fetchImageBill = async (image, description, location, amount) => {
   try {
     if (

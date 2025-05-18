@@ -15,9 +15,13 @@ def setup_admin(app):
     class EmployeeAdmin(ModelView):
         form_columns = ['name', 'last_name', 'email', 'is_supervisor',
                         'department_id', 'is_active', 'password']
+
+    class BudgetAdmin(ModelView):
+        form_columns = ['budget_description', 'employee_id', 'department_id']
+        
     admin.add_view(EmployeeAdmin(Employee, db.session))
     admin.add_view(ModelView(Department, db.session))
-    admin.add_view(ModelView(Budget, db.session))
+    admin.add_view(BudgetAdmin(Budget, db.session))
     admin.add_view(ModelView(Bill, db.session))
 
     # You can duplicate that line to add mew models

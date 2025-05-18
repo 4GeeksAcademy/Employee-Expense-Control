@@ -147,9 +147,41 @@ def upload():
         return jsonify({"error": str(e)}), 500
 
 
+@api.route("/budget", methods=["POST"])
+@jwt_required()
+def budget_create():
+    user_id = get_jwt_identity()
+    user = Employee.query.get(user_id)
+
+    if user is None:
+        return jsonify({"msg": "Invalid credentials"}), 404
+
+    body = request.get_json(silent=True)
+
+    if body is None:
+        return ({"msg": "Invalid object"}), 400
+
+    fields_required = ["budget_description"]
+
+    for field in fields_required:
+        if field not in body:
+            return jsonify({"msg": "Invalid creedentials"}), 400
+
+    if body["budget_description"].strip() == "":
+        return jsonify({"msg": "Invalid credentials"}), 400
+
+    budget_description = body["budget_description"]
+
+    new_budget = Budget(budget_description=budget_description,
+                        employee_id=1, department_id=1)
+    db.session.add(new_budget)
+    db.session.commit()
+    return jsonify({"msg": "Budget created successfully"}), 201
+
+
 @api.route("/bill", methods=["POST"])
 @jwt_required()
-def bill_description():
+def bill_create():
     user_id = get_jwt_identity()
     user = Employee.query.get(user_id)
 
@@ -176,7 +208,7 @@ def bill_description():
     date = body["date"]
 
     new_bill = Bill(trip_description=trip_description,
-                    trip_address=trip_address, state='pending', amount=amount, evaluator_id=1, date_approved=None, budget_id=1)
+                    trip_address=trip_address, state="PENDING", amount=amount, evaluator_id=1, date_approved=None, budget_id=3)
     db.session.add(new_bill)
     db.session.commit()
     return jsonify({"msg": "bill created successfully"}), 201
