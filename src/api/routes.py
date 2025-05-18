@@ -73,17 +73,20 @@ def handle_hello():
 
 @api.route('/login', methods=['POST'])
 def login_user():
-    body = request.get_json()
+    body = request.get_json(silent=True)
+
+    if body is None:
+        return jsonify({"msg": "Invalid object"}), 400
 
     if body['email'].strip() == "" or body["password"].strip() == "":
-        return jsonify({"msg": "fields cannot be empty"}), 400
+        return jsonify({"msg": "Invalid credentials"}), 400
 
     email = body['email']
 
     pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
 
     if re.match(pattern, email) is None:
-        return jsonify({"msg": "The email format is not valid"}), 400
+        return jsonify({"msg": "Invalid credentials"}), 400
 
     password = body["password"]
 
@@ -97,7 +100,7 @@ def login_user():
 
     password_hashed = bcrypt.check_password_hash(user.password, password)
     if not password_hashed:
-        return jsonify({"msg": "Incorrect data"}), 404
+        return jsonify({"msg": "Invalid credentials"}), 404
 
     # if user.password != password:
     #     return jsonify({"msg": "Invalid credentials"}), 401
@@ -113,9 +116,9 @@ def login_user():
 @jwt_required()
 def me():
     user_id = get_jwt_identity()
-    user = Employee.query.filter_by(id=user_id).first()
+    user = Employee.query.get(user_id)
     if user is None:
-        return jsonify({"msg": "not found"}), 404
+        return jsonify({"msg": "invalid credentials"}), 404
     return jsonify({"name": user.name, "supervisor": bool(user.is_supervisor)})
 
 
@@ -142,3 +145,38 @@ def upload():
     except Exception as e:
 
         return jsonify({"error": str(e)}), 500
+
+
+@api.route("/bill", methods=["POST"])
+@jwt_required()
+def bill_description():
+    user_id = get_jwt_identity()
+    user = Employee.query.get(user_id)
+
+    if user is None:
+        return jsonify({"msg": "Invalid credentials"}), 404
+
+    body = request.get_json(silent=True)
+
+    if body is None:
+        return jsonify({"msg": "Invalid object"}), 400
+
+    filds_required = ["description", "location", "amount", "date"]
+
+    for filed in filds_required:
+        if filed not in body:
+            return jsonify({"msg": "invalid credentials"}), 400
+
+    if body["description"].strip() == "" or body["location"].strip() == "" or body["amount"].strip() == "" or body["date"].strip() == "":
+        return jsonify({"msg": "Invalid credentials"}), 400
+
+    trip_description = body["description"]
+    trip_address = body["location"]
+    amount = float(body["amount"])
+    date = body["date"]
+
+    new_bill = Bill(trip_description=trip_description,
+                    trip_address=trip_address, state='pending', amount=amount, evaluator_id=1, date_approved=None, budget_id=1)
+    db.session.add(new_bill)
+    db.session.commit()
+    return jsonify({"msg": "bill created successfully"}), 201

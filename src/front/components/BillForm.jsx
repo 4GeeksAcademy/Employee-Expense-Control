@@ -3,7 +3,7 @@ import { fetchImageBill } from "../services/apiServicesFetch"
 const BillForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
-        fetchImageBill(image)
+        fetchImageBill(image, description, location, amount)
     }
     const { description, setDescription, location, setLocation, amount, setAmount, image, setImage } = useBillForm()
     return (

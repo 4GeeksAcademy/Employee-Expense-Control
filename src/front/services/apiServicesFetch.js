@@ -83,9 +83,9 @@ export const fetchLogin = async (email, password) => {
       );
     }
 
-    const token = JSON.stringify(data.token);
+    const token = data.token;
 
-    const refreshToken = JSON.stringify(data.refresh_token);
+    const refreshToken = data.refreshToken;
 
     localStorage.setItem("token", token);
     localStorage.setItem("refreshToken", refreshToken);
@@ -96,7 +96,7 @@ export const fetchLogin = async (email, password) => {
           "content-type": "application/json",
           Authorization: `Bearer ${data.token}`,
         },
-        body: token,
+        body: JSON.stringify(token),
       });
       if (!responseMe.ok) {
         throw new Error(`Error verifying role`);
@@ -115,8 +115,26 @@ export const fetchLogin = async (email, password) => {
   }
 };
 
-export const fetchImageBill = async (image) => {
+export const fetchImageBill = async (image, description, location, amount) => {
   try {
+    if (
+      description.trim() === "" ||
+      location.trim() === "" ||
+      amount.trim() === ""
+    ) {
+      throw new Error("fields cannot be empty");
+    }
+    const token = localStorage.getItem("token");
+    if (token == null) {
+      throw new Error("token dont exist");
+    }
+    const rawData = JSON.stringify({
+      description: description,
+      location: location,
+      amount: amount,
+      date: new Date().toISOString(),
+    });
+
     const formData = new FormData();
 
     formData.append("bill", image);
@@ -133,6 +151,19 @@ export const fetchImageBill = async (image) => {
     }
     const data = await response.json();
     console.log(data);
+    const billResponse = await fetch(`${backendUrl}api/bill`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: rawData,
+    });
+    if (!billResponse.ok) {
+      throw new Error(`Error fetching data ${billResponse.status}`);
+    }
+    const billData = await billResponse.json();
+    console.log(billData);
   } catch (error) {
     console.error(error);
   }
