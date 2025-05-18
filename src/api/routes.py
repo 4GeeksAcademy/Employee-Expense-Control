@@ -2,20 +2,20 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
+
 from api.models import db, Employee, Bill, Department, Budget
-from api.models import db, Employee, Bill, Department, Budget
-from api.utils import generate_sitemap, APIException
+from api.utils import generate_sitemap, APIException, generate_reset_token, generate_password_hash, verify_reset_token
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
+from flask_mail import Message
+from extensions import mail 
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt, get_jwt_identity,JWTManager
 import re
 import cloudinary.uploader
 
 
-
 api = Blueprint('api', __name__)
-app = Flask(__name__)
-bcrypt = Bcrypt(app)
+bcrypt = Bcrypt()
 # Allow CORS requests to this API
 CORS(api)
 
@@ -74,6 +74,62 @@ def handle_hello():
     }
 
     return jsonify(response_body), 200
+
+
+
+@api.route('/forgot-password', methods=['POST'])
+def forgot_password():
+    # Obtiene el email del frontend
+    email = request.json.get('email')
+    frontend_url="https://sturdy-telegram-g44v64v9vxq29xww-3000.app.github.dev"
+    
+    # Busca al empleado en la base de datos usando el email
+    employee = Employee.query.filter_by(email=email).first()  
+    
+    # Si no existe un empleado con ese email, devuelve un error
+    if not employee:
+        return jsonify({"msg": "Email no registrado"}), 404
+
+    # Genera un token de recuperación usando el id del empleado
+    token = generate_reset_token(employee.id)
+    
+    # Crea el enlace de restablecimiento de contraseña con el token generado
+    reset_link = f"{frontend_url}/reset-password/{token}" # Modifica este enlace según mi entorno
+
+    # Crea el correo con el enlace de recuperación
+    msg = Message("Restablecer contraseña", recipients=[email])
+    msg.body = f"Usa este enlace para restablecer tu contraseña: {reset_link}"
+
+    # Envía el correo
+    mail.send(msg)
+
+    # Responde al frontend confirmando que el correo fue enviado
+    return jsonify({"msg": "Correo enviado"}), 200
+
+
+@api.route('/reset-password', methods=['POST'])
+@jwt_required()
+def reset_password():
+    employee_id = get_jwt_identity()
+    if not employee_id:
+        return jsonify({'msg': 'Token inválido o expirado'}), 400
+
+    data = request.get_json()
+    new_password = data.get('password')
+
+    if not new_password:
+        return jsonify({'msg': 'Contraseña nueva requerida'}), 400
+
+    employee = Employee.query.get(employee_id)
+    if not employee:
+        return jsonify({'msg': 'Empleado no encontrado'}), 404
+
+    employee.password = new_password
+    db.session.commit()
+
+    return jsonify({'msg': 'Contraseña actualizada correctamente'}), 200
+
+
 
 
 @api.route('/login', methods=['POST'])

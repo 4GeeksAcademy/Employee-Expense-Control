@@ -1,4 +1,6 @@
 import EmployeeOpcions from "../components/EmployeeOpcions"
+
+
 const EmployeeHome = () => {
     return (
         <>
