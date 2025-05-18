@@ -19,6 +19,7 @@ const SignUp = () => {
     });
 
     const [error, setError] = useState("")
+    const [msg, setMsg] = useState("")
 
     const handleChange = (e) => {
         const { name, type, value, checked } = e.target;
@@ -33,19 +34,37 @@ const SignUp = () => {
         e.preventDefault();
 
         setError(""); // Clear previous errors before submitting
+        setMsg("");
 
-        if (signupData.password !== signupData.confirmPassword) {
+        const { email, password, confirmPassword } = signupData;
+        // Check for empty fields
+        if (!email || !password || !confirmPassword) {
+            setError("Please fill in all the fields.");
+            return;
+        }
+        if (!email.includes("@") || !email.includes(".")) {
+            setError("Please enter a valid email.");
+            return;
+        }
+        if (password.length < 8) {
+            setError("Password must be at least 8 characters.");
+            return;
+        }
+        if (password !== confirmPassword) {
             setError("Passwords do not match.");
             return; //to stop the function
         }
 
         // Now send to backend (optional: remove confirmPassword from the payload)
-        const { confirmPassword, ...dataToSend } = signupData;
+        const { confirmPassword: confirmPword, ...dataToSend } = signupData;
 
         const response = await createSignup(dispatch, dataToSend);
         // Check if the response indicates success
         if (response.success) {
-            navigate("/"); // Navigate after successful signup
+            setMsg(response.message);
+            setTimeout(() => {
+                navigate("/login"); // Navigate after successful signup
+            }, 3000);
         } else {
             setError(response.message || "Something went wrong during signup.");
         }
@@ -138,7 +157,8 @@ const SignUp = () => {
                     />
                 </div>
                 {/* Show error message from the setError update*/}
-                {error && <p style={{ color: "red" }}>{error}</p>}
+                {error && <div className="alert alert-danger">{error}</div>}
+                {msg && <div className="alert alert-success">{msg}</div>}
                 <button type="submit">Sign Up</button>
             </div>
         </form>

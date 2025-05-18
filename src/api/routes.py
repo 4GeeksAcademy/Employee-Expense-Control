@@ -103,7 +103,7 @@ def login_user():
     password_hashed = bcrypt.check_password_hash(user.password, password)
     if not password_hashed:
         return jsonify({"msg": "Incorrect data"}), 404
-
+    
     # if user.password != password:
     #     return jsonify({"msg": "Invalid credentials"}), 401
 

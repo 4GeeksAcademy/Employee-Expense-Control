@@ -6,7 +6,7 @@ if (!backendUrl) {
 
 export const createSignup = async (dispatch, info) => {
   try {
-    const response = await fetch(`${backendUrl}api/signup`, {
+    const response = await fetch(`${backendUrl}/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -18,7 +18,7 @@ export const createSignup = async (dispatch, info) => {
       const data = await response.json();
       console.log(data);
       dispatch({ type: "signup", payload: data.employee });
-      return { success: true };
+      return { success: true, message: "Signup successful! Please login." };
     } else if (response.status === 400) {
       const errorMsg = await response.json();
       return {
@@ -61,7 +61,7 @@ export const fetchLogin = async (email, password) => {
       email: email,
       password: password,
     });
-    const response = await fetch(`${backendUrl}api/login`, {
+    const response = await fetch(`${backendUrl}/login`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: rawData,
@@ -90,7 +90,7 @@ export const fetchLogin = async (email, password) => {
     localStorage.setItem("token", token);
     localStorage.setItem("refreshToken", refreshToken);
     if (token) {
-      const responseMe = await fetch(`${backendUrl}api/me`, {
+      const responseMe = await fetch(`${backendUrl}/me`, {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -145,7 +145,7 @@ const refreshToken = JSON.parse(localStorage.getItem("refreshToken"));
     throw new Error ("no refresh token ivailable");
   }
 
-const response = await fetch(`${backendUrl}api/refresh-token`,{
+const response = await fetch(`${backendUrl}/refresh-token`,{
 method: "POST",
 headers: {"Content-Type": "application/json",},
         body: JSON.stringify({refresh_token: refreshToken}),
