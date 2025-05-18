@@ -13,7 +13,6 @@ const LoginForm = () => {
         try {
             const userData = await login(email, password);
             rolNavigate(userData);
-            navigate("/")
         } catch (error) {
             console.error("Login failed:", error.message);
 

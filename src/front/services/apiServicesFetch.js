@@ -89,6 +89,8 @@ export const fetchLogin = async (email, password) => {
 
     localStorage.setItem("token", token);
     localStorage.setItem("refreshToken", refreshToken);
+      
+
     if (token) {
       const responseMe = await fetch(`${backendUrl}api/me`, {
         method: "POST",

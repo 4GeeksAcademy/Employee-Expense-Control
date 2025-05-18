@@ -103,15 +103,42 @@ def login_user():
     password_hashed = bcrypt.check_password_hash(user.password, password)
     if not password_hashed:
         return jsonify({"msg": "Incorrect data"}), 404
+    
+    code_r = "CBJ-G13" if user.is_supervisor else "NTO-824" 
+    access_level = 2 if user.is_supervisor else 1 
+
+    token_payload = {
+        "sub": str(user.id),
+        "rol": code_r,
+        "lvl": access_level,
+    }
 
     # if user.password != password:
     #     return jsonify({"msg": "Invalid credentials"}), 401
 
-    access_token = create_access_token(identity=str(user.id))
+    access_token = create_access_token(identity=str(user.id), additional_claims=token_payload)
 
-    refresh_token = create_refresh_token(identity=str(user.id))
+    refresh_token = create_refresh_token(identity=str(user.id), additional_claims=token_payload)
 
-    return jsonify({"token": access_token, "refresh_token": refresh_token}), 201
+    return jsonify({"token": access_token,
+                    "refresh_token": refresh_token,
+                    "user": {"id":user.id,"name":user.name,
+                             }}), 201
+
+@api.route("/supervisor-area", methods=["GET"])
+@jwt_required()
+def supervisor_area():
+    claims = get_jwt()
+    rol = claims.get("rol")
+
+    if rol != "CBJ-G13":
+        return jsonify({"msg": "Unauthorized access"}), 403
+    
+    return jsonify({"msg":"Welcome",
+                    "data":{
+                        "rol": rol,
+                        "access_level": claims.get("lvl")}
+                        })
 
 
 @api.route("/me", methods=["POST"])
