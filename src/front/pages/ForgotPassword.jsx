@@ -3,18 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { sendResetEmail } from "../services/apiServicesFetch";
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState("");            // Guarda el email que el usuario escribe
-  const [message, setMessage] = useState("");        // Guarda el mensaje de éxito o error
+  const [email, setEmail] = useState("");            // esto guarda el email que el usuario escribe
+  const [message, setMessage] = useState("");        // aqui se guardaw el mensaje de éxito o error
   const navigate = useNavigate();                    // Permite redirigir a otra vista (por ejemplo: al login)
 
   const handleSubmit = async (e) => {
     e.preventDefault();                              // Evita que el formulario recargue la página
     try {
-      await sendResetEmail(email);                   // Llama a la función del servicio que envía el correo
+      await sendResetEmail(email);                   // Llama a la función del servicio que envía el correo electronicoe
       setMessage("Correo enviado. Revisa tu bandeja de entrada.");  // Muestra mensaje de éxito
       setTimeout(() => navigate("/login"), 3000);    // Espera 3 segundos y redirige al login
     } catch (error) {
-      setMessage(error.message);                     // Muestra error si el backend responde con fallo
+      setMessage(error.message);                     // Muestra error si el backend responde con erorres
     }
   };
 
