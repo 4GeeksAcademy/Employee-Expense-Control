@@ -8,8 +8,8 @@ from api.utils import generate_sitemap, APIException, generate_reset_token, gene
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from flask_mail import Message
-from extensions import mail 
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt, get_jwt_identity,JWTManager
+from extensions import mail
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt, get_jwt_identity, JWTManager
 import re
 import cloudinary.uploader
 
@@ -18,10 +18,10 @@ api = Blueprint('api', __name__)
 bcrypt = Bcrypt()
 # Allow CORS requests to this API
 CORS(api)
-
-jwt = JWTManager(app)
+jwt = JWTManager()
 
 revoked_tokens = set()
+
 
 @api.route('/signup', methods=['POST'])
 def signup():
@@ -76,25 +76,25 @@ def handle_hello():
     return jsonify(response_body), 200
 
 
-
 @api.route('/forgot-password', methods=['POST'])
 def forgot_password():
     # Obtiene el email del frontend
     email = request.json.get('email')
-    frontend_url="https://sturdy-telegram-g44v64v9vxq29xww-3000.app.github.dev"
-    
+    frontend_url = "https://sturdy-telegram-g44v64v9vxq29xww-3000.app.github.dev"
+
     # Busca al empleado en la base de datos usando el email
-    employee = Employee.query.filter_by(email=email).first()  
-    
+    employee = Employee.query.filter_by(email=email).first()
+
     # Si no existe un empleado con ese email, devuelve un error
     if not employee:
         return jsonify({"msg": "Email no registrado"}), 404
 
     # Genera un token de recuperación usando el id del empleado
     token = generate_reset_token(employee.id)
-    
+
     # Crea el enlace de restablecimiento de contraseña con el token generado
-    reset_link = f"{frontend_url}/reset-password/{token}" # Modifica este enlace según mi entorno
+    # Modifica este enlace según mi entorno
+    reset_link = f"{frontend_url}/reset-password/{token}"
 
     # Crea el correo con el enlace de recuperación
     msg = Message("Restablecer contraseña", recipients=[email])
@@ -130,8 +130,6 @@ def reset_password():
     return jsonify({'msg': 'Contraseña actualizada correctamente'}), 200
 
 
-
-
 @api.route('/login', methods=['POST'])
 def login_user():
     body = request.get_json(silent=True)
@@ -164,25 +162,26 @@ def login_user():
 
         return jsonify({"msg": "Invalid credentials"}), 404
 
-    code_r = "CBJ-G13" if user.is_supervisor else "NTO-711" 
-    access_level = 2 if user.is_supervisor else 1 
+    code_r = "CBJ-G13" if user.is_supervisor else "NTO-711"
+    access_level = 2 if user.is_supervisor else 1
 
     token_payload = {
         "sub": str(user.id),
         "rol": code_r,
         "lvl": access_level,
     }
-    # if user.password != password:
-    #     return jsonify({"msg": "Invalid credentials"}), 401
 
-    access_token = create_access_token(identity=str(user.id), additional_claims=token_payload)
+    access_token = create_access_token(identity=str(
+        user.id), additional_claims=token_payload)
 
-    refresh_token = create_refresh_token(identity=str(user.id), additional_claims=token_payload)
+    refresh_token = create_refresh_token(
+        identity=str(user.id), additional_claims=token_payload)
 
     return jsonify({"token": access_token,
                     "refresh_token": refresh_token,
-                    "user": {"id":user.id,"name":user.name,
+                    "user": {"id": user.id, "name": user.name, "rol": user.is_supervisor,
                              }}), 201
+
 
 @api.route("/supervisor-area", methods=["GET"])
 @jwt_required()
@@ -192,12 +191,12 @@ def supervisor_area():
 
     if rol != "CBJ-G13":
         return jsonify({"msg": "Unauthorized access"}), 403
-    
-    return jsonify({"msg":"Welcome",
-                    "data":{
+
+    return jsonify({"msg": "Welcome",
+                    "data": {
                         "rol": rol,
                         "access_level": claims.get("lvl")}
-                        })
+                    })
 
 
 @api.route("/me", methods=["POST"])
@@ -301,15 +300,16 @@ def bill_create():
     db.session.commit()
     return jsonify({"msg": "bill created successfully"}), 201
 
-@api.route("/logout",methods=['POST'])
+
+@api.route("/logout", methods=['POST'])
 @jwt_required()
 def logout():
     jti = get_jwt()["jti"]
     revoked_tokens.add(jti)
     return jsonify({"msg": "User logged out"})
 
+
 @jwt.token_in_blocklist_loader
-def check_if_token_revoked(jwt_header,jwt_payload):
+def check_if_token_revoked(jwt_header, jwt_payload):
     jti = jwt_payload["jti"]
     return jti in revoked_tokens
-

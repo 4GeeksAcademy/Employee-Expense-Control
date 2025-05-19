@@ -84,31 +84,33 @@ export const fetchLogin = async (email, password) => {
     }
 
     const token = data.token;
-    const refreshToken = data.refreshToken;
+    const refreshToken = data.refresh_token;
 
     localStorage.setItem("token", token);
     localStorage.setItem("refreshToken", refreshToken);
-      
-    if (token) {
-      const responseMe = await fetch(`${backendUrl}api/me`, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          Authorization: `Bearer ${data.token}`,
-        },
-        body: JSON.stringify(token),
-      });
-      if (!responseMe.ok) {
-        throw new Error(`Error verifying role`);
-      }
-      const dataMe = await responseMe.json();
-      if (dataMe.name == null || dataMe.supervisor == null) {
-        throw new Error("the role has not been sent");
-      }
-      if (dataMe) {
-        return dataMe;
-      }
-    }
+
+    return data;
+
+    // if (token) {
+    //   const responseMe = await fetch(`${backendUrl}api/me`, {
+    //     method: "POST",
+    //     headers: {
+    //       "content-type": "application/json",
+    //       Authorization: `Bearer ${data.token}`,
+    //     },
+    //     body: JSON.stringify(token),
+    //   });
+    //   if (!responseMe.ok) {
+    //     throw new Error(`Error verifying role`);
+    //   }
+    //   const dataMe = await responseMe.json();
+    //   if (dataMe.name == null || dataMe.supervisor == null) {
+    //     throw new Error("the role has not been sent");
+    //   }
+    //   if (dataMe) {
+    //     return dataMe;
+    //   }
+    // }
   } catch (error) {
     console.error(error);
     throw error;
@@ -167,7 +169,7 @@ export const fetchImageBill = async (image, description, location, amount) => {
     if (!formData.has("bill")) {
       throw new Error("The image has not been loaded correctly");
     }
-    const response = await authFetch(`${backendUrl}api/upload`, {
+    const response = await fetch(`${backendUrl}api/upload`, {
       method: "POST",
       body: formData,
     });
@@ -194,8 +196,6 @@ export const fetchImageBill = async (image, description, location, amount) => {
   }
 };
 
-
-
 export const sendResetEmail = async (email) => {
   const res = await fetch(process.env.BACKEND_URL + "/forgot-password", {
     method: "POST",
@@ -209,32 +209,31 @@ export const sendResetEmail = async (email) => {
   return await res.json();
 };
 
-export const refreshAccessToken = async ()=> { 
-const refreshToken = JSON.parse(localStorage.getItem("refreshToken"));
+export const refreshAccessToken = async () => {
+  const refreshToken = JSON.parse(localStorage.getItem("refreshToken"));
 
-  if (!refreshToken){
-    throw new Error ("no refresh token ivailable");
+  if (!refreshToken) {
+    throw new Error("no refresh token ivailable");
   }
 
-const response = await fetch(`${backendUrl}api/refresh-token`,{
-method: "POST",
-headers: {"Content-Type": "application/json",},
-        body: JSON.stringify({refresh_token: refreshToken}),
+  const response = await fetch(`${backendUrl}api/refresh-token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ refresh_token: refreshToken }),
+  });
 
-});
-
-  if (!response.ok){
-    throw new Error ("failed to refresh access token")
+  if (!response.ok) {
+    throw new Error("failed to refresh access token");
   }
-const data = await response.json();
+  const data = await response.json();
 
-  if (!data.token){
-    throw new Error("New access token not recived")
+  if (!data.token) {
+    throw new Error("New access token not recived");
   }
 
-  localStorage.setItem("token", JSON.stringify(data.token))
-  return data.token
-}
+  localStorage.setItem("token", JSON.stringify(data.token));
+  return data.token;
+};
 
 export const authFetch = async (url, options = {}) => {
   let token = JSON.parse(localStorage.getItem("token"));
@@ -259,4 +258,3 @@ export const authFetch = async (url, options = {}) => {
 
   return response;
 };
-
