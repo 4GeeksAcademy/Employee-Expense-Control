@@ -12,7 +12,7 @@ const EmployeeOpcions = () => {
                     </p>
 
                     <div className="flex flex-col space-y-8">
-                        <Link>
+                        <Link to={"/createbudget"}>
                             <button
                                 className="flex items-center justify-center gap-3 bg-blue-600 text-black text-lg font-semibold py-4 px-8 rounded-2xl shadow-lg hover:bg-blue-700 transition duration-300 w-full"
                             >

@@ -17,6 +17,7 @@ class state_type(enum.Enum):
     DENEGATED = 'denegated'
     PENDING = 'pending'
 
+
 class Employee(db.Model):
     __tablename__ = "employees"
 
@@ -40,7 +41,6 @@ class Employee(db.Model):
     budgets: Mapped[List['Budget']] = relationship(
         back_populates="employee"
     )
-
 
     def serialize(self):
         return {

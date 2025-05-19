@@ -8,6 +8,7 @@ Create Date: 2025-05-16 18:37:28.908255
 Revision ID: 709fda6a1c0b
 Revises: 
 Create Date: 2025-05-15 20:37:43.666705
+>>>>>>>> 49f57bf07b13f7358e0609be8db4b16b86701c41:migrations/versions/709fda6a1c0b_.py
 
 """
 from alembic import op
@@ -15,8 +16,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '79a9e9af4e11'
-
+revision = '709fda6a1c0b'
 down_revision = None
 branch_labels = None
 depends_on = None
