@@ -48,7 +48,7 @@
   font-family: monoton, sans-serif;
 }
 
-input::placeholder {
+.custom-placeholder::placeholder {
   color: #232323;
   font-style: italic;
   font-size: 14px;
@@ -78,4 +78,10 @@ input::placeholder {
   padding: 5px 20px;
   border-radius: 0.5rem;
   font-family: monoton, sans-serif;
+}
+
+.errorAlert, .successAlert {
+ filter: drop-shadow(6px 6px 15px rgba(0, 0, 0, 0.3));
+  border: 5px ridge rgb(7, 6, 6);
+  font-family: Hanalei Fill;
 }

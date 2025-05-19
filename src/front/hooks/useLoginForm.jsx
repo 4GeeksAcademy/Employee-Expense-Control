@@ -7,7 +7,7 @@ const useLoginForm = ({ initialEmail = "", initialPassword = "" } = {}) => {
     const [password, setPassword] = useState(initialPassword)
 
     const rolNavigate = (data) => {
-        const isSupervisor = data.supervisor === true || data.supervisor === "true";
+        const isSupervisor = data.user.rol === true || data.user.rol === "true";
         if (!isSupervisor) {
             navigate("/employeehome")
         } else {

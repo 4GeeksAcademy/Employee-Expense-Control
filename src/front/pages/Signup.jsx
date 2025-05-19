@@ -38,14 +38,16 @@ const SignUp = () => {
 
         const { email, password, confirmPassword } = signupData;
         // Check for empty fields
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setError("Please enter a valid email address.");
+            return;
+        }
         if (!email || !password || !confirmPassword) {
             setError("Please fill in all the fields.");
             return;
         }
-        if (!email.includes("@") || !email.includes(".")) {
-            setError("Please enter a valid email.");
-            return;
-        }
+
         if (password.length < 8) {
             setError("Password must be at least 8 characters.");
             return;
@@ -84,7 +86,7 @@ const SignUp = () => {
                             name="name"
                             onChange={handleChange}
                             type="text"
-                            required className="form-control"
+                            required className="form-control custom-placeholder"
                             id="formGroupExampleInput5"
                             placeholder="Enter name..."
                         />
@@ -98,7 +100,7 @@ const SignUp = () => {
                             name="last_name"
                             onChange={handleChange}
                             type="text"
-                            required className="form-control"
+                            required className="form-control custom-placeholder"
                             id="formGroupExampleInput6"
                             placeholder="Enter Lastname..."
                         />
@@ -112,7 +114,7 @@ const SignUp = () => {
                             name="email"
                             onChange={handleChange}
                             type="text"
-                            required className="form-control"
+                            required className="form-control custom-placeholder"
                             id="formGroupExampleInput"
                             placeholder="Enter email..."
                         />
@@ -126,7 +128,7 @@ const SignUp = () => {
                             name="password"
                             onChange={handleChange}
                             type="password"
-                            required className="form-control"
+                            required className="form-control custom-placeholder"
                             id="formGroupExampleInput2"
                             placeholder="Enter password..."
                         />
@@ -140,27 +142,27 @@ const SignUp = () => {
                             name="confirmPassword"
                             onChange={handleChange}
                             type="password"
-                            required className="form-control"
+                            required className="form-control custom-placeholder"
                             id="formGroupExampleInput3"
                             placeholder="Confirm password..."
                         />
                     </div>
                     <div className="mb-3 form-check form-switch">
-                         <label className="form-check-label checkSuperv required-label" htmlFor="isSupervisorCheck">
+                        <label className="form-check-label checkSuperv" htmlFor="isSupervisorCheck">
                             Is Supervisor ?
                             <input
-                            type="checkbox"
-                            required className="form-check-input"
-                            id="isSupervisorCheck"
-                            name="is_supervisor"
-                            checked={signupData.is_supervisor}
-                            onChange={handleChange}
-                        />
+                                type="checkbox"
+                                className="form-check-input"
+                                id="isSupervisorCheck"
+                                name="is_supervisor"
+                                checked={signupData.is_supervisor}
+                                onChange={handleChange}
+                            />
                         </label>
                     </div>
                     {/* Show error message from the setError update*/}
-                    {error && <div className="alert alert-danger">{error}</div>}
-                    {msg && <div className="alert alert-success">{msg}</div>}
+                    {error && <div className="alert alert-danger errorAlert">{error}</div>}
+                    {msg && <div className="alert alert-success successAlert">{msg}</div>}
                     <div className="mb-3 d-grid gap-2 contBtn"><button className="btnSign btn btn-primary" type="submit">Continue</button></div>
                 </div>
             </form>
