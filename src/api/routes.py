@@ -134,17 +134,20 @@ def reset_password():
 
 @api.route('/login', methods=['POST'])
 def login_user():
-    body = request.get_json()
+    body = request.get_json(silent=True)
+
+    if body is None:
+        return jsonify({"msg": "Invalid object"}), 400
 
     if body['email'].strip() == "" or body["password"].strip() == "":
-        return jsonify({"msg": "fields cannot be empty"}), 400
+        return jsonify({"msg": "Invalid credentials"}), 400
 
     email = body['email']
 
     pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
 
     if re.match(pattern, email) is None:
-        return jsonify({"msg": "The email format is not valid"}), 400
+        return jsonify({"msg": "Invalid credentials"}), 400
 
     password = body["password"]
 
@@ -158,9 +161,10 @@ def login_user():
 
     password_hashed = bcrypt.check_password_hash(user.password, password)
     if not password_hashed:
-        return jsonify({"msg": "Incorrect data"}), 404
-    
-    code_r = "CBJ-G13" if user.is_supervisor else "NTO-824" 
+
+        return jsonify({"msg": "Invalid credentials"}), 404
+
+    code_r = "CBJ-G13" if user.is_supervisor else "NTO-711" 
     access_level = 2 if user.is_supervisor else 1 
 
     token_payload = {
@@ -168,7 +172,6 @@ def login_user():
         "rol": code_r,
         "lvl": access_level,
     }
-
     # if user.password != password:
     #     return jsonify({"msg": "Invalid credentials"}), 401
 
@@ -201,9 +204,9 @@ def supervisor_area():
 @jwt_required()
 def me():
     user_id = get_jwt_identity()
-    user = Employee.query.filter_by(id=user_id).first()
+    user = Employee.query.get(user_id)
     if user is None:
-        return jsonify({"msg": "not found"}), 404
+        return jsonify({"msg": "invalid credentials"}), 404
     return jsonify({"name": user.name, "supervisor": bool(user.is_supervisor)})
 
 
@@ -230,7 +233,73 @@ def upload():
     except Exception as e:
 
         return jsonify({"error": str(e)}), 500
-    
+
+
+@api.route("/budget", methods=["POST"])
+@jwt_required()
+def budget_create():
+    user_id = get_jwt_identity()
+    user = Employee.query.get(user_id)
+
+    if user is None:
+        return jsonify({"msg": "Invalid credentials"}), 404
+
+    body = request.get_json(silent=True)
+
+    if body is None:
+        return ({"msg": "Invalid object"}), 400
+
+    fields_required = ["budget_description"]
+
+    for field in fields_required:
+        if field not in body:
+            return jsonify({"msg": "Invalid creedentials"}), 400
+
+    if body["budget_description"].strip() == "":
+        return jsonify({"msg": "Invalid credentials"}), 400
+
+    budget_description = body["budget_description"]
+
+    new_budget = Budget(budget_description=budget_description,
+                        employee_id=1, department_id=1)
+    db.session.add(new_budget)
+    db.session.commit()
+    return jsonify({"msg": "Budget created successfully"}), 201
+
+
+@api.route("/bill", methods=["POST"])
+@jwt_required()
+def bill_create():
+    user_id = get_jwt_identity()
+    user = Employee.query.get(user_id)
+
+    if user is None:
+        return jsonify({"msg": "Invalid credentials"}), 404
+
+    body = request.get_json(silent=True)
+
+    if body is None:
+        return jsonify({"msg": "Invalid object"}), 400
+
+    filds_required = ["description", "location", "amount", "date"]
+
+    for filed in filds_required:
+        if filed not in body:
+            return jsonify({"msg": "invalid credentials"}), 400
+
+    if body["description"].strip() == "" or body["location"].strip() == "" or body["amount"].strip() == "" or body["date"].strip() == "":
+        return jsonify({"msg": "Invalid credentials"}), 400
+
+    trip_description = body["description"]
+    trip_address = body["location"]
+    amount = float(body["amount"])
+    date = body["date"]
+
+    new_bill = Bill(trip_description=trip_description,
+                    trip_address=trip_address, state="PENDING", amount=amount, evaluator_id=1, date_approved=None, budget_id=3)
+    db.session.add(new_bill)
+    db.session.commit()
+    return jsonify({"msg": "bill created successfully"}), 201
 
 @api.route("/logout",methods=['POST'])
 @jwt_required()
@@ -243,3 +312,4 @@ def logout():
 def check_if_token_revoked(jwt_header,jwt_payload):
     jti = jwt_payload["jti"]
     return jti in revoked_tokens
+
