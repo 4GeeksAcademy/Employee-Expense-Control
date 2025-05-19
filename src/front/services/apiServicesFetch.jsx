@@ -17,7 +17,7 @@ export const createSignup = async (dispatch, info) => {
       const data = await response.json();
       console.log(data);
       dispatch({ type: "signup", payload: data.employee });
-      return { success: true, message: "Signup successful! Please login."};
+      return { success: true, message: "Signup successful! Please login." };
     } else if (response.status === 400) {
       const errorMsg = await response.json();
       return {
@@ -180,7 +180,8 @@ export const fetchImageBill = async (image, description, location, amount) => {
   }
 };
 export const sendResetEmail = async (email) => {
-  const res = await fetch(process.env.BACKEND_URL + "/forgot-password", {
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/forgot-password`, {
+
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -190,6 +191,19 @@ export const sendResetEmail = async (email) => {
   if (!res.ok) throw new Error("No se pudo enviar el correo");
   return await res.json();
 };
+
+///export const sendResetEmail = async (email) => {
+///const res = await fetch(process.env.BACKEND_URL + "/forgot-password", {
+//method: "POST",
+//headers: {
+//"Content-Type": "application/json",
+//},
+//body: JSON.stringify({ email }),
+//});
+//if (!res.ok) throw new Error("No se pudo enviar el correo");
+//return await res.json();
+//};
+
 export const refreshAccessToken = async () => {
   const refreshToken = JSON.parse(localStorage.getItem("refreshToken"));
   if (!refreshToken) {
@@ -229,3 +243,7 @@ export const authFetch = async (url, options = {}) => {
   }
   return response;
 };
+
+
+
+
