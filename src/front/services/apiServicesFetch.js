@@ -83,9 +83,9 @@ export const fetchLogin = async (email, password) => {
       );
     }
 
-    const token = JSON.stringify(data.token);
+    const token = data.token;
 
-    const refreshToken = JSON.stringify(data.refresh_token);
+    const refreshToken = data.refresh_token;
 
     localStorage.setItem("token", token);
     localStorage.setItem("refreshToken", refreshToken);
