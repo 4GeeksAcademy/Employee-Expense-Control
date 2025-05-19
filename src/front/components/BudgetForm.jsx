@@ -1,8 +1,10 @@
 import useBudgetForm from "../hooks/useBudgetForm"
+import { budgetFetch } from "../services/apiServicesFetch"
 const BudgetForm = () => {
     const { navigate, description, setDescription } = useBudgetForm()
     const handleSubmit = (e) => {
         e.preventDefault()
+        budgetFetch(description)
         navigate("/budgetlist")
     }
     return (<>
