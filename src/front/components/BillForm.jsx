@@ -3,9 +3,10 @@ import { fetchImageBill } from "../services/apiServicesFetch"
 const BillForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
-        fetchImageBill(image)
+        fetchImageBill(image, description, location, amount)
+        navigate("/employeehome")
     }
-    const { description, setDescription, location, setLocation, amount, setAmount, image, setImage } = useBillForm()
+    const { description, setDescription, location, setLocation, amount, setAmount, image, setImage, navigate } = useBillForm()
     return (
         <>
             <form className="p-4 shadow rounded bg-light" style={{ maxWidth: '600px', margin: '0 auto' }} onSubmit={handleSubmit}>
