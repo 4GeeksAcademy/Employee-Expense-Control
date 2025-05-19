@@ -1,33 +1,81 @@
+@import url("https://fonts.googleapis.com/css2?family=Hanalei+Fill&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Hanalei&family=Hanalei+Fill&family=Londrina+Sketch&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Hanalei&family=Hanalei+Fill&family=Londrina+Sketch&family=Monoton&display=swap");
+
 .signMain {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .signForm {
-    background-color: rgb(67, 64, 64);
-    width: 416px;
-    border-radius: 1rem;
-    padding: 32px;
+  background-color: #4a4c58;
+  width: 416px;
+  border-radius: 1rem;
+  padding: 32px;
+  border: 1px inset #e0e0e0;
+  box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px inset,
+    rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset,
+    rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px,
+    rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px,
+    rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.25));
 }
 
-.signTitle {
-    text-align: center;
-    font-weight: 900px;
-    color: rgb(246, 246, 246);
+.signForm:hover {
+  transform: translateY(-15px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), 0 8px 8px rgba(0, 0, 0, 0.1);
+}
+
+.signHeading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  margin-top: -10px;
+  text-align: center;
+  font-weight: 900px;
+  font-family: monoton, sans-serif;
+  white-space: nowrap;
+  color: rgb(246, 246, 246);
 }
 
 .Signform-label {
-    color: rgb(246, 246, 246);
+  color: rgb(246, 246, 246);
+  font-weight: bolder;
+  font-size: 10px;
+  font-family: monoton, sans-serif;
 }
-.checkSuperv{
-    color: rgb(178, 174, 185);
+
+input::placeholder {
+  color: #232323;
+  font-style: italic;
+  font-size: 14px;
+  font-family: "Londrina Sketch", sans-serif;
 }
+
+.required-label::after {
+  content: " *";
+  color: #fc686d;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-size: 14px;
+}
+
+.checkSuperv {
+  color: rgb(178, 174, 185);
+  font-weight: 900;
+  font-family: monoton, sans-serif;
+  font-size: small;
+}
+
 .contBtn {
-    text-align: center;
-    
+  text-align: center;
 }
+
 .btnSign {
- padding: 2px 16px;
- border-radius: 0.5rem;
+  padding: 5px 20px;
+  border-radius: 0.5rem;
+  font-family: monoton, sans-serif;
 }

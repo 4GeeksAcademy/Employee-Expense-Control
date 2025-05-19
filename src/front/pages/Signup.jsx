@@ -73,84 +73,84 @@ const SignUp = () => {
     return (
         <div className="signMain">
             <form onSubmit={handleFormInput} className="signForm">
-                <div className="signTitle"><h1>Create an account</h1></div>
+                <div className="signHeading"><h2>Create an account</h2></div>
                 <div className="container">
                     <div className="mb-3">
-                        <label htmlFor="formGroupExampleInput5" className="Signform-label">
-                            Name
+                        <label htmlFor="formGroupExampleInput5" className="Signform-label required-label">
+                            NAME
                         </label>
                         <input
                             value={signupData.name}
                             name="name"
                             onChange={handleChange}
                             type="text"
-                            className="form-control"
+                            required className="form-control"
                             id="formGroupExampleInput5"
-                            placeholder="Enter name"
+                            placeholder="Enter name..."
                         />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="formGroupExampleInput6" className="Signform-label">
-                            Surname
+                        <label htmlFor="formGroupExampleInput6" className="Signform-label required-label">
+                            LASTNAME
                         </label>
                         <input
                             value={signupData.last_name}
                             name="last_name"
                             onChange={handleChange}
                             type="text"
-                            className="form-control"
+                            required className="form-control"
                             id="formGroupExampleInput6"
-                            placeholder="Enter surname"
+                            placeholder="Enter Lastname..."
                         />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="formGroupExampleInput" className="Signform-label">
-                            Email
+                        <label htmlFor="formGroupExampleInput" className="Signform-label required-label">
+                            EMAIL
                         </label>
                         <input
                             value={signupData.email}
                             name="email"
                             onChange={handleChange}
                             type="text"
-                            className="form-control"
+                            required className="form-control"
                             id="formGroupExampleInput"
-                            placeholder="Enter email"
+                            placeholder="Enter email..."
                         />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="formGroupExampleInput2" className="Signform-label">
-                            Password
+                        <label htmlFor="formGroupExampleInput2" className="Signform-label required-label">
+                            PASSWORD
                         </label>
                         <input
                             value={signupData.password}
                             name="password"
                             onChange={handleChange}
                             type="password"
-                            className="form-control"
+                            required className="form-control"
                             id="formGroupExampleInput2"
-                            placeholder="Enter password"
+                            placeholder="Enter password..."
                         />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="formGroupExampleInput3" className="Signform-label">
-                            Confirm password
+                        <label htmlFor="formGroupExampleInput3" className="Signform-label required-label">
+                            CONFIRM PASSWORD
                         </label>
                         <input
                             value={signupData.confirmPassword}
                             name="confirmPassword"
                             onChange={handleChange}
                             type="password"
-                            className="form-control"
+                            required className="form-control"
                             id="formGroupExampleInput3"
-                            placeholder="Confirm password"
+                            placeholder="Confirm password..."
                         />
                     </div>
                     <div className="mb-3 form-check form-switch">
-                         <label className="form-check-label checkSuperv" htmlFor="isSupervisorCheck">
+                         <label className="form-check-label checkSuperv required-label" htmlFor="isSupervisorCheck">
                             Is Supervisor ?
                             <input
                             type="checkbox"
-                            className="form-check-input"
+                            required className="form-check-input"
                             id="isSupervisorCheck"
                             name="is_supervisor"
                             checked={signupData.is_supervisor}
@@ -161,7 +161,7 @@ const SignUp = () => {
                     {/* Show error message from the setError update*/}
                     {error && <div className="alert alert-danger">{error}</div>}
                     {msg && <div className="alert alert-success">{msg}</div>}
-                    <div className="mb-3 d-grid gap-2 contBtn"><button className="btnSign" type="submit">Continue</button></div>
+                    <div className="mb-3 d-grid gap-2 contBtn"><button className="btnSign btn btn-primary" type="submit">Continue</button></div>
                 </div>
             </form>
         </div>
