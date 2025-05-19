@@ -2,7 +2,7 @@ import React, { useState } from "react"; //useState is imported from react
 import { useNavigate } from "react-router-dom"; //useParam, useLocation, Link, useNavigate de react-dom
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { createSignup } from "../services/apiServicesFetch";
-
+import "../Styles/signup.css"
 
 
 
@@ -71,97 +71,100 @@ const SignUp = () => {
     };
     //onChange={(e) => setFormData(prevData => ({...prevData, email:e.target.value}))}
     return (
-        <form onSubmit={handleFormInput}>
-            <div>
-                <div className="mb-3">
-                    <label htmlFor="formGroupExampleInput5" className="form-label">
-                        Name
-                    </label>
-                    <input
-                        value={signupData.name}
-                        name="name"
-                        onChange={handleChange}
-                        type="text"
-                        className="form-control"
-                        id="formGroupExampleInput5"
-                        placeholder="Enter name"
-                    />
+        <div className="signMain">
+            <form onSubmit={handleFormInput} className="signForm">
+                <div className="signTitle"><h1>Create an account</h1></div>
+                <div className="container">
+                    <div className="mb-3">
+                        <label htmlFor="formGroupExampleInput5" className="Signform-label">
+                            Name
+                        </label>
+                        <input
+                            value={signupData.name}
+                            name="name"
+                            onChange={handleChange}
+                            type="text"
+                            className="form-control"
+                            id="formGroupExampleInput5"
+                            placeholder="Enter name"
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="formGroupExampleInput6" className="Signform-label">
+                            Surname
+                        </label>
+                        <input
+                            value={signupData.last_name}
+                            name="last_name"
+                            onChange={handleChange}
+                            type="text"
+                            className="form-control"
+                            id="formGroupExampleInput6"
+                            placeholder="Enter surname"
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="formGroupExampleInput" className="Signform-label">
+                            Email
+                        </label>
+                        <input
+                            value={signupData.email}
+                            name="email"
+                            onChange={handleChange}
+                            type="text"
+                            className="form-control"
+                            id="formGroupExampleInput"
+                            placeholder="Enter email"
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="formGroupExampleInput2" className="Signform-label">
+                            Password
+                        </label>
+                        <input
+                            value={signupData.password}
+                            name="password"
+                            onChange={handleChange}
+                            type="password"
+                            className="form-control"
+                            id="formGroupExampleInput2"
+                            placeholder="Enter password"
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="formGroupExampleInput3" className="Signform-label">
+                            Confirm password
+                        </label>
+                        <input
+                            value={signupData.confirmPassword}
+                            name="confirmPassword"
+                            onChange={handleChange}
+                            type="password"
+                            className="form-control"
+                            id="formGroupExampleInput3"
+                            placeholder="Confirm password"
+                        />
+                    </div>
+                    <div className="mb-3 form-check form-switch">
+                         <label className="form-check-label checkSuperv" htmlFor="isSupervisorCheck">
+                            Is Supervisor ?
+                            <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="isSupervisorCheck"
+                            name="is_supervisor"
+                            checked={signupData.is_supervisor}
+                            onChange={handleChange}
+                        />
+                        </label>
+                    </div>
+                    {/* Show error message from the setError update*/}
+                    {error && <div className="alert alert-danger">{error}</div>}
+                    {msg && <div className="alert alert-success">{msg}</div>}
+                    <div className="mb-3 d-grid gap-2 contBtn"><button className="btnSign" type="submit">Continue</button></div>
                 </div>
-                <div className="mb-3">
-                    <label htmlFor="formGroupExampleInput6" className="form-label">
-                        Surname
-                    </label>
-                    <input
-                        value={signupData.last_name}
-                        name="last_name"
-                        onChange={handleChange}
-                        type="text"
-                        className="form-control"
-                        id="formGroupExampleInput6"
-                        placeholder="Enter surname"
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="formGroupExampleInput" className="form-label">
-                        Email
-                    </label>
-                    <input
-                        value={signupData.email}
-                        name="email"
-                        onChange={handleChange}
-                        type="text"
-                        className="form-control"
-                        id="formGroupExampleInput"
-                        placeholder="Enter email"
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="formGroupExampleInput2" className="form-label">
-                        Password
-                    </label>
-                    <input
-                        value={signupData.password}
-                        name="password"
-                        onChange={handleChange}
-                        type="password"
-                        className="form-control"
-                        id="formGroupExampleInput2"
-                        placeholder="Enter password"
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="formGroupExampleInput3" className="form-label">
-                        Confirm password
-                    </label>
-                    <input
-                        value={signupData.confirmPassword}
-                        name="confirmPassword"
-                        onChange={handleChange}
-                        type="password"
-                        className="form-control"
-                        id="formGroupExampleInput3"
-                        placeholder="Confirm password"
-                    />
-                </div>
-                <div className="mb-3 form-check">
-                    <label className="form-check-label" htmlFor="isSupervisorCheck">
-                        Is Supervisor ?
-                    </label>
-                    <input
-                        type="checkbox"
-                        className="form-check-input"
-                        id="isSupervisorCheck"
-                        name="is_supervisor"
-                        checked={signupData.is_supervisor}
-                        onChange={handleChange}
-                    />
-                </div>
-                {/* Show error message from the setError update*/}
-                {error && <div className="alert alert-danger">{error}</div>}
-                {msg && <div className="alert alert-success">{msg}</div>}
-                <button type="submit">Sign Up</button>
-            </div>
-        </form>
+            </form>
+        </div>
     );
 };
 
