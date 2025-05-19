@@ -98,7 +98,7 @@ export const fetchLogin = async (email, password) => {
 
 export const fetchId = async () => {
   try {
-    const token = JSON.stringify(localStorage.getItem("token"));
+    const token = localStorage.getItem("token");
     if (!token) {
       throw new Error("Token not found");
     }

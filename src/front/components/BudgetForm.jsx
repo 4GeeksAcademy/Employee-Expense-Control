@@ -5,7 +5,7 @@ const BudgetForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
         budgetFetch(description)
-        navigate("/budgetlist")
+        navigate("/mybudgets")
     }
     return (<>
         <div

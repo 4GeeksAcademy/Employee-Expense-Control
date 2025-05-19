@@ -303,16 +303,16 @@ def bill_create():
     body = request.get_json(silent=True)
 
     if body is None:
-        return jsonify({"msg": "Invalid object"}), 400
+        return jsonify({"msg": "Invalid object"}), 401
 
     filds_required = ["description", "location", "amount", "date"]
 
     for filed in filds_required:
         if filed not in body:
-            return jsonify({"msg": "invalid credentials"}), 400
+            return jsonify({"msg": "invalid credentials"}), 402
 
     if body["description"].strip() == "" or body["location"].strip() == "" or body["amount"].strip() == "" or body["date"].strip() == "":
-        return jsonify({"msg": "Invalid credentials"}), 400
+        return jsonify({"msg": "Invalid credentials"}), 403
 
     trip_description = body["description"]
     trip_address = body["location"]
@@ -323,7 +323,7 @@ def bill_create():
         employee_id=user.id).order_by(Budget.id.desc()).first()
 
     if budget is None:
-        return jsonify({"msg": "Invalid credntials"}), 400
+        return jsonify({"msg": "Invalid credntials"}), 404
 
     supervisor = Employee.query.filter_by(
         department_id=user.department_id,
@@ -331,7 +331,7 @@ def bill_create():
     ).first()
 
     if supervisor is None:
-        return jsonify({"msg": "Invalid credentials"}), 400
+        return jsonify({"msg": "Invalid credentials"}), 405
 
     new_bill = Bill(trip_description=trip_description,
                     trip_address=trip_address, state="PENDING", amount=amount, evaluator_id=supervisor.id, date_approved=None, budget_id=budget.id)

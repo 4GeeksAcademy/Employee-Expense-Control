@@ -36,7 +36,7 @@ const EmployeeOpcions = () => {
                                 My Budgets
                             </button>
                         </Link>
-                        <Link to={"employeeid"}>
+                        <Link to={"/employeeid"}>
                             <button
                                 className="flex items-center justify-center gap-3 bg-yellow-500 text-black text-lg font-semibold py-4 px-8 rounded-2xl shadow-lg hover:bg-yellow-600 transition duration-300 w-full"
                             >
