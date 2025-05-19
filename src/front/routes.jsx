@@ -17,6 +17,7 @@ import EnterBill from "./pages/EnterBill";
 import EmployeeHome from "./pages/EmployeeHome";
 import BudgetCreate from "./pages/BudgetCreate";
 import BudgetList from "./pages/BudgetList";
+import IdEmployee from "./pages/IdEmployee";
 
 
 export const router = createBrowserRouter(
@@ -40,9 +41,10 @@ export const router = createBrowserRouter(
       <Route path="/employeehome" element={<EmployeeHome />} />
       <Route path="/enterbill" element={<EnterBill />} />
       <Route path="/createbudget" element={<BudgetCreate />} />
-      <Route path="/budgetlist" element={<BudgetList />} />
+      <Route path="/mybudgets" element={<BudgetList />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Route path="/employeeid" element={<IdEmployee />} />
     </Route>
   )
 );

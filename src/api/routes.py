@@ -183,6 +183,41 @@ def login_user():
                              }}), 201
 
 
+@api.route("/myid", methods=["GET"])
+@jwt_required()
+def my_id():
+    employee_id = get_jwt_identity()
+    employee = Employee.query.get(employee_id)
+
+    if employee is None or employee.is_supervisor:
+        return jsonify({"msg": "you don't have permission"}), 403
+
+    return jsonify({"id": employee.id}), 200
+
+
+@api.route("/assigndepartment", methods=["POST"])
+@jwt_required()
+def assign_department():
+    supervisor_id = get_jwt_identity()
+    supervisor = Employee.query.get(supervisor_id)
+    if supervisor is None or not supervisor.is_supervisor:
+        return jsonify({"msg": "unauthorized"}), 403
+
+    data = request.get_json()
+    employee_id = data["id_employee"]
+    department_id = data["id_department"]
+
+    employee = Employee.query.get(employee_id)
+    department = Department.query.get(department_id)
+
+    if employee is None or department is None:
+        return jsonify({"msg": "Invalid credentials"}), 401
+
+    employee.department_id = department_id
+    db.session.commit()
+    return jsonify({"msg": "successfully assigned"}), 201
+
+
 @api.route("/supervisor-area", methods=["GET"])
 @jwt_required()
 def supervisor_area():
@@ -197,16 +232,6 @@ def supervisor_area():
                         "rol": rol,
                         "access_level": claims.get("lvl")}
                     })
-
-
-@api.route("/me", methods=["POST"])
-@jwt_required()
-def me():
-    user_id = get_jwt_identity()
-    user = Employee.query.get(user_id)
-    if user is None:
-        return jsonify({"msg": "invalid credentials"}), 404
-    return jsonify({"name": user.name, "supervisor": bool(user.is_supervisor)})
 
 
 @api.route("/refresh", methods=["POST"])
@@ -260,7 +285,7 @@ def budget_create():
     budget_description = body["budget_description"]
 
     new_budget = Budget(budget_description=budget_description,
-                        employee_id=1, department_id=1)
+                        employee_id=user.id, department_id=user.department_id)
     db.session.add(new_budget)
     db.session.commit()
     return jsonify({"msg": "Budget created successfully"}), 201
@@ -294,8 +319,22 @@ def bill_create():
     amount = float(body["amount"])
     date = body["date"]
 
+    budget = Budget.query.filter_by(
+        employee_id=user.id).order_by(Budget.id.desc()).first()
+
+    if budget is None:
+        return jsonify({"msg": "Invalid credntials"}), 400
+
+    supervisor = Employee.query.filter_by(
+        department_id=user.department_id,
+        is_supervisor=True
+    ).first()
+
+    if supervisor is None:
+        return jsonify({"msg": "Invalid credentials"}), 400
+
     new_bill = Bill(trip_description=trip_description,
-                    trip_address=trip_address, state="PENDING", amount=amount, evaluator_id=1, date_approved=None, budget_id=3)
+                    trip_address=trip_address, state="PENDING", amount=amount, evaluator_id=supervisor.id, date_approved=None, budget_id=budget.id)
     db.session.add(new_bill)
     db.session.commit()
     return jsonify({"msg": "bill created successfully"}), 201

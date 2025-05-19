@@ -1,4 +1,4 @@
-import { FilePlus, FileText } from 'lucide-react';
+import { FileText, FilePlus, Folder } from "lucide-react";
 import { Link } from 'react-router-dom';
 
 const EmployeeOpcions = () => {
@@ -28,10 +28,27 @@ const EmployeeOpcions = () => {
                                 Enter New Bill
                             </button>
                         </Link>
+                        <Link to={"/mybudgets"}>
+                            <button
+                                className="flex items-center justify-center gap-3 bg-purple-600 text-black text-lg font-semibold py-4 px-8 rounded-2xl shadow-lg hover:bg-purple-700 transition duration-300 w-full"
+                            >
+                                <Folder size={28} />
+                                My Budgets
+                            </button>
+                        </Link>
+                        <Link to={"employeeid"}>
+                            <button
+                                className="flex items-center justify-center gap-3 bg-yellow-500 text-black text-lg font-semibold py-4 px-8 rounded-2xl shadow-lg hover:bg-yellow-600 transition duration-300 w-full"
+                            >
+                                🔍 Get My ID
+                            </button>
+                        </Link>
                     </div>
                 </div>
             </div>
         </>
+
+
     )
 }
 

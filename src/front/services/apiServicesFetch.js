@@ -90,30 +90,32 @@ export const fetchLogin = async (email, password) => {
     localStorage.setItem("refreshToken", refreshToken);
 
     return data;
-
-    // if (token) {
-    //   const responseMe = await fetch(`${backendUrl}api/me`, {
-    //     method: "POST",
-    //     headers: {
-    //       "content-type": "application/json",
-    //       Authorization: `Bearer ${data.token}`,
-    //     },
-    //     body: JSON.stringify(token),
-    //   });
-    //   if (!responseMe.ok) {
-    //     throw new Error(`Error verifying role`);
-    //   }
-    //   const dataMe = await responseMe.json();
-    //   if (dataMe.name == null || dataMe.supervisor == null) {
-    //     throw new Error("the role has not been sent");
-    //   }
-    //   if (dataMe) {
-    //     return dataMe;
-    //   }
-    // }
   } catch (error) {
     console.error(error);
     throw error;
+  }
+};
+
+export const fetchId = async () => {
+  try {
+    const token = JSON.stringify(localStorage.getItem("token"));
+    if (!token) {
+      throw new Error("Token not found");
+    }
+    const response = await fetch(`${backendUrl}api/myid`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`);
+    }
+    const data = await response.json();
+    if (!data) {
+      throw new Error("the data was sent incorrectly");
+    }
+    return data;
+  } catch (error) {
+    console.error(error);
   }
 };
 
