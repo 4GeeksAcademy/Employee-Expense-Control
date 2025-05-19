@@ -1,14 +1,17 @@
 import useLoginForm from "../hooks/useLoginForm"
-import { fetchLogin } from "../services/apiServicesFetch"
+import { useNavigate } from "react-router-dom"
+import { useAuth } from "../hooks/AuthContext"
+
 const LoginForm = () => {
 
     const { email, setEmail, password, setPassword, rolNavigate } = useLoginForm()
-
+    const {login}=useAuth();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const userData = await fetchLogin(email, password);
+            const userData = await login(email, password);
             rolNavigate(userData);
         } catch (error) {
             console.error(error);
@@ -51,7 +54,11 @@ const LoginForm = () => {
 
                 <div className="d-grid">
                     <button type="submit" className="btn btn-primary rounded-pill py-2">Submit</button>
+                    <p className="text-center mt-3">¿Olvidaste tu contraseña?{" "}
+                       <Link to="/forgot-password">Haz clic aquí</Link>
+                    </p>
                 </div>
+                
             </form>
 
         </>

@@ -9,6 +9,8 @@ import { Layout } from "./pages/Layout";
 import { Home } from "./pages/Home";
 import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import SignUp from "./pages/Signup";
 import Login from "./pages/Login";
 import EnterBill from "./pages/EnterBill";
@@ -39,6 +41,8 @@ export const router = createBrowserRouter(
       <Route path="/enterbill" element={<EnterBill />} />
       <Route path="/createbudget" element={<BudgetCreate />} />
       <Route path="/budgetlist" element={<BudgetList />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
     </Route>
   )
 );

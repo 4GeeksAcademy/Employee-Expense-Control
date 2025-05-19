@@ -1,4 +1,3 @@
-
 import os
 from flask_admin import Admin
 from .models import db, Employee, Bill, Department, Budget
@@ -11,6 +10,7 @@ def setup_admin(app):
     admin = Admin(app, name='4Geeks Admin', template_mode='bootstrap3')
 
     # Add your models here, for example this is how we add a the User model to the admin
+
 
     class EmployeeAdmin(ModelView):
         form_columns = ['name', 'last_name', 'email', 'is_supervisor',

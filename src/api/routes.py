@@ -2,21 +2,26 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
+
 from api.models import db, Employee, Bill, Department, Budget
-from api.models import db, Employee, Bill, Department, Budget
-from api.utils import generate_sitemap, APIException
+from api.utils import generate_sitemap, APIException, generate_reset_token, generate_password_hash, verify_reset_token
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt, get_jwt_identity
+from flask_mail import Message
+from extensions import mail 
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt, get_jwt_identity,JWTManager
 import re
 import cloudinary.uploader
 
+
 api = Blueprint('api', __name__)
-app = Flask(__name__)
-bcrypt = Bcrypt(app)
+bcrypt = Bcrypt()
 # Allow CORS requests to this API
 CORS(api)
 
+jwt = JWTManager(app)
+
+revoked_tokens = set()
 
 @api.route('/signup', methods=['POST'])
 def signup():
@@ -71,6 +76,62 @@ def handle_hello():
     return jsonify(response_body), 200
 
 
+
+@api.route('/forgot-password', methods=['POST'])
+def forgot_password():
+    # Obtiene el email del frontend
+    email = request.json.get('email')
+    frontend_url="https://sturdy-telegram-g44v64v9vxq29xww-3000.app.github.dev"
+    
+    # Busca al empleado en la base de datos usando el email
+    employee = Employee.query.filter_by(email=email).first()  
+    
+    # Si no existe un empleado con ese email, devuelve un error
+    if not employee:
+        return jsonify({"msg": "Email no registrado"}), 404
+
+    # Genera un token de recuperación usando el id del empleado
+    token = generate_reset_token(employee.id)
+    
+    # Crea el enlace de restablecimiento de contraseña con el token generado
+    reset_link = f"{frontend_url}/reset-password/{token}" # Modifica este enlace según mi entorno
+
+    # Crea el correo con el enlace de recuperación
+    msg = Message("Restablecer contraseña", recipients=[email])
+    msg.body = f"Usa este enlace para restablecer tu contraseña: {reset_link}"
+
+    # Envía el correo
+    mail.send(msg)
+
+    # Responde al frontend confirmando que el correo fue enviado
+    return jsonify({"msg": "Correo enviado"}), 200
+
+
+@api.route('/reset-password', methods=['POST'])
+@jwt_required()
+def reset_password():
+    employee_id = get_jwt_identity()
+    if not employee_id:
+        return jsonify({'msg': 'Token inválido o expirado'}), 400
+
+    data = request.get_json()
+    new_password = data.get('password')
+
+    if not new_password:
+        return jsonify({'msg': 'Contraseña nueva requerida'}), 400
+
+    employee = Employee.query.get(employee_id)
+    if not employee:
+        return jsonify({'msg': 'Empleado no encontrado'}), 404
+
+    employee.password = new_password
+    db.session.commit()
+
+    return jsonify({'msg': 'Contraseña actualizada correctamente'}), 200
+
+
+
+
 @api.route('/login', methods=['POST'])
 def login_user():
     body = request.get_json(silent=True)
@@ -100,16 +161,43 @@ def login_user():
 
     password_hashed = bcrypt.check_password_hash(user.password, password)
     if not password_hashed:
+
         return jsonify({"msg": "Invalid credentials"}), 404
 
+    code_r = "CBJ-G13" if user.is_supervisor else "NTO-711" 
+    access_level = 2 if user.is_supervisor else 1 
+
+    token_payload = {
+        "sub": str(user.id),
+        "rol": code_r,
+        "lvl": access_level,
+    }
     # if user.password != password:
     #     return jsonify({"msg": "Invalid credentials"}), 401
 
-    access_token = create_access_token(identity=str(user.id))
+    access_token = create_access_token(identity=str(user.id), additional_claims=token_payload)
 
-    refresh_token = create_refresh_token(identity=str(user.id))
+    refresh_token = create_refresh_token(identity=str(user.id), additional_claims=token_payload)
 
-    return jsonify({"token": access_token, "refresh_token": refresh_token}), 201
+    return jsonify({"token": access_token,
+                    "refresh_token": refresh_token,
+                    "user": {"id":user.id,"name":user.name,
+                             }}), 201
+
+@api.route("/supervisor-area", methods=["GET"])
+@jwt_required()
+def supervisor_area():
+    claims = get_jwt()
+    rol = claims.get("rol")
+
+    if rol != "CBJ-G13":
+        return jsonify({"msg": "Unauthorized access"}), 403
+    
+    return jsonify({"msg":"Welcome",
+                    "data":{
+                        "rol": rol,
+                        "access_level": claims.get("lvl")}
+                        })
 
 
 @api.route("/me", methods=["POST"])
@@ -212,3 +300,16 @@ def bill_create():
     db.session.add(new_bill)
     db.session.commit()
     return jsonify({"msg": "bill created successfully"}), 201
+
+@api.route("/logout",methods=['POST'])
+@jwt_required()
+def logout():
+    jti = get_jwt()["jti"]
+    revoked_tokens.add(jti)
+    return jsonify({"msg": "User logged out"})
+
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(jwt_header,jwt_payload):
+    jti = jwt_payload["jti"]
+    return jti in revoked_tokens
+
