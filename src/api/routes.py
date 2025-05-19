@@ -291,6 +291,22 @@ def budget_create():
     return jsonify({"msg": "Budget created successfully"}), 201
 
 
+@api.route("/mybudgets", methods=["GET"])
+@jwt_required()
+def my_budgets():
+    employee_id = get_jwt_identity()
+    employee = Employee.query.get(employee_id)
+    if employee is None:
+        return jsonify({"msg": "Not response"}), 404
+
+    budgets = Budget.query.filter_by(employee_id=employee_id).all()
+
+    if budgets is None:
+        return jsonify({"msg": "you don't have budgets yet"}), 200
+
+    return jsonify({"budget_list": budgets}), 200
+
+
 @api.route("/bill", methods=["POST"])
 @jwt_required()
 def bill_create():
@@ -298,7 +314,7 @@ def bill_create():
     user = Employee.query.get(user_id)
 
     if user is None:
-        return jsonify({"msg": "Invalid credentials"}), 404
+        return jsonify({"msg": "Not response"}), 404
 
     body = request.get_json(silent=True)
 
