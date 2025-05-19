@@ -3,10 +3,9 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 if (!backendUrl) {
   throw new Error("VITE_BACKEND_URL is not defined in .env file");
 }
-
 export const createSignup = async (dispatch, info) => {
   try {
-    const response = await fetch(`${backendUrl}api/signup`, {
+    const response = await fetch(`${backendUrl}/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -18,7 +17,7 @@ export const createSignup = async (dispatch, info) => {
       const data = await response.json();
       console.log(data);
       dispatch({ type: "signup", payload: data.employee });
-      return { success: true };
+      return { success: true, message: "Signup successful! Please login."};
     } else if (response.status === 400) {
       const errorMsg = await response.json();
       return {
@@ -48,32 +47,26 @@ export const fetchLogin = async (email, password) => {
       throw new Error("the fields cannot be empty");
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     if (!emailRegex.test(email)) {
       throw new Error("Invalid email format");
     }
-
     if (password.length < 8) {
       throw new Error("The password must have at least 8 characters");
     }
-
     const rawData = JSON.stringify({
       email: email,
       password: password,
     });
-    const response = await fetch(`${backendUrl}api/login`, {
+    const response = await fetch(`${backendUrl}/login`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: rawData,
     });
     console.log(rawData);
-
     if (!response.ok) {
       throw new Error(`Error fetching data code:${response.status}`);
     }
-
     const data = await response.json();
-
     if (!data.token) {
       throw new Error("The token has not been sent correctly to the user");
     }
@@ -82,17 +75,13 @@ export const fetchLogin = async (email, password) => {
         "The refresh token has not been sent correctly to the user"
       );
     }
-
     const token = data.token;
     const refreshToken = data.refresh_token;
-
     localStorage.setItem("token", token);
     localStorage.setItem("refreshToken", refreshToken);
-
     return data;
-
     // if (token) {
-    //   const responseMe = await fetch(`${backendUrl}api/me`, {
+    //   const responseMe = await fetch(`${backendUrl}/me`, {
     //     method: "POST",
     //     headers: {
     //       "content-type": "application/json",
@@ -116,7 +105,6 @@ export const fetchLogin = async (email, password) => {
     throw error;
   }
 };
-
 export const budgetFetch = async (description) => {
   try {
     if (!description || description.trim() === "") {
@@ -124,7 +112,7 @@ export const budgetFetch = async (description) => {
     }
     const rawData = JSON.stringify({ budget_description: description });
     const token = localStorage.getItem("token");
-    const response = await fetch(`${backendUrl}api/budget`, {
+    const response = await fetch(`${backendUrl}/budget`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -141,7 +129,6 @@ export const budgetFetch = async (description) => {
     console.error(error);
   }
 };
-
 export const fetchImageBill = async (image, description, location, amount) => {
   try {
     if (
@@ -161,15 +148,12 @@ export const fetchImageBill = async (image, description, location, amount) => {
       amount: amount,
       date: new Date().toISOString(),
     });
-
     const formData = new FormData();
-
     formData.append("bill", image);
-
     if (!formData.has("bill")) {
       throw new Error("The image has not been loaded correctly");
     }
-    const response = await fetch(`${backendUrl}api/upload`, {
+    const response = await fetch(`${backendUrl}/upload`, {
       method: "POST",
       body: formData,
     });
@@ -178,7 +162,7 @@ export const fetchImageBill = async (image, description, location, amount) => {
     }
     const data = await response.json();
     console.log(data);
-    const billResponse = await fetch(`${backendUrl}api/bill`, {
+    const billResponse = await fetch(`${backendUrl}/bill`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -195,7 +179,6 @@ export const fetchImageBill = async (image, description, location, amount) => {
     console.error(error);
   }
 };
-
 export const sendResetEmail = async (email) => {
   const res = await fetch(process.env.BACKEND_URL + "/forgot-password", {
     method: "POST",
@@ -204,47 +187,36 @@ export const sendResetEmail = async (email) => {
     },
     body: JSON.stringify({ email }),
   });
-
   if (!res.ok) throw new Error("No se pudo enviar el correo");
   return await res.json();
 };
-
 export const refreshAccessToken = async () => {
   const refreshToken = JSON.parse(localStorage.getItem("refreshToken"));
-
   if (!refreshToken) {
     throw new Error("no refresh token ivailable");
   }
-
-  const response = await fetch(`${backendUrl}api/refresh-token`, {
+  const response = await fetch(`${backendUrl}/refresh-token`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ refresh_token: refreshToken }),
   });
-
   if (!response.ok) {
     throw new Error("failed to refresh access token");
   }
   const data = await response.json();
-
   if (!data.token) {
     throw new Error("New access token not recived");
   }
-
   localStorage.setItem("token", JSON.stringify(data.token));
   return data.token;
 };
-
 export const authFetch = async (url, options = {}) => {
   let token = JSON.parse(localStorage.getItem("token"));
-
   options.headers = {
     ...(options.headers || {}),
     Authorization: `Bearer ${token}`,
   };
-
   let response = await fetch(url, options);
-
   if (response.status === 401) {
     try {
       const newToken = await refreshAccessToken();
@@ -255,6 +227,5 @@ export const authFetch = async (url, options = {}) => {
       throw new Error("Session expired. Please log in again..");
     }
   }
-
   return response;
 };

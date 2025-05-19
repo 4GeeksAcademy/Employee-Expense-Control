@@ -18,6 +18,7 @@ api = Blueprint('api', __name__)
 bcrypt = Bcrypt()
 # Allow CORS requests to this API
 CORS(api)
+
 jwt = JWTManager()
 
 revoked_tokens = set()
