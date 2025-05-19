@@ -19,7 +19,7 @@ bcrypt = Bcrypt()
 # Allow CORS requests to this API
 CORS(api)
 
-jwt = JWTManager(app)
+jwt = JWTManager()
 
 revoked_tokens = set()
 
