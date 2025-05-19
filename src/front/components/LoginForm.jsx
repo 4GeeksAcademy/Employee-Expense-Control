@@ -54,7 +54,11 @@ const LoginForm = () => {
 
                 <div className="d-grid">
                     <button type="submit" className="btn btn-primary rounded-pill py-2">Submit</button>
+                    <p className="text-center mt-3">¿Olvidaste tu contraseña?{" "}
+                       <Link to="/forgot-password">Haz clic aquí</Link>
+                    </p>
                 </div>
+                
             </form>
 
         </>

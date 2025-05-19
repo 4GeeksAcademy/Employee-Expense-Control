@@ -21,6 +21,7 @@ flask-bcrypt = "*"
 flask-jwt-extended = "*"
 cloudinary = "*"
 flask-cors = "*"
+flask-mail = "*"
 
 [requires]
 python_version = "3.13"

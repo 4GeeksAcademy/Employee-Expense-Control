@@ -4,7 +4,8 @@ import { fetchLogin } from "../services/apiServicesFetch";
 const AuthContext = createContext();
 
 export const AuthProvider = ({children}) => {
-    const [isAuthenticated,setAuthenticated] = useState(false)
+    const [isAuthenticated,setAuthenticated] = useState(false);
+    const [user, setUser]= useState(null)
 
     useEffect(()=>{
         const token = localStorage.getItem("token")
@@ -17,6 +18,7 @@ export const AuthProvider = ({children}) => {
             // localStorage.setItem("token", JSON.stringify(userData.token));
             // localStorage.setItem("refreshToken", JSON.stringify(userData.refresh_token));
             setAuthenticated(true);
+            setUser(userData);
             return userData;
         } catch (error){
             console.error("Login error:", error.message)
@@ -27,10 +29,11 @@ export const AuthProvider = ({children}) => {
         localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
         setAuthenticated(false)
+        setUser(null);
     };
     
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated,user, login, logout }}>
       {children}
     </AuthContext.Provider>
     )
