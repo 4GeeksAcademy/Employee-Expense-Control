@@ -104,7 +104,7 @@ def login_user():
     if not password_hashed:
         return jsonify({"msg": "Incorrect data"}), 404
     
-    code_r = "CBJ-G13" if user.is_supervisor else "NTO-824" 
+    code_r = "CBJ-G13" if user.is_supervisor else "NTO-711" 
     access_level = 2 if user.is_supervisor else 1 
 
     token_payload = {
