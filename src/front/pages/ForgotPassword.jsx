@@ -8,7 +8,7 @@ function ForgotPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch("http://localhost:5000/forgot-password", {
+    const res = await fetch("https://bug-free-tribble-x5p5q5jpjwxgc9x6r-3001.app.github.dev/api/forgot-password", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),

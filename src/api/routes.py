@@ -218,6 +218,43 @@ def assign_department():
     return jsonify({"msg": "successfully assigned"}), 201
 
 
+@api.route("/assign-supervisor-department", methods=["POST"])
+@jwt_required()
+def assign_supervisor_department():
+    supervisor_id = get_jwt_identity()
+    supervisor = Employee.query.get(supervisor_id)
+
+    if supervisor is None or not supervisor.is_supervisor:
+        return jsonify({"msg": "unauthorized"}),403
+    
+    data = request.get_json()
+
+    if not data or "id_employee" not in data or "id_department" not in data:
+        return jsonify({"msg": "Invalid data"}), 400
+    
+    supervisor_to_assign_id = data["id_employee"]
+    department_id = data["id_department"]
+
+    supervisor_to_assign = Employee.query.get(supervisor_to_assign_id)
+    department = Department.query.get(department_id)
+
+    if supervisor_to_assign is None or not supervisor_to_assign.is_supervisor:
+        return jsonify({"msg": "The selected employee is not a supervisor"}), 400
+    
+    if department is None:
+        return jsonify({"msg": "Department not found"}),404
+    
+    existing_supervisor = Employee.query.filter_by(department_id=department_id, is_supervisor=True).first()
+    if existing_supervisor and existing_supervisor.id != supervisor_to_assign_id:
+        return jsonify({"msg": "Department already has a supervisor assigned"}),409
+    
+    supervisor_to_assign.department_id = department_id
+    db.session.commit()
+    
+    return jsonify({"msg": "Supervisor assigned to department successfully"}), 201
+
+    
+
 @api.route("/supervisor-area", methods=["GET"])
 @jwt_required()
 def supervisor_area():

@@ -1,35 +1,34 @@
 import { useState, useEffect } from "react";
 import { fetchId } from "../services/apiServicesFetch";
+import useGlobalReducer from "../hooks/useGlobalReducer";
+import BlueSpinner from "../components/BlueSpinner";
 
 const IdEmployeeComponent = () => {
-    const [id, setId] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+const {store,dispatch} = useGlobalReducer();
 
-    useEffect(() => {
-        const getId = async () => {
+useEffect(() =>{
+    const loadId = async () => { 
+        if (!store.employeeId){
             try {
                 const data = await fetchId();
-                if (data && data.id) {
-                    setId(data.id);
-                } else {
-                    setError("No ID found");
+                if (data?.id){
+                    dispatch({type: "set_employee_id", payload: data.id})
                 }
-            } catch (err) {
-                setError("Error fetching ID");
-            } finally {
-                setLoading(false);
+            } catch (error){
+                console.error("Error loading employee ID", error);
             }
-        };
-        getId();
-    }, []);
+        }
+    };
+    loadId();
+}, [store.employeeId, dispatch]);
 
-    if (loading) return <h1>Loading your ID...</h1>;
-    if (error) return <h1>{error}</h1>;
+if (!store.employeeId){
+    return  <BlueSpinner />;
+}
 
     return (
         <h1>
-            Your ID {id} is to give it to your superior so that he can start using the app.
+            Your ID <strong>{store.employeeId}</strong> is to give it to your superior so that he can start using the app.
         </h1>
     );
 };

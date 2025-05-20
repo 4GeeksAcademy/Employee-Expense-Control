@@ -104,7 +104,7 @@ export const fetchId = async () => {
     }
     const response = await fetch(`${backendUrl}api/myid`, {
       method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { "Authorization": `Bearer ${token}` },
     });
     if (!response.ok) {
       throw new Error(`Error fetching data ${response.status}`);

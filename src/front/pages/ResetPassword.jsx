@@ -12,7 +12,7 @@ function ResetPassword() {
     e.preventDefault();
     if (password !== confirm) return setMsg("Las contraseñas no coinciden");
 
-    const res = await fetch(`http://localhost:5000/reset-password/${token}`, {
+    const res = await fetch(`https://bug-free-tribble-x5p5q5jpjwxgc9x6r-3001.app.github.dev/api/reset-password/${token}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password }),
