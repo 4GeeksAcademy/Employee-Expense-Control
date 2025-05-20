@@ -81,7 +81,7 @@ def handle_hello():
 def forgot_password():
     # Obtiene el email del frontend
     email = request.json.get('email')
-    frontend_url = "https://sturdy-telegram-g44v64v9vxq29xww-3000.app.github.dev"
+    frontend_url = "https://sturdy-telegram-g44v64v9vxq29xww-3000.app.github.dev/api"
 
     # Busca al empleado en la base de datos usando el email
     employee = Employee.query.filter_by(email=email).first()
@@ -95,11 +95,22 @@ def forgot_password():
 
     # Crea el enlace de restablecimiento de contraseña con el token generado
     # Modifica este enlace según mi entorno
-    reset_link = f"{frontend_url}/reset-password/{token}"
+    reset_link = f"{frontend_url}/reset-password?token={token}"
 
     # Crea el correo con el enlace de recuperación
     msg = Message("Restablecer contraseña", recipients=[email])
-    msg.body = f"Usa este enlace para restablecer tu contraseña: {reset_link}"
+    msg.body = f"""
+             Hola,
+
+            Recibiste este correo porque se solicitó un cambio de contraseña para tu cuenta.
+
+            Haz clic en el siguiente enlace para restablecer tu contraseña. Este enlace es válido por 15 minutos:{reset_link}
+
+            Si no solicitaste este cambio, puedes ignorar este mensaje. Tu contraseña actual permanecerá segura.
+
+            Saludos,
+            El equipo de soporte Melena de cangrejo (Bless, Juan, Giovanny, Carlos)
+            """
 
     # Envía el correo
     mail.send(msg)
