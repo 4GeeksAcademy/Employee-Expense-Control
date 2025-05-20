@@ -1,8 +1,9 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import useGlobalReducer from "./useGlobalReducer"
 import { budgetListFetch } from "../services/apiServicesFetch"
 const useBudgetList = () => {
     const { store, dispatch } = useGlobalReducer()
+    const [expandedBudgets, setExpandedBudgets] = useState({});
 
 
     useEffect(() => {
@@ -15,7 +16,7 @@ const useBudgetList = () => {
         }
         fetchBudgets()
     }, [dispatch])
-    return { budgets: store.budgets }
+    return { budgets: store.budgets, expandedBudgets, setExpandedBudgets }
 }
 
 export default useBudgetList

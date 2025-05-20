@@ -226,13 +226,13 @@ def assign_supervisor_department():
     supervisor = Employee.query.get(supervisor_id)
 
     if supervisor is None or not supervisor.is_supervisor:
-        return jsonify({"msg": "unauthorized"}),403
-    
+        return jsonify({"msg": "unauthorized"}), 403
+
     data = request.get_json()
 
     if not data or "id_employee" not in data or "id_department" not in data:
         return jsonify({"msg": "Invalid data"}), 400
-    
+
     supervisor_to_assign_id = data["id_employee"]
     department_id = data["id_department"]
 
@@ -241,20 +241,20 @@ def assign_supervisor_department():
 
     if supervisor_to_assign is None or not supervisor_to_assign.is_supervisor:
         return jsonify({"msg": "The selected employee is not a supervisor"}), 400
-    
+
     if department is None:
-        return jsonify({"msg": "Department not found"}),404
-    
-    existing_supervisor = Employee.query.filter_by(department_id=department_id, is_supervisor=True).first()
+        return jsonify({"msg": "Department not found"}), 404
+
+    existing_supervisor = Employee.query.filter_by(
+        department_id=department_id, is_supervisor=True).first()
     if existing_supervisor and existing_supervisor.id != supervisor_to_assign_id:
-        return jsonify({"msg": "Department already has a supervisor assigned"}),409
-    
+        return jsonify({"msg": "Department already has a supervisor assigned"}), 409
+
     supervisor_to_assign.department_id = department_id
     db.session.commit()
-    
+
     return jsonify({"msg": "Supervisor assigned to department successfully"}), 201
 
-    
 
 @api.route("/supervisor-area", methods=["GET"])
 @jwt_required()
@@ -309,21 +309,22 @@ def budget_create():
     body = request.get_json(silent=True)
 
     if body is None:
-        return ({"msg": "Invalid object"}), 400
+        return ({"msg": "Invalid object"}), 401
 
-    fields_required = ["budget_description"]
+    fields_required = ["budget_description", "amount"]
 
     for field in fields_required:
         if field not in body:
-            return jsonify({"msg": "Invalid creedentials"}), 400
+            return jsonify({"msg": "Invalid creedentials"}), 402
 
-    if body["budget_description"].strip() == "":
-        return jsonify({"msg": "Invalid credentials"}), 400
+    if body["budget_description"].strip() == "" or body["amount"].strip() == "":
+        return jsonify({"msg": "Invalid credentials"}), 403
 
     budget_description = body["budget_description"]
+    amount = float(body["amount"])
 
     new_budget = Budget(budget_description=budget_description,
-                        employee_id=user.id, department_id=user.department_id)
+                        employee_id=user.id, department_id=user.department_id, amount=amount, available=amount, state="PENDING", condition=None)
     db.session.add(new_budget)
     db.session.commit()
     return jsonify({"msg": "Budget created successfully"}), 201

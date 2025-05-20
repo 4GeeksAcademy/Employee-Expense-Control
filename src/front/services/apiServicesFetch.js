@@ -104,7 +104,7 @@ export const fetchId = async () => {
     }
     const response = await fetch(`${backendUrl}api/myid`, {
       method: "GET",
-      headers: { "Authorization": `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}` },
     });
     if (!response.ok) {
       throw new Error(`Error fetching data ${response.status}`);
@@ -119,12 +119,20 @@ export const fetchId = async () => {
   }
 };
 
-export const budgetFetch = async (description) => {
+export const budgetFetch = async (description, amount) => {
   try {
-    if (!description || description.trim() === "") {
+    if (
+      !description ||
+      description.trim() === "" ||
+      !amount ||
+      amount.trim() === ""
+    ) {
       throw new Error("Invalid description");
     }
-    const rawData = JSON.stringify({ budget_description: description });
+    const rawData = JSON.stringify({
+      budget_description: description,
+      amount: amount,
+    });
     const token = localStorage.getItem("token");
     const response = await fetch(`${backendUrl}api/budget`, {
       method: "POST",
