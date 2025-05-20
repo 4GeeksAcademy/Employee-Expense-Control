@@ -197,6 +197,7 @@ def my_id():
 
 @api.route("/assigndepartment", methods=["POST"])
 @jwt_required()
+# solo un supervisor puede asignarle el departamento a un empleado
 def assign_department():
     supervisor_id = get_jwt_identity()
     supervisor = Employee.query.get(supervisor_id)
@@ -328,6 +329,20 @@ def budget_create():
     return jsonify({"msg": "Budget created successfully"}), 201
 
 
+@api.route("/mybudgets", methods=["GET"])
+@jwt_required()
+def my_budgets():
+    employee_id = get_jwt_identity()
+    employee = Employee.query.get(employee_id)
+
+    if employee is None:
+        return jsonify({"msg": "Not response"}), 404
+
+    budgets = Budget.query.filter_by(employee_id=employee_id).all()
+
+    return jsonify({"budget_list": [budget.serialize() for budget in budgets], }), 200
+
+
 @api.route("/bill", methods=["POST"])
 @jwt_required()
 def bill_create():
@@ -335,7 +350,7 @@ def bill_create():
     user = Employee.query.get(user_id)
 
     if user is None:
-        return jsonify({"msg": "Invalid credentials"}), 404
+        return jsonify({"msg": "Not response"}), 404
 
     body = request.get_json(silent=True)
 

@@ -9,13 +9,16 @@ import enum
 
 db = SQLAlchemy()
 
- 
-
 
 class state_type(enum.Enum):
     APPROVED = 'approved'
     DENEGATED = 'denegated'
     PENDING = 'pending'
+
+
+class state_budget(enum.Enum):
+    ACCEPTED = "accepted"
+    REFUSED = "refused"
 
 
 class Employee(db.Model):
@@ -55,6 +58,7 @@ class Employee(db.Model):
             # password not included for security reasons
         }
 
+
 class Department(db.Model):
     __tablename__ = "departments"
 
@@ -67,6 +71,7 @@ class Department(db.Model):
     employees: Mapped[List['Employee']] = relationship(
         back_populates="department"
     )
+
 
 class Bill(db.Model):
     __tablename__ = "bills"
@@ -88,6 +93,18 @@ class Bill(db.Model):
         back_populates="bills"
     )
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "trip_description": self.trip_description,
+            "trip_address": self.trip_address,
+            "state": self.state.name,  # asumiendo que `state_type` es un Enum
+            "amount": float(self.amount),
+            "evaluator_id": self.evaluator_id,
+            "date_approved": self.date_approved.isoformat() if self.date_approved else None,
+            "budget_id": self.budget_id,
+        }
+
 
 class Budget(db.Model):
     __tablename__ = "budgets"
@@ -102,3 +119,11 @@ class Budget(db.Model):
     bills: Mapped[List["Bill"]] = relationship(back_populates="budget")
     employee: Mapped['Employee'] = relationship(back_populates="budgets")
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "budget_description": self.budget_description,
+            "employee_id": self.employee_id,
+            "department_id": self.department_id,
+            "bills": [bill.serialize() for bill in self.bills]
+        }

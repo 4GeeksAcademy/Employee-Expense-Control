@@ -144,6 +144,35 @@ export const budgetFetch = async (description) => {
   }
 };
 
+export const budgetListFetch = async (dispatch) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Token not founded");
+    }
+    const response = await fetch(`${backendUrl}api/mybudgets`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`);
+    }
+    const data = await response.json();
+    if (!data || !data.budget_list) {
+      throw new Error("Error obtaining the data");
+    }
+    const action = {
+      type: "SET_BUDGETS",
+      payload: data.budget_list,
+    };
+
+    dispatch(action);
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const fetchImageBill = async (image, description, location, amount) => {
   try {
     if (
