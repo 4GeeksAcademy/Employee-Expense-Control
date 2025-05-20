@@ -8,18 +8,12 @@ const useBudgetList = () => {
     useEffect(() => {
         const fetchBudgets = async () => {
             try {
-
                 await budgetListFetch(dispatch)
             } catch (error) {
                 console.error(error)
-
             }
         }
-
-
-
         fetchBudgets()
-
     }, [dispatch])
     return { budgets: store.budgets }
 }

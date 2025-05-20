@@ -303,7 +303,7 @@ def my_budgets():
 
     budgets = Budget.query.filter_by(employee_id=employee_id).all()
 
-    return jsonify({"budget_list": [budget.serialize() for budget in budgets]}), 200
+    return jsonify({"budget_list": [budget.serialize() for budget in budgets], }), 200
 
 
 @api.route("/bill", methods=["POST"])

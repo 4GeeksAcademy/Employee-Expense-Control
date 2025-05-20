@@ -16,6 +16,11 @@ class state_type(enum.Enum):
     PENDING = 'pending'
 
 
+class state_budget(enum.Enum):
+    ACCEPTED = "accepted"
+    REFUSED = "refused"
+
+
 class Employee(db.Model):
     __tablename__ = "employees"
 
@@ -88,6 +93,18 @@ class Bill(db.Model):
         back_populates="bills"
     )
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "trip_description": self.trip_description,
+            "trip_address": self.trip_address,
+            "state": self.state.name,  # asumiendo que `state_type` es un Enum
+            "amount": float(self.amount),
+            "evaluator_id": self.evaluator_id,
+            "date_approved": self.date_approved.isoformat() if self.date_approved else None,
+            "budget_id": self.budget_id,
+        }
+
 
 class Budget(db.Model):
     __tablename__ = "budgets"
@@ -108,4 +125,5 @@ class Budget(db.Model):
             "budget_description": self.budget_description,
             "employee_id": self.employee_id,
             "department_id": self.department_id,
+            "bills": [bill.serialize() for bill in self.bills]
         }
