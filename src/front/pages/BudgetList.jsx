@@ -1,7 +1,13 @@
+import useBudgetList from "../hooks/useBudgetList"
 const BudgetList = () => {
+    const { budgetList, setBudgetList } = useBudgetList()
     return (
         <>
-            <h1>hola</h1>
+            <ol>
+                {budgetList.map((budget, index) => {
+                    return <li key={index}>{budget.budget_description}</li>
+                })}
+            </ol>
         </>
     )
 }

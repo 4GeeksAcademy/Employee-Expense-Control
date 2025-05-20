@@ -1,4 +1,6 @@
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
+import useGlobalReducer from "../hooks/useGlobalReducer";
+const { dispatch } = useGlobalReducer();
 // Check if the backend URL is defined
 if (!backendUrl) {
   throw new Error("VITE_BACKEND_URL is not defined in .env file");
@@ -157,10 +159,16 @@ export const budgetListFetch = async () => {
     if (!response.ok) {
       throw new Error(`Error fetching data ${response.status}`);
     }
-    const data = response.json();
-    if (!data) {
+    const data = await response.json();
+    if (!data || !data.budget_list) {
       throw new Error("Error obtaining the data");
     }
+    const action = {
+      type: "SET_BUDGETS",
+      payload: data.budget_list,
+    };
+
+    dispatch(action);
     return data;
   } catch (error) {
     console.error(error);

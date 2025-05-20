@@ -9,8 +9,6 @@ import enum
 
 db = SQLAlchemy()
 
- 
-
 
 class state_type(enum.Enum):
     APPROVED = 'approved'
@@ -55,6 +53,7 @@ class Employee(db.Model):
             # password not included for security reasons
         }
 
+
 class Department(db.Model):
     __tablename__ = "departments"
 
@@ -67,6 +66,7 @@ class Department(db.Model):
     employees: Mapped[List['Employee']] = relationship(
         back_populates="department"
     )
+
 
 class Bill(db.Model):
     __tablename__ = "bills"
@@ -102,3 +102,10 @@ class Budget(db.Model):
     bills: Mapped[List["Bill"]] = relationship(back_populates="budget")
     employee: Mapped['Employee'] = relationship(back_populates="budgets")
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "budget_description": self.budget_description,
+            "employee_id": self.employee_id,
+            "department_id": self.department_id,
+        }
