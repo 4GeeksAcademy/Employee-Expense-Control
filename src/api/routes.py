@@ -373,10 +373,10 @@ def bill_create():
     date = body["date"]
 
     budget = Budget.query.filter_by(
-        employee_id=user.id).order_by(Budget.id.desc()).first()
+        employee_id=user.id, state="ACCEPTED").order_by(Budget.id.desc()).first()
 
     if budget is None:
-        return jsonify({"msg": "Invalid credntials"}), 404
+        return jsonify({"msg": "Invalid credentials"}), 404
 
     supervisor = Employee.query.filter_by(
         department_id=user.department_id,
@@ -391,6 +391,60 @@ def bill_create():
     db.session.add(new_bill)
     db.session.commit()
     return jsonify({"msg": "bill created successfully"}), 201
+
+
+@api.route("/deletebill", methods=["DELETE"])
+@jwt_required()
+def detete_bill():
+    user_id = get_jwt_identity()
+    user = Employee.query.get(user_id)
+    if user is None:
+        return jsonify({"msg": "Invalid credentials"}), 401
+    body = request.get_json(silence=True)
+    if body is None:
+        return jsonify({"msg": "Invalid object"}), 400
+    fields_required = ["id_bill"]
+    for field in fields_required:
+        if field not in body:
+            return jsonify({"msg": "Invalid credentials"}), 400
+    bill_id = body["id_bill"]
+    bill = Bill.query.filter_by(id=bill_id).first()
+    if bill is None:
+        return jsonify({"msg": "Not found"}), 404
+    db.session.delete(bill)
+    db.session.commit()
+    return jsonify({"msg": "bill successfully deleted"}), 200
+
+
+@api.route("/updatebill", methods=["PUT"])
+@jwt_required()
+def update_bill():
+    user_id = get_jwt_identity()
+    user = Employee.query.get(user_id)
+    if user is None:
+        return jsonify({"msg": "Invalid credentials"}), 401
+
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({"msg": "Invalid object"}), 400
+
+    if "id_bill" not in body:
+        return jsonify({"msg": "Missing bill ID"}), 400
+
+    bill_id = body["id_bill"]
+    bill = Bill.query.filter_by(id=bill_id).first()
+    if bill is None:
+        return jsonify({"msg": "Bill not found"}), 404
+
+    editable_fields = ["amount", "trip_description", "trip_address"]
+
+    for field in editable_fields:
+        if field in body:
+            setattr(bill, field, body[field])
+
+    db.session.commit()
+
+    return jsonify({"msg": "Bill updated successfully"}), 200
 
 
 @api.route("/logout", methods=['POST'])

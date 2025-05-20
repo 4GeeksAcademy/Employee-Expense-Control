@@ -4,6 +4,12 @@ import { budgetListFetch } from "../services/apiServicesFetch"
 const useBudgetList = () => {
     const { store, dispatch } = useGlobalReducer()
     const [expandedBudgets, setExpandedBudgets] = useState({});
+    const [editingBillId, setEditingBillId] = useState(null);
+    const [editedBill, setEditedBill] = useState({
+        trip_description: "",
+        amount: "",
+        trip_address: ""
+    });
 
 
     useEffect(() => {
@@ -16,7 +22,7 @@ const useBudgetList = () => {
         }
         fetchBudgets()
     }, [dispatch])
-    return { budgets: store.budgets, expandedBudgets, setExpandedBudgets }
+    return { budgets: store.budgets, expandedBudgets, setExpandedBudgets, editingBillId, setEditingBillId, editedBill, setEditedBill }
 }
 
 export default useBudgetList
