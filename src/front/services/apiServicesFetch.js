@@ -1,6 +1,4 @@
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
-import useGlobalReducer from "../hooks/useGlobalReducer";
-const { dispatch } = useGlobalReducer();
 // Check if the backend URL is defined
 if (!backendUrl) {
   throw new Error("VITE_BACKEND_URL is not defined in .env file");
@@ -146,7 +144,7 @@ export const budgetFetch = async (description) => {
   }
 };
 
-export const budgetListFetch = async () => {
+export const budgetListFetch = async (dispatch) => {
   try {
     const token = localStorage.getItem("token");
     if (!token) {
