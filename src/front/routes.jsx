@@ -58,7 +58,12 @@ export const router = createBrowserRouter(
 
 
                    {/* 🔒 RUTAS COMPARTIDAS */}
-    <Route path="/unauthorized" element={<h1>Unauthorized access</h1>} />
+
+
+
+                   {/* 🔒 RUTA UNAUTHORIZED */}
+     <Route path="/unauthorized" element={<h1>Unauthorized access</h1>} />
+
 
     </Route>
   )
