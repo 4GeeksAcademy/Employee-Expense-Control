@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean, Integer, DateTime, ForeignKey, Enum, Numeric, Integer, DateTime, ForeignKey, Enum, Numeric
+from sqlalchemy import String, Boolean, Integer, DateTime, ForeignKey, Enum, Numeric, Integer, DateTime, ForeignKey, Enum, Numeric, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from typing import List
@@ -19,6 +19,7 @@ class state_type(enum.Enum):
 class state_budget(enum.Enum):
     ACCEPTED = "accepted"
     REFUSED = "refused"
+    PENDING = "pending"
 
 
 class Employee(db.Model):
@@ -98,7 +99,7 @@ class Bill(db.Model):
             "id": self.id,
             "trip_description": self.trip_description,
             "trip_address": self.trip_address,
-            "state": self.state.name,  # asumiendo que `state_type` es un Enum
+            "state": self.state.name,
             "amount": float(self.amount),
             "evaluator_id": self.evaluator_id,
             "date_approved": self.date_approved.isoformat() if self.date_approved else None,
@@ -112,6 +113,9 @@ class Budget(db.Model):
     budget_description: Mapped[str] = mapped_column(
         String(250), nullable=False)
     amount: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
+    available: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
+    state: Mapped[state_budget] = mapped_column(Enum(state_budget))
+    condition: Mapped[str] = mapped_column(Text(), nullable=True)
     employee_id: Mapped[int] = mapped_column(
         ForeignKey('employees.id'), nullable=False)
     department_id: Mapped[int] = mapped_column(
@@ -124,6 +128,10 @@ class Budget(db.Model):
         return {
             "id": self.id,
             "budget_description": self.budget_description,
+            "amount": float(self.amount),
+            "available": self.available,
+            "state": self.state.name,
+            "condition": self.condition,
             "employee_id": self.employee_id,
             "department_id": self.department_id,
             "bills": [bill.serialize() for bill in self.bills]

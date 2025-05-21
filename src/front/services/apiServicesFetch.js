@@ -104,7 +104,7 @@ export const fetchId = async () => {
     }
     const response = await fetch(`${backendUrl}api/myid`, {
       method: "GET",
-      headers: { "Authorization": `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}` },
     });
     if (!response.ok) {
       throw new Error(`Error fetching data ${response.status}`);
@@ -139,12 +139,23 @@ export const fetchUserProfile = async () => {
       return user;
 }
 
-export const budgetFetch = async (description) => {
+
+
+export const budgetFetch = async (description, amount) => {
+
   try {
-    if (!description || description.trim() === "") {
+    if (
+      !description ||
+      description.trim() === "" ||
+      !amount ||
+      amount.trim() === ""
+    ) {
       throw new Error("Invalid description");
     }
-    const rawData = JSON.stringify({ budget_description: description });
+    const rawData = JSON.stringify({
+      budget_description: description,
+      amount: amount,
+    });
     const token = localStorage.getItem("token");
     const response = await fetch(`${backendUrl}api/budget`, {
       method: "POST",
@@ -247,6 +258,90 @@ export const fetchImageBill = async (image, description, location, amount) => {
   }
 };
 
+export const editBill = async (billId, editedBill, dispatch) => {
+  try {
+    if (!billId) {
+      throw new Error("the id has been passed");
+    }
+    const allowedFields = ["amount", "trip_description", "trip_address"];
+
+    const filteredFields = Object.entries(editedBill)
+      .filter(
+        ([key, value]) =>
+          allowedFields.includes(key) && value !== undefined && value !== ""
+      )
+      .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
+    if (Object.keys(filteredFields).length === 0) {
+      console.log("No fields to update.");
+      return;
+    }
+
+    filteredFields.id_bill = billId;
+
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${backendUrl}api/updatebill`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(filteredFields),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`);
+    }
+    const data = await response.json();
+    if (!data) {
+      throw new Error("no data returned");
+    }
+    console.log(data);
+    const action = {
+      type: "EDIT_BILL",
+      payload: data.bill,
+    };
+    dispatch(action);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteBill = async (billId, budgetId, dispatch) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Token not found");
+    }
+    if (!billId || !budgetId) {
+      throw new Error("the ids have not been passed");
+    }
+    const rawData = JSON.stringify({ id_bill: billId });
+    const response = await fetch(`${backendUrl}api/deletebill`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: rawData,
+    });
+    if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`);
+    }
+    const data = await response.json();
+    if (!data) {
+      throw new Error("Error fetching data");
+    }
+    const payload = { budgetId: budgetId, billId: billId };
+    const action = {
+      type: "DELETE_BILL",
+      payload: payload,
+    };
+    dispatch(action);
+  } catch (error) {
+    console.error(error);
+  }
+};
 export const sendResetEmail = async (email) => {
   const res = await fetch(process.env.BACKEND_URL + "/forgot-password", {
     method: "POST",
