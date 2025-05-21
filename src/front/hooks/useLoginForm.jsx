@@ -16,7 +16,7 @@ const useLoginForm = ({ initialEmail = "", initialPassword = "" } = {}) => {
         if (!isSupervisor) {
             navigate("/employeehome")
         } else {
-            navigate("/")
+            navigate("/supervisor")
         }
 
     }
