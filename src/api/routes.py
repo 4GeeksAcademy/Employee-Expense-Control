@@ -182,6 +182,7 @@ def login_user():
                     "user": {"id": user.id, "name": user.name, "rol": user.is_supervisor,
                              }}), 201
 
+
 @api.route("/me", methods=["GET"])
 @jwt_required()
 def get_me_user():
@@ -190,8 +191,8 @@ def get_me_user():
 
     if not user:
         return jsonify({"msg": "User not found"}), 404
-    
-    return jsonify({"id": user.id, "name": user.name, "email": user.email, "rol": user.is_supervisor}),200
+
+    return jsonify({"id": user.id, "name": user.name, "email": user.email, "rol": user.is_supervisor}), 200
 
 
 @api.route("/myid", methods=["GET"])
@@ -384,7 +385,7 @@ def bill_create():
     date = body["date"]
 
     budget = Budget.query.filter_by(
-        employee_id=user.id, state="ACCEPTED").order_by(Budget.id.desc()).first()
+        employee_id=user.id, state="PENDING").order_by(Budget.id.desc()).first()
 
     if budget is None:
         return jsonify({"msg": "Invalid credentials"}), 404
