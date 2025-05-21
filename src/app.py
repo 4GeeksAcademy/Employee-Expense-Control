@@ -15,7 +15,7 @@ from datetime import timedelta
 import cloudinary 
 from dotenv import load_dotenv
 import os
-
+from flask_mail import Mail
 
 #recover password
 load_dotenv()  # Carga las variables desde .env
@@ -34,6 +34,8 @@ app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
 FRONTEND_URL = os.getenv('FRONTEND_URL')
 
+#mail=Mail()
+#mail.init_app()
 
 # from models import 
 
@@ -79,7 +81,7 @@ app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=1)
 
 jwt = JWTManager(app)
 
-mail.init_app(app)
+
 # Cloudinary config
 
 cloudinary.config(cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
