@@ -8,9 +8,8 @@ from src.api.utils import generate_sitemap, APIException, generate_reset_token, 
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from flask_mail import Message
-from extensions import mail
+from src.extensions import mail
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt, get_jwt_identity, JWTManager
-import re
 import cloudinary.uploader
 
 
