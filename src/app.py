@@ -79,7 +79,7 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=10)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=1)
 
 jwt = JWTManager(app)
-
+mail.init_app(app)
 
 # Cloudinary config
 

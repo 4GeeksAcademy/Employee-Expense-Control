@@ -11,7 +11,11 @@ from extensions import mail
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt, get_jwt_identity, JWTManager, decode_token
 import re
 import cloudinary.uploader
+from dotenv import load_dotenv
+import os
 
+load_dotenv()  # Carga las variables desde .env
+FRONTEND_URL = os.getenv('FRONTEND_URL')
 
 api = Blueprint('api', __name__)
 bcrypt = Bcrypt()
@@ -83,7 +87,7 @@ def handle_hello():
 def forgot_password():
     # Obtiene el email del frontend
     email = request.json.get('email')
-    frontend_url = "https://https://orange-goggles-w6g9qg4wwp6c644-3001.app.github.dev/api"
+    frontend_url = FRONTEND_URL
 
     # Busca al empleado en la base de datos usando el email
     employee = Employee.query.filter_by(email=email).first()
@@ -113,7 +117,7 @@ def forgot_password():
             Saludos,
             El equipo de soporte Melena de cangrejo (Bless, Juan, Giovanny, Carlos)
             """
-
+    print(msg)
     # Envía el correo
     mail.send(msg)
 
