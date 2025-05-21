@@ -2,7 +2,6 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-
 from api.models import db, Employee, Bill, Department, Budget
 from api.utils import generate_sitemap, APIException, generate_reset_token, generate_password_hash, verify_reset_token
 from flask_cors import CORS
@@ -20,6 +19,9 @@ bcrypt = Bcrypt()
 CORS(api)
 
 jwt = JWTManager()
+
+# mail = Mail()
+# mail.init_app()
 
 revoked_tokens = set()
 
