@@ -4,18 +4,18 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
-from src.api.utils import APIException, generate_sitemap
-from src.api.models import db
-from src.api.routes import api
-from src.api.admin import setup_admin
-from src.api.commands import setup_commands
+from api.utils import APIException, generate_sitemap
+from api.models import db
+from api.routes import api
+from api.admin import setup_admin
+from api.commands import setup_commands
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
 import cloudinary 
 from dotenv import load_dotenv
 import os
-
+from flask_mail import Mail
 
 #recover password
 load_dotenv()  # Carga las variables desde .env
@@ -34,6 +34,8 @@ app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
 FRONTEND_URL = os.getenv('FRONTEND_URL')
 
+#mail=Mail()
+#mail.init_app()
 
 # from models import 
 
@@ -79,7 +81,7 @@ app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=1)
 
 jwt = JWTManager(app)
 
-mail.init_app(app)
+
 # Cloudinary config
 
 cloudinary.config(cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
