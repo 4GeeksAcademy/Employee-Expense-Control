@@ -9,7 +9,7 @@ from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from flask_mail import Message
 from extensions import mail
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt, get_jwt_identity, JWTManager
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt, get_jwt_identity, JWTManager, decode_token
 import re
 import cloudinary.uploader
 
@@ -81,7 +81,7 @@ def handle_hello():
 def forgot_password():
     # Obtiene el email del frontend
     email = request.json.get('email')
-    frontend_url = "https://sturdy-telegram-g44v64v9vxq29xww-3000.app.github.dev/api"
+    frontend_url = "https://https://orange-goggles-w6g9qg4wwp6c644-3001.app.github.dev/api"
 
     # Busca al empleado en la base de datos usando el email
     employee = Employee.query.filter_by(email=email).first()
@@ -120,26 +120,51 @@ def forgot_password():
 
 
 @api.route('/reset-password', methods=['POST'])
-@jwt_required()
 def reset_password():
-    employee_id = get_jwt_identity()
-    if not employee_id:
-        return jsonify({'msg': 'Token inválido o expirado'}), 400
-
     data = request.get_json()
+    token = data.get('token')
     new_password = data.get('password')
 
-    if not new_password:
-        return jsonify({'msg': 'Contraseña nueva requerida'}), 400
+    if not token or not new_password:
+        return jsonify({'msg': 'Token y nueva contraseña son requeridos'}), 400
+
+    try:
+        decoded_token = decode_token(token)
+        employee_id = decoded_token['sub']  # sub = subject = identity
+    except Exception as e:
+        return jsonify({'msg': 'Token inválido o expirado'}), 400
 
     employee = Employee.query.get(employee_id)
     if not employee:
         return jsonify({'msg': 'Empleado no encontrado'}), 404
 
-    employee.password = new_password
+    employee.password = new_password  # 👈 Aquí deberías hashear la contraseña
     db.session.commit()
 
     return jsonify({'msg': 'Contraseña actualizada correctamente'}), 200
+
+
+# @api.route('/reset-password', methods=['POST'])
+# @jwt_required()
+# def reset_password():
+#     employee_id = get_jwt_identity()
+#     if not employee_id:
+#         return jsonify({'msg': 'Token inválido o expirado'}), 400
+
+#     data = request.get_json()
+#     new_password = data.get('password')
+
+#     if not new_password:
+#         return jsonify({'msg': 'Contraseña nueva requerida'}), 400
+
+#     employee = Employee.query.get(employee_id)
+#     if not employee:
+#         return jsonify({'msg': 'Empleado no encontrado'}), 404
+
+#     employee.password = new_password
+#     db.session.commit()
+
+#     return jsonify({'msg': 'Contraseña actualizada correctamente'}), 200
 
 
 @api.route('/login', methods=['POST'])
