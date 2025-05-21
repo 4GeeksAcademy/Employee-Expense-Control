@@ -1,6 +1,8 @@
 from flask import jsonify, url_for
 from flask_jwt_extended import create_access_token
 from datetime import timedelta
+from werkzeug.security import generate_password_hash as werkzeug_hash
+from flask_jwt_extended import create_access_token
 
 
 

@@ -2,35 +2,45 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { sendResetEmail } from "../services/apiServicesFetch";
 
-function ForgotPassword() {
-  const [email, setEmail] = useState("");
-  const [msg, setMsg] = useState("");
+const ForgotPassword = () => {
+  const [email, setEmail] = useState("");            // esto guarda el email que el usuario escribe
+  const [message, setMessage] = useState("");        // aqui se guardaw el mensaje de éxito o error
+  const navigate = useNavigate();                    // Permite redirigir a otra vista (por ejemplo: al login)
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const res = await fetch("http://localhost:5000/forgot-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-    const data = await res.json();
-    setMsg(data.msg);
+    e.preventDefault();                              // Evita que el formulario recargue la página
+    try {
+      await sendResetEmail(email);                   // Llama a la función del servicio que envía el correo electronicoe
+      setMessage("Correo enviado. Revisa tu bandeja de entrada.");  // Muestra mensaje de éxito
+      setTimeout(() => navigate("/login"), 3000);    // Espera 3 segundos y redirige al login
+    } catch (error) {
+      setMessage(error.message);                     // Muestra error si el backend responde con erorres
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Recuperar contraseña</h2>
-      <input
-        type="email"
-        placeholder="Tu correo"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-      />
-      <button type="submit">Enviar</button>
-      <p>{msg}</p>
-    </form>
+    <div className="container mt-5">
+      <h2 className="text-center mb-4">¿Olvidaste tu contraseña brother?</h2>
+      <form onSubmit={handleSubmit} className="p-4 rounded-4 shadow-lg bg-white" style={{ maxWidth: '400px', margin: 'auto' }}>
+        <div className="mb-3">
+          <label htmlFor="email" className="form-label">Correo electrónico</label>
+          <input
+            type="email"
+            className="form-control rounded-pill"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            placeholder="No te lies mi pana"
+          />
+        </div>
+        <div className="d-grid mb-3">
+          <button type="submit" className="btn btn-primary rounded-pill py-2">Enviar enlace</button>
+        </div>
+        {message && <p className="text-center">{message}</p>}   {/* Muestra el mensaje si existe */}
+      </form>
+    </div>
   );
-}
+};
 
-export default ForgotPassword
+export default ForgotPassword;

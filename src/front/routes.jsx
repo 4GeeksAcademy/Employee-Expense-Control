@@ -19,6 +19,7 @@ import BudgetCreate from "./pages/BudgetCreate";
 import BudgetList from "./pages/BudgetList";
 
 
+
 export const router = createBrowserRouter(
   createRoutesFromElements(
 
@@ -42,7 +43,7 @@ export const router = createBrowserRouter(
       <Route path="/createbudget" element={<BudgetCreate />} />
       <Route path="/budgetlist" element={<BudgetList />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Route ppath="/reset-password" element={<ResetPassword  />} />
     </Route>
   )
 );
