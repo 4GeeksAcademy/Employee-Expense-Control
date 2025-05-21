@@ -18,6 +18,8 @@ import EmployeeHome from "./pages/EmployeeHome";
 import BudgetCreate from "./pages/BudgetCreate";
 import BudgetList from "./pages/BudgetList";
 import IdEmployee from "./pages/IdEmployee";
+import PrivateRoute from "./components/PrivateRoute";
+import SupervisorHome from "./pages/SupervisorHome";
 
 
 export const router = createBrowserRouter(
@@ -33,18 +35,31 @@ export const router = createBrowserRouter(
     <Route path="/" element={<Layout />} errorElement={<h1>Not found!</h1>} >
       {/* Nested Routes: Defines sub-routes within the BaseHome component. */}
 
+                  {/* 🔒 RUTAS PUBLICAS */}
+
       <Route path="/" element={<Home />} />
       <Route path="/single/:theId" element={<Single />} />  {/* Dynamic route for single items */}
       <Route path="/demo" element={<Demo />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/employeehome" element={<EmployeeHome />} />
-      <Route path="/enterbill" element={<EnterBill />} />
-      <Route path="/createbudget" element={<BudgetCreate />} />
-      <Route path="/mybudgets" element={<BudgetList />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
-      <Route path="/employeeid" element={<IdEmployee />} />
+
+                {/* 🔒 RUTAS PROTEGIDAS SOLO EMPLOYEE*/}
+
+      <Route path="/employeehome" element={<PrivateRoute onlyFor="employee"><EmployeeHome /></PrivateRoute>}/>
+      <Route path="/enterbill" element={<PrivateRoute onlyFor="employee"><EnterBill /></PrivateRoute>}/>
+      <Route path="/mybudgets" element={<PrivateRoute onlyFor="employee"><BudgetList /></PrivateRoute>}/>
+      <Route path="/createbudget" element={<PrivateRoute onlyFor="employee"><BudgetCreate /></PrivateRoute>}/>
+      <Route path="/employeeid" element={<PrivateRoute onlyFor="employee"><IdEmployee /></PrivateRoute>}/>
+
+                {/* 🔒 RUTAS PROTEGIDAS SOLO SUPERVISOR */}
+      <Route path="/supervisor" element={<PrivateRoute onlyFor="supervisor"><SupervisorHome/></PrivateRoute>}/>
+
+
+                   {/* 🔒 RUTAS COMPARTIDAS */}
+    <Route path="/unauthorized" element={<h1>Unauthorized access</h1>} />
+
     </Route>
   )
 );

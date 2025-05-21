@@ -88,7 +88,7 @@ export const fetchLogin = async (email, password) => {
 
     localStorage.setItem("token", token);
     localStorage.setItem("refreshToken", refreshToken);
-
+    console.log(data)
     return data;
   } catch (error) {
     console.error(error);
@@ -118,6 +118,26 @@ export const fetchId = async () => {
     console.error(error);
   }
 };
+
+export const fetchUserProfile = async () => {
+  const token = localStorage.getItem("token");
+  if (!token){
+    throw new Error("No token found");
+  }
+
+  const response = await fetch(`${backendUrl}api/me`, {
+    method: "GET",
+    headers: {
+       Authorization: `Bearer ${token}`,
+    },
+  })
+      if (!response.ok){
+        throw new Error(`Failed to fetch user profile: ${response.status}`);
+      }
+
+      const user = await response.json();
+      return user;
+}
 
 export const budgetFetch = async (description) => {
   try {

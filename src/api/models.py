@@ -111,6 +111,7 @@ class Budget(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     budget_description: Mapped[str] = mapped_column(
         String(250), nullable=False)
+    amount: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
     employee_id: Mapped[int] = mapped_column(
         ForeignKey('employees.id'), nullable=False)
     department_id: Mapped[int] = mapped_column(

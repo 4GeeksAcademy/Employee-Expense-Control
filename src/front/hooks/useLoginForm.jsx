@@ -6,8 +6,13 @@ const useLoginForm = ({ initialEmail = "", initialPassword = "" } = {}) => {
     const [email, setEmail] = useState(initialEmail)
     const [password, setPassword] = useState(initialPassword)
 
-    const rolNavigate = (data) => {
-        const isSupervisor = data.user.rol === true || data.user.rol === "true";
+    const rolNavigate = (userData) => {
+        console.log("Datos recibidos en rolNavigate:", userData);
+        if (!userData.rol === undefined) { // Verifica si existe el rol
+            console.error("Rol no definido en userData");
+            return;
+        }
+        const isSupervisor = Boolean(userData.rol === true || userData.rol === "true");
         if (!isSupervisor) {
             navigate("/employeehome")
         } else {

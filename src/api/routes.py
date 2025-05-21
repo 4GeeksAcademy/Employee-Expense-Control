@@ -182,6 +182,17 @@ def login_user():
                     "user": {"id": user.id, "name": user.name, "rol": user.is_supervisor,
                              }}), 201
 
+@api.route("/me", methods=["GET"])
+@jwt_required()
+def get_me_user():
+    user_id = get_jwt_identity()
+    user = Employee.query.get(user_id)
+
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+    
+    return jsonify({"id": user.id, "name": user.name, "email": user.email, "rol": user.is_supervisor}),200
+
 
 @api.route("/myid", methods=["GET"])
 @jwt_required()
