@@ -13,7 +13,6 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
 import cloudinary 
-from extensions import mail
 from dotenv import load_dotenv
 import os
 
