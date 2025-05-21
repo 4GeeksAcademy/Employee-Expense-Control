@@ -16,7 +16,6 @@ import cloudinary
 from extensions import mail
 from dotenv import load_dotenv
 import os
-from flask_mail import Mail
 
 
 #recover password
@@ -35,8 +34,6 @@ app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
 
 FRONTEND_URL = os.getenv('FRONTEND_URL')
-
-mail=Mail()
 
 
 # from models import 
