@@ -22,7 +22,7 @@ const useBudgetList = () => {
         }
         fetchBudgets()
     }, [dispatch])
-    return { budgets: store.budgets, expandedBudgets, setExpandedBudgets, editingBillId, setEditingBillId, editedBill, setEditedBill }
+    return { budgets: store.budgets, dispatch, expandedBudgets, setExpandedBudgets, editingBillId, setEditingBillId, editedBill, setEditedBill }
 }
 
 export default useBudgetList

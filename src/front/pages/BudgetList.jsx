@@ -1,8 +1,10 @@
 import useBudgetList from "../hooks/useBudgetList"
+import { editBill, deleteBill } from "../services/apiServicesFetch";
 
 const BudgetList = () => {
     const {
         budgets,
+        dispatch,
         expandedBudgets,
         setExpandedBudgets,
         editingBillId,
@@ -18,8 +20,8 @@ const BudgetList = () => {
         }));
     };
 
-    const handleDeleteBill = (billId) => {
-        // lógica de eliminación
+    const handleDeleteBill = (billId, budgetId) => {
+        deleteBill(billId,budgetId,dispatch)
     };
 
     const handleEditClick = (bill) => {
@@ -33,7 +35,7 @@ const BudgetList = () => {
     };
 
     const handleEditSubmit = (billId) => {
-        // lógica de actualización
+        editBill(billId, editedBill, dispatch)
         setEditingBillId(null);
     };
     return (
@@ -165,7 +167,7 @@ const BudgetList = () => {
                                                             Edit
                                                         </button>
                                                         <button
-                                                            onClick={() => handleDeleteBill(bill.id)}
+                                                            onClick={() => handleDeleteBill(bill.id, bill.budget_id)}
                                                             className="px-2 py-1 text-xs bg-red-400 text-black rounded hover:bg-red-600"
                                                         >
                                                             Delete

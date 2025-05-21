@@ -400,7 +400,7 @@ def detete_bill():
     user = Employee.query.get(user_id)
     if user is None:
         return jsonify({"msg": "Invalid credentials"}), 401
-    body = request.get_json(silence=True)
+    body = request.get_json(silent=True)
     if body is None:
         return jsonify({"msg": "Invalid object"}), 400
     fields_required = ["id_bill"]
@@ -444,7 +444,7 @@ def update_bill():
 
     db.session.commit()
 
-    return jsonify({"msg": "Bill updated successfully"}), 200
+    return jsonify({"msg": "Bill updated successfully", "bill": bill.serialize()}), 200
 
 
 @api.route("/logout", methods=['POST'])

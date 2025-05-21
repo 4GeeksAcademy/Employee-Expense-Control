@@ -12,13 +12,11 @@ export const initialStore = () => {
         id: 2,
         title: "Do my homework",
         background: null,
-      }
+      },
     ],
-    employeeId: null
-  }
-}
-
-      
+    employeeId: null,
+  };
+};
 
 export default function storeReducer(store, action = {}) {
   switch (action.type) {
@@ -27,6 +25,39 @@ export default function storeReducer(store, action = {}) {
         ...store,
         signup: [...store.signup, action.payload],
       };
+    case "EDIT_BILL":
+      const updatedBill = action.payload;
+
+      return {
+        ...store,
+        budgets: store.budgets.map((budget) => {
+          if (budget.id === updatedBill.budget_id) {
+            return {
+              ...budget,
+              bills: budget.bills.map((bill) =>
+                bill.id === updatedBill.id ? updatedBill : bill
+              ),
+            };
+          }
+          return budget;
+        }),
+      };
+
+    case "DELETE_BILL":
+      const { billId, budgetId } = action.payload;
+
+      return {
+        ...store,
+        budgets: store.budgets.map((budget) => {
+          if (budget.id !== budgetId) return budget;
+
+          return {
+            ...budget,
+            bills: budget.bills.filter((bill) => bill.id !== billId),
+          };
+        }),
+      };
+
     case "SET_BUDGETS":
       return {
         ...store,
@@ -46,12 +77,12 @@ export default function storeReducer(store, action = {}) {
         ),
       };
 
-      case 'set_employee_id':
+    case "set_employee_id":
       return {
         ...store,
-        employeeId: action.payload
+        employeeId: action.payload,
       };
-      
+
     default:
       throw Error("Unknown action.");
   }
