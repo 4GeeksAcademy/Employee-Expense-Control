@@ -5,11 +5,11 @@ function ResetPassword() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const token = queryParams.get("token"); // aquí extraemos el token del query string
-
+  
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [msg, setMsg] = useState("");
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirm) return setMsg("Las contraseñas no coinciden");
@@ -23,7 +23,7 @@ function ResetPassword() {
     const data = await res.json();
     setMsg(data.msg);
   };
-
+  
   return (
     <form onSubmit={handleSubmit}>
       <h2>Establece una nueva contraseña</h2>

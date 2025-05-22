@@ -226,6 +226,91 @@ def login_user():
                              }}), 201
 
 
+@api.route("/me", methods=["GET"])
+@jwt_required()
+def get_me_user():
+    user_id = get_jwt_identity()
+    user = Employee.query.get(user_id)
+
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+
+    return jsonify({"id": user.id, "name": user.name, "email": user.email, "rol": user.is_supervisor}), 200
+
+
+@api.route("/myid", methods=["GET"])
+@jwt_required()
+def my_id():
+    employee_id = get_jwt_identity()
+    employee = Employee.query.get(employee_id)
+
+    if employee is None or employee.is_supervisor:
+        return jsonify({"msg": "you don't have permission"}), 403
+
+    return jsonify({"id": employee.id}), 200
+
+
+@api.route("/assigndepartment", methods=["POST"])
+@jwt_required()
+# solo un supervisor puede asignarle el departamento a un empleado
+def assign_department():
+    supervisor_id = get_jwt_identity()
+    supervisor = Employee.query.get(supervisor_id)
+    if supervisor is None or not supervisor.is_supervisor:
+        return jsonify({"msg": "unauthorized"}), 403
+
+    data = request.get_json()
+    employee_id = data["id_employee"]
+    department_id = data["id_department"]
+
+    employee = Employee.query.get(employee_id)
+    department = Department.query.get(department_id)
+
+    if employee is None or department is None:
+        return jsonify({"msg": "Invalid credentials"}), 401
+
+    employee.department_id = department_id
+    db.session.commit()
+    return jsonify({"msg": "successfully assigned"}), 201
+
+
+@api.route("/assign-supervisor-department", methods=["POST"])
+@jwt_required()
+def assign_supervisor_department():
+    supervisor_id = get_jwt_identity()
+    supervisor = Employee.query.get(supervisor_id)
+
+    if supervisor is None or not supervisor.is_supervisor:
+        return jsonify({"msg": "unauthorized"}), 403
+
+    data = request.get_json()
+
+    if not data or "id_employee" not in data or "id_department" not in data:
+        return jsonify({"msg": "Invalid data"}), 400
+
+    supervisor_to_assign_id = data["id_employee"]
+    department_id = data["id_department"]
+
+    supervisor_to_assign = Employee.query.get(supervisor_to_assign_id)
+    department = Department.query.get(department_id)
+
+    if supervisor_to_assign is None or not supervisor_to_assign.is_supervisor:
+        return jsonify({"msg": "The selected employee is not a supervisor"}), 400
+
+    if department is None:
+        return jsonify({"msg": "Department not found"}), 404
+
+    existing_supervisor = Employee.query.filter_by(
+        department_id=department_id, is_supervisor=True).first()
+    if existing_supervisor and existing_supervisor.id != supervisor_to_assign_id:
+        return jsonify({"msg": "Department already has a supervisor assigned"}), 409
+
+    supervisor_to_assign.department_id = department_id
+    db.session.commit()
+
+    return jsonify({"msg": "Supervisor assigned to department successfully"}), 201
+
+
 @api.route("/supervisor-area", methods=["GET"])
 @jwt_required()
 def supervisor_area():
@@ -240,16 +325,6 @@ def supervisor_area():
                         "rol": rol,
                         "access_level": claims.get("lvl")}
                     })
-
-
-@api.route("/me", methods=["POST"])
-@jwt_required()
-def me():
-    user_id = get_jwt_identity()
-    user = Employee.query.get(user_id)
-    if user is None:
-        return jsonify({"msg": "invalid credentials"}), 404
-    return jsonify({"name": user.name, "supervisor": bool(user.is_supervisor)})
 
 
 @api.route("/refresh", methods=["POST"])
@@ -289,24 +364,39 @@ def budget_create():
     body = request.get_json(silent=True)
 
     if body is None:
-        return ({"msg": "Invalid object"}), 400
+        return ({"msg": "Invalid object"}), 401
 
-    fields_required = ["budget_description"]
+    fields_required = ["budget_description", "amount"]
 
     for field in fields_required:
         if field not in body:
-            return jsonify({"msg": "Invalid creedentials"}), 400
+            return jsonify({"msg": "Invalid creedentials"}), 402
 
-    if body["budget_description"].strip() == "":
-        return jsonify({"msg": "Invalid credentials"}), 400
+    if body["budget_description"].strip() == "" or body["amount"].strip() == "":
+        return jsonify({"msg": "Invalid credentials"}), 403
 
     budget_description = body["budget_description"]
+    amount = float(body["amount"])
 
     new_budget = Budget(budget_description=budget_description,
-                        employee_id=1, department_id=1)
+                        employee_id=user.id, department_id=user.department_id, amount=amount, available=amount, state="PENDING", condition=None)
     db.session.add(new_budget)
     db.session.commit()
     return jsonify({"msg": "Budget created successfully"}), 201
+
+
+@api.route("/mybudgets", methods=["GET"])
+@jwt_required()
+def my_budgets():
+    employee_id = get_jwt_identity()
+    employee = Employee.query.get(employee_id)
+
+    if employee is None:
+        return jsonify({"msg": "Not response"}), 404
+
+    budgets = Budget.query.filter_by(employee_id=employee_id).all()
+
+    return jsonify({"budget_list": [budget.serialize() for budget in budgets], }), 200
 
 
 @api.route("/bill", methods=["POST"])
@@ -316,32 +406,100 @@ def bill_create():
     user = Employee.query.get(user_id)
 
     if user is None:
-        return jsonify({"msg": "Invalid credentials"}), 404
+        return jsonify({"msg": "Not response"}), 404
 
     body = request.get_json(silent=True)
 
     if body is None:
-        return jsonify({"msg": "Invalid object"}), 400
+        return jsonify({"msg": "Invalid object"}), 401
 
     filds_required = ["description", "location", "amount", "date"]
 
     for filed in filds_required:
         if filed not in body:
-            return jsonify({"msg": "invalid credentials"}), 400
+            return jsonify({"msg": "invalid credentials"}), 402
 
     if body["description"].strip() == "" or body["location"].strip() == "" or body["amount"].strip() == "" or body["date"].strip() == "":
-        return jsonify({"msg": "Invalid credentials"}), 400
+        return jsonify({"msg": "Invalid credentials"}), 403
 
     trip_description = body["description"]
     trip_address = body["location"]
     amount = float(body["amount"])
     date = body["date"]
 
+    budget = Budget.query.filter_by(
+        employee_id=user.id, state="PENDING").order_by(Budget.id.desc()).first()
+
+    if budget is None:
+        return jsonify({"msg": "Invalid credentials"}), 404
+
+    supervisor = Employee.query.filter_by(
+        department_id=user.department_id,
+        is_supervisor=True
+    ).first()
+
+    if supervisor is None:
+        return jsonify({"msg": "Invalid credentials"}), 405
+
     new_bill = Bill(trip_description=trip_description,
-                    trip_address=trip_address, state="PENDING", amount=amount, evaluator_id=1, date_approved=None, budget_id=3)
+                    trip_address=trip_address, state="PENDING", amount=amount, evaluator_id=supervisor.id, date_approved=None, budget_id=budget.id)
     db.session.add(new_bill)
     db.session.commit()
     return jsonify({"msg": "bill created successfully"}), 201
+
+
+@api.route("/deletebill", methods=["DELETE"])
+@jwt_required()
+def detete_bill():
+    user_id = get_jwt_identity()
+    user = Employee.query.get(user_id)
+    if user is None:
+        return jsonify({"msg": "Invalid credentials"}), 401
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({"msg": "Invalid object"}), 400
+    fields_required = ["id_bill"]
+    for field in fields_required:
+        if field not in body:
+            return jsonify({"msg": "Invalid credentials"}), 400
+    bill_id = body["id_bill"]
+    bill = Bill.query.filter_by(id=bill_id).first()
+    if bill is None:
+        return jsonify({"msg": "Not found"}), 404
+    db.session.delete(bill)
+    db.session.commit()
+    return jsonify({"msg": "bill successfully deleted"}), 200
+
+
+@api.route("/updatebill", methods=["PUT"])
+@jwt_required()
+def update_bill():
+    user_id = get_jwt_identity()
+    user = Employee.query.get(user_id)
+    if user is None:
+        return jsonify({"msg": "Invalid credentials"}), 401
+
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({"msg": "Invalid object"}), 400
+
+    if "id_bill" not in body:
+        return jsonify({"msg": "Missing bill ID"}), 400
+
+    bill_id = body["id_bill"]
+    bill = Bill.query.filter_by(id=bill_id).first()
+    if bill is None:
+        return jsonify({"msg": "Bill not found"}), 404
+
+    editable_fields = ["amount", "trip_description", "trip_address"]
+
+    for field in editable_fields:
+        if field in body:
+            setattr(bill, field, body[field])
+
+    db.session.commit()
+
+    return jsonify({"msg": "Bill updated successfully", "bill": bill.serialize()}), 200
 
 
 @api.route("/logout", methods=['POST'])
