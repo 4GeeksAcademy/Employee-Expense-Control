@@ -1,12 +1,10 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-import os
 from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
-from flask_jwt_extended import JWTManager
 from api.models import db
 from api.routes import api
 from api.admin import setup_admin
@@ -14,13 +12,13 @@ from api.commands import setup_commands
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
-import cloudinary 
+import cloudinary
 from extensions import mail
 from dotenv import load_dotenv
 import os
 
 
-#recover password
+# recover password
 load_dotenv()  # Carga las variables desde .env
 
 app = Flask(__name__)
@@ -38,8 +36,7 @@ app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 FRONTEND_URL = os.getenv('FRONTEND_URL')
 
 
-
-# from models import 
+# from models import
 
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
@@ -49,7 +46,7 @@ static_file_dir = os.path.join(os.path.dirname(
 app.url_map.strict_slashes = False
 
 
-revoked_tokens= set()
+revoked_tokens = set()
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
@@ -82,8 +79,8 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=10)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=1)
 
 jwt = JWTManager(app)
-
 mail.init_app(app)
+
 # Cloudinary config
 
 cloudinary.config(cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
@@ -99,7 +96,7 @@ def handle_invalid_usage(error):
 
 @app.route('/')
 def sitemap():
-    
+
     if ENV == "development":
         print('test')
         return generate_sitemap(app)
