@@ -43,7 +43,7 @@ export const router = createBrowserRouter(
       <Route path="/createbudget" element={<BudgetCreate />} />
       <Route path="/budgetlist" element={<BudgetList />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route ppath="/reset-password" element={<ResetPassword  />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
     </Route>
   )
 );
