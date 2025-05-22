@@ -62,6 +62,7 @@ export const router = createBrowserRouter(
 
 
 
+
                    {/* 🔒 RUTA UNAUTHORIZED */}
      <Route path="/unauthorized" element={<h1>Unauthorized access</h1>} />
 
