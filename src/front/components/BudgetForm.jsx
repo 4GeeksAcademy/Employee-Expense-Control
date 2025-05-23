@@ -1,11 +1,11 @@
 import useBudgetForm from "../hooks/useBudgetForm"
 import { budgetFetch } from "../services/apiServicesFetch"
 const BudgetForm = () => {
-    const { navigate, description, setDescription } = useBudgetForm()
+    const { navigate, description, setDescription, amount, setAmount } = useBudgetForm()
     const handleSubmit = (e) => {
         e.preventDefault()
-        budgetFetch(description)
-        navigate("/budgetlist")
+        budgetFetch(description,amount)
+        navigate("/mybudgets")
     }
     return (<>
         <div
@@ -30,6 +30,8 @@ const BudgetForm = () => {
                 }}
             >
                 <h2 className="mb-4 text-center">Add Budget</h2>
+
+                {/* Input de descripción */}
                 <div className="mb-4">
                     <label htmlFor="description" className="form-label">
                         Budget Description
@@ -44,6 +46,23 @@ const BudgetForm = () => {
                         style={{ fontSize: "1.1rem", padding: "0.75rem" }}
                     />
                 </div>
+                <div className="mb-4">
+                    <label htmlFor="amount" className="form-label">
+                        Amount
+                    </label>
+                    <input
+                        type="number"
+                        className="form-control"
+                        id="amount"
+                        placeholder="Enter amount"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        style={{ fontSize: "1.1rem", padding: "0.75rem" }}
+                        min="0"
+                        step="0.01"
+                    />
+                </div>
+
                 <button
                     type="submit"
                     className="btn btn-primary w-100"
@@ -53,9 +72,8 @@ const BudgetForm = () => {
                 </button>
             </form>
         </div>
-
-
-    </>)
+    </>
+    )
 
 }
 

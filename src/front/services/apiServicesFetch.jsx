@@ -79,38 +79,74 @@ export const fetchLogin = async (email, password) => {
     const refreshToken = data.refresh_token;
     localStorage.setItem("token", token);
     localStorage.setItem("refreshToken", refreshToken);
+    console.log(data)
     return data;
-    // if (token) {
-    //   const responseMe = await fetch(`${backendUrl}/me`, {
-    //     method: "POST",
-    //     headers: {
-    //       "content-type": "application/json",
-    //       Authorization: `Bearer ${data.token}`,
-    //     },
-    //     body: JSON.stringify(token),
-    //   });
-    //   if (!responseMe.ok) {
-    //     throw new Error(`Error verifying role`);
-    //   }
-    //   const dataMe = await responseMe.json();
-    //   if (dataMe.name == null || dataMe.supervisor == null) {
-    //     throw new Error("the role has not been sent");
-    //   }
-    //   if (dataMe) {
-    //     return dataMe;
-    //   }
-    // }
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
-export const budgetFetch = async (description) => {
+
+export const fetchId = async () => {
   try {
-    if (!description || description.trim() === "") {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Token not found");
+    }
+    const response = await fetch(`${backendUrl}/myid`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`);
+    }
+    const data = await response.json();
+    if (!data) {
+      throw new Error("the data was sent incorrectly");
+    }
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const fetchUserProfile = async () => {
+  const token = localStorage.getItem("token");
+  if (!token){
+    throw new Error("No token found");
+  }
+
+  const response = await fetch(`${backendUrl}/me`, {
+    method: "GET",
+    headers: {
+       Authorization: `Bearer ${token}`,
+    },
+  })
+      if (!response.ok){
+        throw new Error(`Failed to fetch user profile: ${response.status}`);
+      }
+
+      const user = await response.json();
+      return user;
+}
+
+
+
+export const budgetFetch = async (description, amount) => {
+
+  try {
+    if (
+      !description ||
+      description.trim() === "" ||
+      !amount ||
+      amount.trim() === ""
+    ) {
       throw new Error("Invalid description");
     }
-    const rawData = JSON.stringify({ budget_description: description });
+    const rawData = JSON.stringify({
+      budget_description: description,
+      amount: amount,
+    });
     const token = localStorage.getItem("token");
     const response = await fetch(`${backendUrl}/budget`, {
       method: "POST",
@@ -129,6 +165,36 @@ export const budgetFetch = async (description) => {
     console.error(error);
   }
 };
+
+export const budgetListFetch = async (dispatch) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Token not founded");
+    }
+    const response = await fetch(`${backendUrl}/mybudgets`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`);
+    }
+    const data = await response.json();
+    if (!data || !data.budget_list) {
+      throw new Error("Error obtaining the data");
+    }
+    const action = {
+      type: "SET_BUDGETS",
+      payload: data.budget_list,
+    };
+
+    dispatch(action);
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const fetchImageBill = async (image, description, location, amount) => {
   try {
     if (
@@ -175,6 +241,91 @@ export const fetchImageBill = async (image, description, location, amount) => {
     }
     const billData = await billResponse.json();
     console.log(billData);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const editBill = async (billId, editedBill, dispatch) => {
+  try {
+    if (!billId) {
+      throw new Error("the id has been passed");
+    }
+    const allowedFields = ["amount", "trip_description", "trip_address"];
+
+    const filteredFields = Object.entries(editedBill)
+      .filter(
+        ([key, value]) =>
+          allowedFields.includes(key) && value !== undefined && value !== ""
+      )
+      .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
+    if (Object.keys(filteredFields).length === 0) {
+      console.log("No fields to update.");
+      return;
+    }
+
+    filteredFields.id_bill = billId;
+
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${backendUrl}/updatebill`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(filteredFields),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`);
+    }
+    const data = await response.json();
+    if (!data) {
+      throw new Error("no data returned");
+    }
+    console.log(data);
+    const action = {
+      type: "EDIT_BILL",
+      payload: data.bill,
+    };
+    dispatch(action);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteBill = async (billId, budgetId, dispatch) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Token not found");
+    }
+    if (!billId || !budgetId) {
+      throw new Error("the ids have not been passed");
+    }
+    const rawData = JSON.stringify({ id_bill: billId });
+    const response = await fetch(`${backendUrl}/deletebill`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: rawData,
+    });
+    if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`);
+    }
+    const data = await response.json();
+    if (!data) {
+      throw new Error("Error fetching data");
+    }
+    const payload = { budgetId: budgetId, billId: billId };
+    const action = {
+      type: "DELETE_BILL",
+      payload: payload,
+    };
+    dispatch(action);
   } catch (error) {
     console.error(error);
   }
