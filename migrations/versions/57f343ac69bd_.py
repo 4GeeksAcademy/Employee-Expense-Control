@@ -53,6 +53,13 @@ def upgrade():
                     sa.Column('id', sa.Integer(), nullable=False),
                     sa.Column('budget_description', sa.String(
                         length=250), nullable=False),
+                    sa.Column('amount', sa.Numeric(
+                        precision=10, scale=2), nullable=False),
+                    sa.Column('available', sa.Numeric(
+                        precision=10, scale=2), nullable=False),
+                    sa.Column('state', sa.Enum('ACCEPTED', 'REFUSED',
+                              'PENDING', name='state_budget'), nullable=False),
+                    sa.Column('condition', sa.Text(), nullable=True),
                     sa.Column('employee_id', sa.Integer(), nullable=False),
                     sa.Column('department_id', sa.Integer(), nullable=False),
                     sa.ForeignKeyConstraint(
