@@ -136,41 +136,19 @@ def reset_password():
 
     try:
         decoded_token = decode_token(token)
-        employee_id = decoded_token['sub']  # sub = subject = identity
+        employee_id = decoded_token['sub']  # sub =subject=identity
     except Exception as e:
         return jsonify({'msg': 'Token inválido o expirado'}), 400
 
     employee = Employee.query.get(employee_id)
     if not employee:
         return jsonify({'msg': 'Empleado no encontrado'}), 404
-
-    employee.password = new_password  # 👈 Aquí deberías hashear la contraseña
+    hashed_password = bcrypt.generate_password_hash(
+        new_password).decode('utf-8')
+    employee.password = hashed_password
     db.session.commit()
 
     return jsonify({'msg': 'Contraseña actualizada correctamente'}), 200
-
-
-# @api.route('/reset-password', methods=['POST'])
-# @jwt_required()
-# def reset_password():
-#     employee_id = get_jwt_identity()
-#     if not employee_id:
-#         return jsonify({'msg': 'Token inválido o expirado'}), 400
-
-#     data = request.get_json()
-#     new_password = data.get('password')
-
-#     if not new_password:
-#         return jsonify({'msg': 'Contraseña nueva requerida'}), 400
-
-#     employee = Employee.query.get(employee_id)
-#     if not employee:
-#         return jsonify({'msg': 'Empleado no encontrado'}), 404
-
-#     employee.password = new_password
-#     db.session.commit()
-
-#     return jsonify({'msg': 'Contraseña actualizada correctamente'}), 200
 
 
 @api.route('/login', methods=['POST'])
