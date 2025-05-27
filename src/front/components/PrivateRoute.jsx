@@ -4,9 +4,9 @@ import BlueSpinner from "./BlueSpinner";
 
 //usamos el prop para dirigir a que ruta queremos ir
 const PrivateRoute = ({children, onlyFor}) => {
-    const {isAuthenticated, user, loading} = useAuth();
+    const {isAuthenticated, user, loading,isRefreshing} = useAuth();
 
-    if (loading){
+    if (loading || isRefreshing){
         return <BlueSpinner />
     }
     //si el usuario no inicia sesion no puede entrar a rutas protegidas

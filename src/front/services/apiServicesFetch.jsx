@@ -1,8 +1,16 @@
+import { authFetch } from "./apiInterceptor";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 // Check if the backend URL is defined
 if (!backendUrl) {
   throw new Error("VITE_BACKEND_URL is not defined in .env file");
 }
+
+//MEJORAS AGREGADAS AHORA QUE TENEMOS UN apiInterceptor.jsx COMO NUEVO SERVICE ESTE SE ENCARGA DE OBTENER.
+//AUTORIZAR Y REFRESCAR EL TOKEN AL HACER UN FETCH DE UNA RUTA PROTEGIDA NO HACE FALTA AÑADIR
+//Authorization: `Bearer ${token}` PORQUE ES ALGO QUE SE ENCARGA DE HACER APIINTERCEPTOR SIEMPRE Y CUANDO
+//LE AÑADAS A EL FETCH authFetch MAS ("NOMBRE DE LA RUTA")
+
+
 export const createSignup = async (dispatch, info) => {
   try {
     const response = await fetch(`${backendUrl}/signup`, {
@@ -79,7 +87,6 @@ export const fetchLogin = async (email, password) => {
     const refreshToken = data.refresh_token;
     localStorage.setItem("token", token);
     localStorage.setItem("refreshToken", refreshToken);
-    console.log(data)
     return data;
   } catch (error) {
     console.error(error);
@@ -93,9 +100,10 @@ export const fetchId = async () => {
     if (!token) {
       throw new Error("Token not found");
     }
-    const response = await fetch(`${backendUrl}/myid`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
+
+    //USAR authFetch en las rutas que requieran token
+    const response = await authFetch('/myid', {
+      method: "GET"
     });
     if (!response.ok) {
       throw new Error(`Error fetching data ${response.status}`);
@@ -116,11 +124,10 @@ export const fetchUserProfile = async () => {
     throw new Error("No token found");
   }
 
-  const response = await fetch(`${backendUrl}/me`, {
+//USAR authFetch en las rutas que requieran token
+
+  const response = await authFetch('/me', {
     method: "GET",
-    headers: {
-       Authorization: `Bearer ${token}`,
-    },
   })
       if (!response.ok){
         throw new Error(`Failed to fetch user profile: ${response.status}`);
@@ -148,11 +155,12 @@ export const budgetFetch = async (description, amount) => {
       amount: amount,
     });
     const token = localStorage.getItem("token");
-    const response = await fetch(`${backendUrl}/budget`, {
+
+    //USAR authFetch en las rutas que requieran token
+    const response = await authFetch('/budget', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: rawData,
     });
@@ -172,9 +180,10 @@ export const budgetListFetch = async (dispatch) => {
     if (!token) {
       throw new Error("Token not founded");
     }
-    const response = await fetch(`${backendUrl}/mybudgets`, {
+
+    //USAR authFetch en las rutas que requieran token
+    const response = await authFetch('/mybudgets', {
       method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
     });
     if (!response.ok) {
       throw new Error(`Error fetching data ${response.status}`);
@@ -228,11 +237,12 @@ export const fetchImageBill = async (image, description, location, amount) => {
     }
     const data = await response.json();
     console.log(data);
-    const billResponse = await fetch(`${backendUrl}/bill`, {
+
+    //USAR authFetch en las rutas que requieran token
+    const billResponse = await authFetch('bill', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: rawData,
     });
@@ -267,12 +277,12 @@ export const editBill = async (billId, editedBill, dispatch) => {
 
     filteredFields.id_bill = billId;
 
+    //USAR authFetch en las rutas que requieran token
     const token = localStorage.getItem("token");
-    const response = await fetch(`${backendUrl}/updatebill`, {
+    const response = await authFetch('/updatebill', {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(filteredFields),
     });
@@ -305,11 +315,13 @@ export const deleteBill = async (billId, budgetId, dispatch) => {
       throw new Error("the ids have not been passed");
     }
     const rawData = JSON.stringify({ id_bill: billId });
-    const response = await fetch(`${backendUrl}/deletebill`, {
+
+    //USAR authFetch en las rutas que requieran token
+
+    const response = await authFetch('/deletebill', {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: rawData,
     });
@@ -355,45 +367,47 @@ export const sendResetEmail = async (email) => {
 //return await res.json();
 //};
 
-export const refreshAccessToken = async () => {
-  const refreshToken = JSON.parse(localStorage.getItem("refreshToken"));
-  if (!refreshToken) {
-    throw new Error("no refresh token ivailable");
-  }
-  const response = await fetch(`${backendUrl}/refresh-token`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ refresh_token: refreshToken }),
-  });
-  if (!response.ok) {
-    throw new Error("failed to refresh access token");
-  }
-  const data = await response.json();
-  if (!data.token) {
-    throw new Error("New access token not recived");
-  }
-  localStorage.setItem("token", JSON.stringify(data.token));
-  return data.token;
-};
-export const authFetch = async (url, options = {}) => {
-  let token = JSON.parse(localStorage.getItem("token"));
-  options.headers = {
-    ...(options.headers || {}),
-    Authorization: `Bearer ${token}`,
-  };
-  let response = await fetch(url, options);
-  if (response.status === 401) {
-    try {
-      const newToken = await refreshAccessToken();
-      options.headers.Authorization = `Bearer ${newToken}`;
-      response = await fetch(url, options);
-    } catch (err) {
-      console.error("Token refresh failed", err);
-      throw new Error("Session expired. Please log in again..");
-    }
-  }
-  return response;
-};
+//Desde la linea 357 hasta la 377 Comentada para pruebas no borrar hasta que hayamos concluido todo
+// export const refreshAccessToken = async () => {
+//   const refreshToken = JSON.parse(localStorage.getItem("refreshToken"));
+//   if (!refreshToken) {
+//     throw new Error("no refresh token ivailable");
+//   }
+//   const response = await fetch(`${backendUrl}/refresh-token`, {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify({ refresh_token: refreshToken }),
+//   });
+//   if (!response.ok) {
+//     throw new Error("failed to refresh access token");
+//   }
+//   const data = await response.json();
+//   if (!data.token) {
+//     throw new Error("New access token not recived");
+//   }
+//   localStorage.setItem("token", JSON.stringify(data.token));
+//   return data.token;
+// };
+
+// export const authFetch = async (url, options = {}) => {
+//   let token = JSON.parse(localStorage.getItem("token"));
+//   options.headers = {
+//     ...(options.headers || {}),
+//     Authorization: `Bearer ${token}`,
+//   };
+//   let response = await fetch(url, options);
+//   if (response.status === 401) {
+//     try {
+//       const newToken = await refreshAccessToken();
+//       options.headers.Authorization = `Bearer ${newToken}`;
+//       response = await fetch(url, options);
+//     } catch (err) {
+//       console.error("Token refresh failed", err);
+//       throw new Error("Session expired. Please log in again..");
+//     }
+//   }
+//   return response;
+// };
 
 
 
