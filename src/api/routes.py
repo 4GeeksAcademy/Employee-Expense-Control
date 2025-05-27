@@ -229,7 +229,7 @@ def my_id():
     return jsonify({"id": employee.id}), 200
 
 
-@api.route("/assigndepartment", methods=["POST"])
+@api.route("/assigndepartment", methods=["PUT"])
 @jwt_required()
 # solo un supervisor puede asignarle el departamento a un empleado
 def assign_department():
@@ -250,10 +250,10 @@ def assign_department():
 
     employee.department_id = department_id
     db.session.commit()
-    return jsonify({"msg": "successfully assigned"}), 201
+    return jsonify({"msg": "successfully assigned"}), 200
 
 
-@api.route("/assign-supervisor-department", methods=["POST"])
+@api.route("/assign-supervisor-department", methods=["PUT"])
 @jwt_required()
 def assign_supervisor_department():
     supervisor_id = get_jwt_identity()
@@ -287,7 +287,7 @@ def assign_supervisor_department():
     supervisor_to_assign.department_id = department_id
     db.session.commit()
 
-    return jsonify({"msg": "Supervisor assigned to department successfully"}), 201
+    return jsonify({"msg": "Supervisor assigned to department successfully"}), 200
 
 
 @api.route("/supervisor-area", methods=["GET"])

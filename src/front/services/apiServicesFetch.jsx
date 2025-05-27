@@ -465,5 +465,49 @@ export const rejectBudget = async (budgetId, dispatch) => {
   }
 };
 
+export const assignDepartmentEmployee = async (employeeId, departmentId) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Token not found")
+    }
+    if (!employeeId || !departmentId) {
+      throw new Error("the data has not been passed correctly")
+    }
+    const rawData = JSON.stringify({ id_employee: employeeId, id_department: departmentId })
+    const response = await fetch(`${backendUrl}/assigndepartment`, { method: "PUT", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }, body: rawData })
+    if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`)
+    }
+    const data = await response.json()
+    console.log(data)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const assignDepartmentSupervisor = async (supervisorId, departmentId) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Token not found")
+    }
+    if (!supervisorId || supervisorId.trim() === "" || !departmentId || departmentId.trim() === "") {
+      throw new Error("the data has not been passed correctly")
+    }
+    const rawData = JSON.stringify({ id_employee: supervisorId, id_department: departmentId })
+    const response = await fetch(`${backendUrl}/assign-supervisor-department`, { method: "PUT", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }, body: rawData })
+    if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`)
+    }
+    const data = await response.json()
+    console.log(data)
+
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+
 
 
