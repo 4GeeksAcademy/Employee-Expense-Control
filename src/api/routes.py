@@ -13,6 +13,8 @@ import re
 import cloudinary.uploader
 from dotenv import load_dotenv
 import os
+from datetime import datetime, timezone
+from .models import state_type
 
 load_dotenv()  # Carga las variables desde .env
 FRONTEND_URL = os.getenv('FRONTEND_URL')
@@ -94,7 +96,7 @@ def forgot_password():
 
     # Si no existe un empleado con ese email, devuelve un error
     if not employee:
-        return jsonify({"msg": "Email no registrado"}), 404
+        return jsonify({"msg": "Email not registered. Please sign up."}), 404
 
     # Genera un token de recuperación usando el id del empleado
     token = generate_reset_token(employee.id)
@@ -104,7 +106,7 @@ def forgot_password():
     reset_link = f"{frontend_url}/reset-password?token={token}"
 
     # Crea el correo con el enlace de recuperación
-    msg = Message("Restablecer contraseña", recipients=[email])
+    msg = Message("Reset password", recipients=[email])
     msg.body = f"""
              Hola,
 
@@ -122,7 +124,7 @@ def forgot_password():
     mail.send(msg)
 
     # Responde al frontend confirmando que el correo fue enviado
-    return jsonify({"msg": "Correo enviado"}), 200
+    return jsonify({"msg": "Email sent"}), 200
 
 
 @api.route('/reset-password', methods=['POST'])
@@ -132,23 +134,24 @@ def reset_password():
     new_password = data.get('password')
 
     if not token or not new_password:
-        return jsonify({'msg': 'Token y nueva contraseña son requeridos'}), 400
+        return jsonify({'msg': 'Token and new password are required.'}), 400
 
     try:
         decoded_token = decode_token(token)
         employee_id = decoded_token['sub']  # sub =subject=identity
     except Exception as e:
-        return jsonify({'msg': 'Token inválido o expirado'}), 400
+        return jsonify({'msg': 'Invalid or expired token.'}), 400
 
     employee = Employee.query.get(employee_id)
     if not employee:
-        return jsonify({'msg': 'Empleado no encontrado'}), 404
+        return jsonify({'msg': 'Employee not found'}), 404
+    
     hashed_password = bcrypt.generate_password_hash(
         new_password).decode('utf-8')
     employee.password = hashed_password
     db.session.commit()
 
-    return jsonify({'msg': 'Contraseña actualizada correctamente'}), 200
+    return jsonify({'msg': 'Password updated successfully'}), 200
 
 
 @api.route('/login', methods=['POST'])
@@ -259,7 +262,7 @@ def assign_supervisor_department():
     supervisor = Employee.query.get(supervisor_id)
 
     if supervisor is None or not supervisor.is_supervisor:
-        return jsonify({"msg": "unauthorized"}), 403
+        return jsonify({"msg": "Unauthorized access"}), 403
 
     data = request.get_json()
 
@@ -296,13 +299,59 @@ def supervisor_area():
     rol = claims.get("rol")
 
     if rol != "CBJ-G13":
-        return jsonify({"msg": "Unauthorized access"}), 403
+        return jsonify({"msg": "Unauthorized"}), 403
 
     return jsonify({"msg": "Welcome",
                     "data": {
                         "rol": rol,
                         "access_level": claims.get("lvl")}
                     })
+
+
+@api.route("/bills/<int:bill_id>/state", methods=["PATCH"])
+@jwt_required()
+def update_bill_state(bill_id):
+    supervisor_id = get_jwt_identity()
+    supervisor = Employee.query.get(supervisor_id)
+
+    # Ensure requester is a supervisor
+    if supervisor is None or not supervisor.is_supervisor:
+        return jsonify({"msg": "Unauthorized"}), 403
+
+    data = request.get_json()
+    bill_id = data.get("bill_id")
+    new_state = data.get("state")  # "approved" or "denegated"
+
+    # Validate input
+    if not bill_id or new_state not in ["approved", "denegated"]:
+        return jsonify({"msg": "Invalid bill ID or state"}), 400
+
+    bill = Bill.query.get(bill_id)
+
+    if bill is None:
+        return jsonify({"msg": "Bill not found"}), 404
+    
+    # Prevents re-approval/denial
+    if bill.state in [bill.state.APPROVED, bill.state.DENEGATED]:
+        return jsonify({"msg": f"Bill already {bill.state.name.lower()}."}), 400
+
+     # Update bill state
+    bill.state = state_type[new_state.upper()]
+    bill.evaluator_id = supervisor_id
+    bill.date_approved = datetime.now(timezone.utc)
+
+    # Record who submitted the bill (from Budget → Employee)
+    budget = Budget.query.get(bill.budget_id)
+    if budget:
+        bill.employee_id = budget.employee_id  # Attach the original submitter
+
+    db.session.commit()
+
+    return jsonify({"msg": f"Bill {bill_id} successfully {new_state}."}), 200
+
+#un endpoint (GET) donde el supervisor pueda obtener todos los budget de su departmento. Serialize 
+#y enviar a frontend. y una vez en el frontend, guardar los datos en el store. Una vez guardado en el store 
+#usar useParams para acceder al ID.
 
 
 @api.route("/refresh", methods=["POST"])
@@ -357,7 +406,7 @@ def budget_create():
     amount = float(body["amount"])
 
     new_budget = Budget(budget_description=budget_description,
-                        employee_id=user.id, department_id=user.department_id, amount=amount, available=amount, state="PENDING", condition=None)
+                        employee_id=user.id, department_id=user.department_id, amount=amount, available=amount, state="ACCEPTED", condition=None)
     db.session.add(new_budget)
     db.session.commit()
     return jsonify({"msg": "Budget created successfully"}), 201

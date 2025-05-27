@@ -122,8 +122,7 @@ class Budget(db.Model):
         ForeignKey('departments.id'), nullable=False)
     department: Mapped["Department"] = relationship(back_populates="budgets")
     bills: Mapped[List["Bill"]] = relationship(back_populates="budget")
-    employee: Mapped['Employee'] = relationship(back_populates="budgets")
-
+    employee: Mapped['Employee'] = relationship(back_populates="budgets")                                                              
     def serialize(self):
         return {
             "id": self.id,

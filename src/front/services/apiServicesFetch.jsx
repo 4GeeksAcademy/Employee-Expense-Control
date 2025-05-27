@@ -339,7 +339,7 @@ export const sendResetEmail = async (email) => {
     },
     body: JSON.stringify({ email }),
   });
-  if (!res.ok) throw new Error("No se pudo enviar el correo");
+  if (!res.ok) throw new Error("Email couldn't be sent");
   return await res.json();
 };
 
