@@ -18,7 +18,7 @@ class state_type(enum.Enum):
 
 class state_budget(enum.Enum):
     ACCEPTED = "accepted"
-    REFUSED = "refused"
+    REJECTED = "rejected"
     PENDING = "pending"
 
 
@@ -118,6 +118,10 @@ class Budget(db.Model):
     condition: Mapped[str] = mapped_column(Text(), nullable=True)
     employee_id: Mapped[int] = mapped_column(
         ForeignKey('employees.id'), nullable=False)
+    evaluator_id: Mapped[int] = mapped_column(
+        ForeignKey('employees.id'), nullable=False)
+    date_approved: Mapped[datetime] = mapped_column(
+        DateTime, nullable=True) 
     department_id: Mapped[int] = mapped_column(
         ForeignKey('departments.id'), nullable=False)
     department: Mapped["Department"] = relationship(back_populates="budgets")
@@ -132,6 +136,7 @@ class Budget(db.Model):
             "state": self.state.name,
             "condition": self.condition,
             "employee_id": self.employee_id,
+            "employee_name": self.employee.name if self.employee else None,
             "department_id": self.department_id,
             "bills": [bill.serialize() for bill in self.bills]
         }

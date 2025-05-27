@@ -15,6 +15,8 @@ from dotenv import load_dotenv
 import os
 from datetime import datetime, timezone
 from .models import state_type
+from .models import state_budget
+
 
 load_dotenv()  # Carga las variables desde .env
 FRONTEND_URL = os.getenv('FRONTEND_URL')
@@ -319,7 +321,7 @@ def update_bill_state(bill_id):
         return jsonify({"msg": "Unauthorized"}), 403
 
     data = request.get_json()
-    bill_id = data.get("bill_id")
+    #bill_id = data.get("bill_id")
     new_state = data.get("state")  # "approved" or "denegated"
 
     # Validate input
@@ -332,11 +334,14 @@ def update_bill_state(bill_id):
         return jsonify({"msg": "Bill not found"}), 404
     
     # Prevents re-approval/denial
-    if bill.state in [bill.state.APPROVED, bill.state.DENEGATED]:
+    if bill.state in [state_type.APPROVED, state_type.DENEGATED]: #better than bill.state.APPROVED
         return jsonify({"msg": f"Bill already {bill.state.name.lower()}."}), 400
 
      # Update bill state
-    bill.state = state_type[new_state.upper()]
+    try:
+        bill.state = state_type[new_state.upper()]
+    except KeyError:
+        return jsonify({"msg": "Invalid state"}), 400
     bill.evaluator_id = supervisor_id
     bill.date_approved = datetime.now(timezone.utc)
 
@@ -348,6 +353,49 @@ def update_bill_state(bill_id):
     db.session.commit()
 
     return jsonify({"msg": f"Bill {bill_id} successfully {new_state}."}), 200
+
+@api.route("/budgets/<int:budget_id>/state", methods=["PATCH"])
+@jwt_required()
+def update_budget_state(budget_id):
+    supervisor_id = get_jwt_identity()
+    supervisor = Employee.query.get(supervisor_id)
+
+    # Ensure requester is a supervisor
+    if supervisor is None or not supervisor.is_supervisor:
+        return jsonify({"msg": "Unauthorized"}), 403
+
+    data = request.get_json()
+    new_state = data.get("state")  # "approved" or "denegated"
+
+    # Validate input
+    if not budget_id or new_state not in ["accepted", "rejected"]:
+        return jsonify({"msg": "Invalid budget ID or state"}), 400
+
+    budget = Budget.query.get(budget_id)
+
+    if budget is None:
+        return jsonify({"msg": "Budget not found"}), 404
+    
+    # Prevents re-approval/denial
+    if budget.state in [state_budget.ACCEPTED, state_budget.REJECTED]:
+        return jsonify({"msg": f"Budget already {budget.state.name.lower()}."}), 400
+
+     # Update budget state
+    try:
+        budget.state = state_budget[new_state.upper()]
+    except KeyError:
+        return jsonify({"msg": "Invalid state"}), 400
+    budget.evaluator_id = supervisor_id
+    budget.date_approved = datetime.now(timezone.utc)
+
+    # Record who submitted the budget (from Budget → Employee)
+    # Attach the original submitter
+
+    db.session.commit()
+
+    return jsonify({"msg": f"Budget {budget_id} successfully {new_state}.",
+                    "budget": budget.serialize()}
+                   ), 200
 
 #un endpoint (GET) donde el supervisor pueda obtener todos los budget de su departmento. Serialize 
 #y enviar a frontend. y una vez en el frontend, guardar los datos en el store. Una vez guardado en el store 
@@ -406,7 +454,7 @@ def budget_create():
     amount = float(body["amount"])
 
     new_budget = Budget(budget_description=budget_description,
-                        employee_id=user.id, department_id=user.department_id, amount=amount, available=amount, state="ACCEPTED", condition=None)
+                        employee_id=user.id, department_id=user.department_id, amount=amount, available=amount, state="Pending", condition=None)
     db.session.add(new_budget)
     db.session.commit()
     return jsonify({"msg": "Budget created successfully"}), 201
