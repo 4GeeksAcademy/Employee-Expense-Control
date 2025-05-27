@@ -112,22 +112,22 @@ export const fetchId = async () => {
 
 export const fetchUserProfile = async () => {
   const token = localStorage.getItem("token");
-  if (!token){
+  if (!token) {
     throw new Error("No token found");
   }
 
   const response = await fetch(`${backendUrl}/me`, {
     method: "GET",
     headers: {
-       Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   })
-      if (!response.ok){
-        throw new Error(`Failed to fetch user profile: ${response.status}`);
-      }
+  if (!response.ok) {
+    throw new Error(`Failed to fetch user profile: ${response.status}`);
+  }
 
-      const user = await response.json();
-      return user;
+  const user = await response.json();
+  return user;
 }
 
 
@@ -395,6 +395,75 @@ export const authFetch = async (url, options = {}) => {
   return response;
 };
 
+export const supervisorBudgetFetch = async (dispatch) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("the token was not obtained")
+    }
+    const response = await fetch(`${backendUrl}/supervisor-budgets-bills`, { method: "GET", headers: { "Authorization": `Bearer ${token}` } })
+    if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`)
+    }
+    const data = await response.json()
+    if (!data.budgets || !data.department_id) {
+      throw new Error("the data has not been sent correctly")
+    }
+    const action = {
+      type: "SET_BUDGETS",
+      payload: data.budgets
+    }
+    dispatch(action)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const acceptBudget = async (budgetId, amount, dispatch) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${backendUrl}/budgets/${budgetId}/accept`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ amount }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al aceptar el presupuesto");
+    }
+
+    const updatedBudget = await response.json();
+
+    dispatch({ type: "EDIT_BUDGET", payload: updatedBudget });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const rejectBudget = async (budgetId, dispatch) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${backendUrl}/budgets/${budgetId}/reject`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al rechazar el presupuesto");
+    }
+
+    const updatedBudget = await response.json();
+
+    dispatch({ type: "EDIT_BUDGET", payload: updatedBudget });
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 
 

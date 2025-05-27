@@ -13,6 +13,7 @@ import re
 import cloudinary.uploader
 from dotenv import load_dotenv
 import os
+from .models import state_budget
 
 load_dotenv()  # Carga las variables desde .env
 FRONTEND_URL = os.getenv('FRONTEND_URL')
@@ -303,6 +304,59 @@ def supervisor_area():
                         "rol": rol,
                         "access_level": claims.get("lvl")}
                     })
+
+
+@api.route("/supervisor-budgets-bills", methods=["GET"])
+@jwt_required()
+def get_department_budgets_and_bills():
+    current_user_id = get_jwt_identity()
+    employee = Employee.query.get(current_user_id)
+
+    if not employee or not employee.is_supervisor:
+        return jsonify({"error": "Unauthorized or not a supervisor"}), 403
+
+    department_id = employee.department_id
+
+    if not department_id:
+        return jsonify({"error": "Supervisor has no department assigned"}), 400
+
+    budgets = Budget.query.filter_by(department_id=department_id).all()
+
+    serialized_data = [budget.serialize() for budget in budgets]
+
+    return jsonify({"department_id": department_id, "budgets": serialized_data}), 200
+
+
+@api.route("/budgets/<int:budget_id>/accept", methods=["PUT"])
+@jwt_required()
+def accept_budget(budget_id):
+    budget = Budget.query.get(budget_id)
+    if not budget:
+        return jsonify({"error": "Budget not found"}), 404
+
+    data = request.get_json()
+    amount = data.get("amount")
+
+    if amount:
+        budget.amount = amount
+
+    budget.state = state_budget.ACCEPTED
+    db.session.commit()
+
+    return jsonify(budget.serialize()), 200
+
+
+@api.route("/budgets/<int:budget_id>/reject", methods=["PUT"])
+@jwt_required()
+def reject_budget(budget_id):
+    budget = Budget.query.get(budget_id)
+    if not budget:
+        return jsonify({"error": "Budget not found"}), 404
+
+    budget.state = state_budget.REJECTED
+    db.session.commit()
+
+    return jsonify(budget.serialize()), 200
 
 
 @api.route("/refresh", methods=["POST"])

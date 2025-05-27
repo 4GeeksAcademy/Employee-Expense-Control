@@ -134,5 +134,6 @@ class Budget(db.Model):
             "condition": self.condition,
             "employee_id": self.employee_id,
             "department_id": self.department_id,
-            "bills": [bill.serialize() for bill in self.bills]
+            "bills": [bill.serialize() for bill in self.bills],
+            "employee": self.employee.serialize() if self.employee else None,
         }
