@@ -31,7 +31,6 @@ const AssignDepartmentEmployeeForm = () => {
                             onChange={(e) => setIdEmployee(e.target.value)}
                             required
                         />
-                        {/* <div className="form-text">Enter the ID of the employee.</div> */}
                     </div>
 
                     <div className="mb-3">
@@ -43,8 +42,8 @@ const AssignDepartmentEmployeeForm = () => {
                             value={idDepartment}
                             onChange={(e) => setIdDepartment(e.target.value)}
                             required
-                        />
-                        {/* <div className="form-text">Enter the ID of the department.</div> */}
+                        />git add .
+                        
                     </div>
 
                     <button type="submit" className="btn btn-primary w-100">
