@@ -44,12 +44,12 @@ class Employee(db.Model):
 
     budgets: Mapped[List['Budget']] = relationship(
        "Budget",
-        foreign_keys= "[Budget.employee_id]",
+        foreign_keys=lambda: [Budget.employee_id],
         back_populates = "employee"
     )
     supervised_budget: Mapped[List['Budget']] = relationship( 
         "Budget",
-        foreign_keys= "[Budget.evaluator_id]",
+        foreign_keys=lambda: [Budget.evaluator_id],
         back_populates="evaluator"
     )
 
