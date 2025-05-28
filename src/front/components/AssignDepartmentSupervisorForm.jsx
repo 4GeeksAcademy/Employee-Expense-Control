@@ -1,25 +1,23 @@
-import useAssignDepartmentEmployee from "../hooks/useAssignDeparmentEmployee"
-
-const AssignDepartmentEmployeeForm = () => {
+import useAssignDepartmentSupervisor from "../hooks/useAssignDepartmentSupervisor"
+const AssignDepartmentSupervisorForm = () => {
     const {
-        idEmployee,
-        setIdEmployee,
+        idSupervisor,
+        setIdSupervisor,
         idDepartment,
         setIdDepartment,
-        assignDepartmentEmployee,
+        assignDepartmentSupervisor,
         navigate
-    } = useAssignDepartmentEmployee()
+    } = useAssignDepartmentSupervisor()
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        assignDepartmentEmployee(idEmployee, idDepartment)
+        assignDepartmentSupervisor(idSupervisor, idDepartment)
         navigate("/supervisor")
     }
-
-    return (
+    return (<>
         <div className="container d-flex justify-content-center align-items-center min-vh-100">
             <div className="card shadow-lg p-4" style={{ maxWidth: "500px", width: "100%" }}>
-                <h2 className="text-center mb-4">Assign Department to Employee</h2>
+                <h2 className="text-center mb-4">Assign Department to Supervisor</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label htmlFor="idEmployee" className="form-label">Employee ID</label>
@@ -27,8 +25,8 @@ const AssignDepartmentEmployeeForm = () => {
                             type="number"
                             className="form-control"
                             id="idEmployee"
-                            value={idEmployee}
-                            onChange={(e) => setIdEmployee(e.target.value)}
+                            value={idSupervisor}
+                            onChange={(e) => setIdSupervisor(e.target.value)}
                             required
                         />
                     </div>
@@ -52,7 +50,7 @@ const AssignDepartmentEmployeeForm = () => {
                 </form>
             </div>
         </div>
-    )
+    </>)
 }
 
-export default AssignDepartmentEmployeeForm
+export default AssignDepartmentSupervisorForm
