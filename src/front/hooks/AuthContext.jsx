@@ -12,6 +12,9 @@ export const AuthProvider = ({children}) => {
     const [loading, setLoading] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
     
+  //En LoadUser buscamos a traves de la ruta /me el usuario es decir lo usamos para identificar al usuario
+  //Si es supervisor True o Empleado False para la creacion de rutas privadas y navegacion por roles
+
     const loadUser = async () => {
     try {
       const response = await authFetch("/me", {}, {
@@ -22,7 +25,9 @@ export const AuthProvider = ({children}) => {
 
       const userData = await response.json();
       setUser(userData);
+      console.log("User cargado:", userData);
       setAuthenticated(true);
+      return userData
     } catch (error) {
       console.error("Error loading user profile:", error);
       setAuthenticated(false);
@@ -44,10 +49,10 @@ export const AuthProvider = ({children}) => {
     const login = async (email,password) => {
         try {
             setLoading(true);
-            const userData = await fetchLogin(email,password)//Guardamos con el email y password
+            await fetchLogin(email,password)//Guardamos con el email y password
             await new Promise(resolve => setTimeout(resolve, 100));
             
-            await loadUser()
+           const userData = await loadUser() //Buscamos la informacion del usuario y su Rol para redireccion
             
             return userData;
         } catch (error){

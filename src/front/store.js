@@ -76,6 +76,14 @@ export default function storeReducer(store, action = {}) {
           todo.id === id ? { ...todo, background: color } : todo
         ),
       };
+    case "EDIT_BUDGET":
+      const updated = action.payload;
+      return {
+        ...store,
+        budgets: store.budgets.map((budget) =>
+          budget.id === updated.id ? updated : budget
+        ),
+      };
 
     case "set_employee_id":
       return {

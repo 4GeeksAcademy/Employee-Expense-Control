@@ -120,7 +120,7 @@ export const fetchId = async () => {
 
 export const fetchUserProfile = async () => {
   const token = localStorage.getItem("token");
-  if (!token){
+  if (!token) {
     throw new Error("No token found");
   }
 
@@ -129,12 +129,12 @@ export const fetchUserProfile = async () => {
   const response = await authFetch('/me', {
     method: "GET",
   })
-      if (!response.ok){
-        throw new Error(`Failed to fetch user profile: ${response.status}`);
-      }
+  if (!response.ok) {
+    throw new Error(`Failed to fetch user profile: ${response.status}`);
+  }
 
-      const user = await response.json();
-      return user;
+  const user = await response.json();
+  return user;
 }
 
 
@@ -239,7 +239,7 @@ export const fetchImageBill = async (image, description, location, amount) => {
     console.log(data);
 
     //USAR authFetch en las rutas que requieran token
-    const billResponse = await authFetch('bill', {
+    const billResponse = await authFetch('/bill', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -408,6 +408,114 @@ export const sendResetEmail = async (email) => {
 //   }
 //   return response;
 // };
+
+export const supervisorBudgetFetch = async (dispatch) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("the token was not obtained")
+    }
+    const response = await authFetch('/supervisor-budgets-bills', { method: "GET",})
+    if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`)
+    }
+    const data = await response.json()
+    if (!data.budgets || !data.department_id) {
+      throw new Error("the data has not been sent correctly")
+    }
+    const action = {
+      type: "SET_BUDGETS",
+      payload: data.budgets
+    }
+    dispatch(action)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const acceptBudget = async (budgetId, amount, dispatch) => {
+  try {
+    const response = await authFetch(`/budgets/${budgetId}/accept`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ amount }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al aceptar el presupuesto");
+    }
+
+    const updatedBudget = await response.json();
+
+    dispatch({ type: "EDIT_BUDGET", payload: updatedBudget });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const rejectBudget = async (budgetId, dispatch) => {
+  try {
+    
+    const response = await authFetch(`/budgets/${budgetId}/reject`, {
+      method: "PUT",
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al rechazar el presupuesto");
+    }
+
+    const updatedBudget = await response.json();
+
+    dispatch({ type: "EDIT_BUDGET", payload: updatedBudget });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const assignDepartmentEmployee = async (employeeId, departmentId) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Token not found")
+    }
+    if (!employeeId || !departmentId) {
+      throw new Error("the data has not been passed correctly")
+    }
+    const rawData = JSON.stringify({ id_employee: employeeId, id_department: departmentId })
+    const response = await authFetch('/assigndepartment', { method: "PUT", headers: { "Content-Type": "application/json",}, body: rawData })
+    if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`)
+    }
+    const data = await response.json()
+    console.log(data)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const assignDepartmentSupervisor = async (supervisorId, departmentId) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Token not found")
+    }
+    if (!supervisorId || supervisorId.trim() === "" || !departmentId || departmentId.trim() === "") {
+      throw new Error("the data has not been passed correctly")
+    }
+    const rawData = JSON.stringify({ id_employee: supervisorId, id_department: departmentId })
+    const response = await authFetch(`/assign-supervisor-department`, { method: "PUT", headers: { "Content-Type": "application/json",}, body: rawData })
+    if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`)
+    }
+    const data = await response.json()
+    console.log(data)
+
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 
 
