@@ -460,7 +460,7 @@ def bill_create():
     date = body["date"]
 
     budget = Budget.query.filter_by(
-        employee_id=user.id, state="PENDING").order_by(Budget.id.desc()).first()
+        employee_id=user.id, state="ACCEPTED").order_by(Budget.id.desc()).first()
 
     if budget is None:
         return jsonify({"msg": "Invalid credentials"}), 404

@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom"
+import useSupervisorOpcions from "../hooks/useSupervisorOpcions"
 const SupervisorOpcions = () => {
+    useSupervisorOpcions()
     return (<>
         <div style={{ minHeight: '100vh', backgroundColor: '#f3f4f6', padding: '2rem' }}>
             <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '2rem', textAlign: 'center' }}>

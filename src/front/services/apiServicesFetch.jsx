@@ -471,7 +471,7 @@ export const assignDepartmentEmployee = async (employeeId, departmentId) => {
     if (!token) {
       throw new Error("Token not found")
     }
-    if (!employeeId || !departmentId) {
+    if (!employeeId || employeeId.trim() === "" || !departmentId || departmentId.trim() ==="") {
       throw new Error("the data has not been passed correctly")
     }
     const rawData = JSON.stringify({ id_employee: employeeId, id_department: departmentId })
