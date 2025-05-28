@@ -1,7 +1,9 @@
 import { FileText, FilePlus, Folder } from "lucide-react";
 import { Link } from 'react-router-dom';
+import useEmployeeOpcions from "../hooks/useEmployeeOpcions";
 
 const EmployeeOpcions = () => {
+    useEmployeeOpcions()
     return (
         <>
             <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 flex flex-col items-center justify-center p-6">
