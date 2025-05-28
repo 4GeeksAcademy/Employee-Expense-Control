@@ -367,7 +367,7 @@ def update_budget_state(budget_id):
         return jsonify({"msg": "Unauthorized"}), 403
 
     data = request.get_json()
-    new_state = data.get("state")  # "approved" or "denegated"
+    new_state = data.get("state")  # "approved" or "rejected"
 
     # Validate input
     if not budget_id or new_state not in ["accepted", "rejected"]:
@@ -389,9 +389,6 @@ def update_budget_state(budget_id):
         return jsonify({"msg": "Invalid state"}), 400
     budget.evaluator_id = supervisor_id
     budget.date_approved = datetime.now(timezone.utc)
-
-    # Record who submitted the budget (from Budget → Employee)
-    # Attach the original submitter
 
     db.session.commit()
 
@@ -447,7 +444,7 @@ def budget_create():
 
     for field in fields_required:
         if field not in body:
-            return jsonify({"msg": "Invalid creedentials"}), 402
+            return jsonify({"msg": "Invalid credentials"}), 402
 
     if body["budget_description"].strip() == "" or body["amount"].strip() == "":
         return jsonify({"msg": "Invalid credentials"}), 403
