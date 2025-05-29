@@ -10,13 +10,13 @@ import enum
 db = SQLAlchemy()
 
 
-class state_type(enum.Enum):
+class StateType(enum.Enum):
     APPROVED = 'approved'
     DENEGATED = 'denegated'
     PENDING = 'pending'
 
 
-class state_budget(enum.Enum):
+class StateBudget(enum.Enum):
     ACCEPTED = "accepted"
     REJECTED = "rejected"
     PENDING = "pending"
@@ -47,7 +47,7 @@ class Employee(db.Model):
         foreign_keys=lambda: [Budget.employee_id],
         back_populates = "employee"
     )
-    supervised_budget: Mapped[List['Budget']] = relationship( 
+    supervised_budgets: Mapped[List['Budget']] = relationship( 
         "Budget",
         foreign_keys=lambda: [Budget.evaluator_id],
         back_populates="evaluator"
@@ -59,7 +59,6 @@ class Employee(db.Model):
             "name": self.name,
             "last_name": self.last_name,
             "name": self.name,
-            "last_name": self.last_name,
             "email": self.email,
             "is_supervisor": self.is_supervisor,
             "is_active": self.is_active
@@ -93,7 +92,7 @@ class Bill(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     trip_description: Mapped[str] = mapped_column(String(250), nullable=False)
     trip_address: Mapped[str] = mapped_column(String(250), nullable=False)
-    state: Mapped[state_type] = mapped_column(Enum(state_type))
+    state: Mapped[StateType] = mapped_column(Enum(StateType))
     # Por usar propiedad "Float" para manejar numeros y no texto
     amount: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
     evaluator_id: Mapped[int] = mapped_column(
@@ -117,6 +116,7 @@ class Bill(db.Model):
             "evaluator_id": self.evaluator_id,
             "date_approved": self.date_approved.isoformat() if self.date_approved else None,
             "budget_id": self.budget_id,
+            "submitted_by": self.budget.employee.name if self.budget and self.budget.employee else None
         }
 
 
@@ -127,7 +127,7 @@ class Budget(db.Model):
         String(250), nullable=False)
     amount: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
     available: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
-    state: Mapped[state_budget] = mapped_column(Enum(state_budget))
+    state: Mapped[StateBudget] = mapped_column(Enum(StateBudget))
     condition: Mapped[str] = mapped_column(Text(), nullable=True)
     employee_id: Mapped[int] = mapped_column(ForeignKey('employees.id'), nullable=False)
     #employee: Mapped['Employee'] = relationship(back_populates="budgets")   
@@ -146,7 +146,7 @@ class Budget(db.Model):
     evaluator: Mapped['Employee'] = relationship(
         "Employee",
         foreign_keys = [evaluator_id],
-        back_populates = "supervised_budget"
+        back_populates = "supervised_budgets"
     )        
 
     def serialize(self):
@@ -154,11 +154,13 @@ class Budget(db.Model):
             "id": self.id,
             "budget_description": self.budget_description,
             "amount": float(self.amount),
-            "available": self.available,
+            "available": float(self.available),
             "state": self.state.name,
             "condition": self.condition,
             "employee_id": self.employee_id,
             "employee_name": self.employee.name if self.employee else None,
+            "evaluator_id": self.employee_id,
+            "evaluator_name": self.evaluator.name if self.employee else None,
             "department_id": self.department_id,
             "bills": [bill.serialize() for bill in self.bills]
         }

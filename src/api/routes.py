@@ -14,8 +14,8 @@ import cloudinary.uploader
 from dotenv import load_dotenv
 import os
 from datetime import datetime, timezone
-from .models import state_type
-from .models import state_budget
+from .models import StateType
+from .models import StateBudget
 
 
 load_dotenv()  # Carga las variables desde .env
@@ -325,7 +325,7 @@ def update_bill_state(bill_id):
     new_state = data.get("state")  # "approved" or "denegated"
 
     # Validate input
-    if not bill_id or new_state not in ["approved", "denegated"]:
+    if not new_state not in ["approved", "denegated"]:
         return jsonify({"msg": "Invalid bill ID or state"}), 400
 
     bill = Bill.query.get(bill_id)
@@ -335,25 +335,26 @@ def update_bill_state(bill_id):
 
     # Prevents re-approval/denial
     # better than bill.state.APPROVED
-    if bill.state in [state_type.APPROVED, state_type.DENEGATED]:
+    if bill.state in [StateType.APPROVED, StateType.DENEGATED]:
         return jsonify({"msg": f"Bill already {bill.state.name.lower()}."}), 400
 
      # Update bill state
     try:
-        bill.state = state_type[new_state.upper()]
+        bill.state = StateType[new_state.upper()]
     except KeyError:
         return jsonify({"msg": "Invalid state"}), 400
+    
     bill.evaluator_id = supervisor_id
     bill.date_approved = datetime.now(timezone.utc)
 
-    # Record who submitted the bill (from Budget → Employee)
-    budget = Budget.query.get(bill.budget_id)
-    if budget:
-        bill.employee_id = budget.employee_id  # Attach the original submitter
+    '''Record who submitted the bill (from Budget → Employee)
+    budget = Budget.query.get(bill.budget_id) Not necessary
+    employee_id = budget.employee_id if budget else None # Attach the original submitter'''
 
     db.session.commit()
 
-    return jsonify({"msg": f"Bill {bill_id} successfully {new_state}."}), 200
+    return jsonify({"msg": f"Bill {bill_id} successfully {new_state}.",
+                    "bill": bill.serialize()}), 200
 
 
 @api.route("/budgets/<int:budget_id>/state", methods=["PATCH"])
@@ -370,7 +371,7 @@ def update_budget_state(budget_id):
     new_state = data.get("state")  # "approved" or "rejected"
 
     # Validate input
-    if not budget_id or new_state not in ["accepted", "rejected"]:
+    if not new_state not in ["accepted", "rejected"]:
         return jsonify({"msg": "Invalid budget ID or state"}), 400
 
     budget = Budget.query.get(budget_id)
@@ -379,12 +380,12 @@ def update_budget_state(budget_id):
         return jsonify({"msg": "Budget not found"}), 404
 
     # Prevents re-approval/denial
-    if budget.state in [state_budget.ACCEPTED, state_budget.REJECTED]:
+    if budget.state in [StateBudget.ACCEPTED, StateBudget.REJECTED]:
         return jsonify({"msg": f"Budget already {budget.state.name.lower()}."}), 400
 
      # Update budget state
     try:
-        budget.state = state_budget[new_state.upper()]
+        budget.state = StateBudget[new_state.upper()]
     except KeyError:
         return jsonify({"msg": "Invalid state"}), 400
     budget.evaluator_id = supervisor_id
