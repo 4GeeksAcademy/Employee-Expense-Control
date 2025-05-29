@@ -74,7 +74,7 @@ app.register_blueprint(api, url_prefix='/api')
 # JWT config
 app.config["JWT_SECRET_KEY"] = os.getenv("FLASK_APP_KEY")
 
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=1)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=10)
 
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=1)
 

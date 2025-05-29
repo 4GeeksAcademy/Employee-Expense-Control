@@ -44,12 +44,15 @@ class Employee(db.Model):
 
     budgets: Mapped[List['Budget']] = relationship(
        "Budget",
-        foreign_keys=lambda: [Budget.employee_id],
+        foreign_keys="[Budget.employee_id]",
         back_populates = "employee"
     )
     supervised_budgets: Mapped[List['Budget']] = relationship( 
         "Budget",
-        foreign_keys=lambda: [Budget.evaluator_id],
+        foreign_keys= "[Budget.evaluator_id]",
+        back_populates="evaluator"
+    )
+    supervised_bills: Mapped[List['Bill']] = relationship( 
         back_populates="evaluator"
     )
 
@@ -95,10 +98,16 @@ class Bill(db.Model):
     state: Mapped[StateType] = mapped_column(Enum(StateType))
     # Por usar propiedad "Float" para manejar numeros y no texto
     amount: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
-    evaluator_id: Mapped[int] = mapped_column(
-        ForeignKey('employees.id'), nullable=False)
     date_approved: Mapped[datetime] = mapped_column(
         DateTime, nullable=True)  # Cambiado a datetime
+    evaluator_id: Mapped[int] = mapped_column(
+        ForeignKey('employees.id'), nullable=False)
+    evaluator: Mapped['Employee'] = relationship(
+        "Employee",
+        foreign_keys = [evaluator_id],
+        back_populates = "supervised_bills"
+    )
+
     budget_id: Mapped[int] = mapped_column(
         ForeignKey('budgets.id'), nullable=False)
 

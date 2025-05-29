@@ -109,16 +109,16 @@ def forgot_password():
     # Crea el correo con el enlace de recuperación
     msg = Message("Reset password", recipients=[email])
     msg.body = f"""
-             Hola,
+             Hello,
 
-            Recibiste este correo porque se solicitó un cambio de contraseña para tu cuenta.
+            You received this email because a password reset was requested for your account.
 
-            Haz clic en el siguiente enlace para restablecer tu contraseña. Este enlace es válido por 15 minutos:{reset_link}
+            Click the following link to reset your password. This link is valid for 15 minutes: {reset_link}
 
-            Si no solicitaste este cambio, puedes ignorar este mensaje. Tu contraseña actual permanecerá segura.
+            If you did not request this change, you can ignore this message. Your current password will remain secure.
 
-            Saludos,
-            El equipo de soporte Melena de cangrejo (Bless, Juan, Giovanny, Carlos)
+            Regards,  
+                    El Melena de cangrejo support team (Bless, Juan, Giovanny, Carlos)
             """
     print(msg)
     # Envía el correo
@@ -386,6 +386,9 @@ def update_budget_state(budget_id):
         budget.state = StateBudget[new_state.upper()]
     except KeyError:
         return jsonify({"msg": "Invalid state"}), 400
+    
+
+    # Assign evaluator to budget (supervisor who approved/denied the bill)
     budget.evaluator_id = supervisor_id
     budget.date_approved = datetime.now(timezone.utc)
 
@@ -471,16 +474,25 @@ def budget_create():
     budget_description = body["budget_description"]
     amount = float(body["amount"])
 
-    new_budget = Budget(budget_description=budget_description,
+    try:
+        new_budget = Budget(budget_description=budget_description,
                         employee_id=user.id, 
                         department_id=user.department_id, 
                         amount=amount, 
                         available=amount, 
-                        state=StateBudget.PENDING, #changed from the string "Pending" 
+                        state= "pending",
+                        #state=StateBudget.PENDING, #changed from the string "Pending" 
                         condition=None)
-    db.session.add(new_budget)
-    db.session.commit()
-    return jsonify({"msg": "Budget created successfully"}), 201
+        db.session.add(new_budget)
+        db.session.commit()
+        return jsonify({"msg": "Budget created successfully"}), 201
+    except Exception as e:
+        print(e)
+        return jsonify({"msg": "error"}), 500
+
+
+
+    
 
 
 @api.route("/mybudgets", methods=["GET"])
