@@ -162,7 +162,8 @@ class Budget(db.Model):
             "evaluator_id": self.employee_id,
             "evaluator_name": self.evaluator.name if self.employee else None,
             "department_id": self.department_id,
-            "bills": [bill.serialize() for bill in self.bills]
+            "bills": [bill.serialize() for bill in self.bills],
+            "employee": self.employee.serialize() if self.employee else None,
         }
 
     def sumary(self):

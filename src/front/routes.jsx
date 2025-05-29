@@ -20,6 +20,10 @@ import BudgetList from "./pages/BudgetList";
 import IdEmployee from "./pages/IdEmployee";
 import PrivateRoute from "./components/PrivateRoute";
 import SupervisorHome from "./pages/SupervisorHome";
+import SupervisorBudgetPending from "./pages/SupervisorBudgetPending";
+import SupervisorBudgetAccepted from "./pages/SupervisorBudgetsAccepted";
+import AssignDepartmentEmployee from "./pages/AssignDepartmentEmployee";
+import AssingDepartmentSupervisor from "./pages/AssingDepartmentSupervisor";
 
 
 
@@ -57,6 +61,10 @@ export const router = createBrowserRouter(
 
       {/* 🔒 RUTAS PROTEGIDAS SOLO SUPERVISOR */}
       <Route path="/supervisor" element={<PrivateRoute onlyFor="supervisor"><SupervisorHome /></PrivateRoute>} />
+      <Route path="/budgetspending" element={<PrivateRoute onlyFor="supervisor"><SupervisorBudgetPending /></PrivateRoute>} />
+      <Route path="/budgetsaccepted" element={<PrivateRoute onlyFor="supervisor"><SupervisorBudgetAccepted /></PrivateRoute>} />
+      <Route path="/assignDepartmentEmployee" element={<PrivateRoute onlyFor="supervisor"><AssignDepartmentEmployee /></PrivateRoute>} />
+      <Route path="/assignDepartmentSupervisor" element={<PrivateRoute onlyFor="supervisor"><AssingDepartmentSupervisor /></PrivateRoute>} />
 
 
       {/* 🔒 RUTAS COMPARTIDAS */}

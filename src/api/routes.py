@@ -17,7 +17,6 @@ from datetime import datetime, timezone
 from .models import StateType
 from .models import StateBudget
 
-
 load_dotenv()  # Carga las variables desde .env
 FRONTEND_URL = os.getenv('FRONTEND_URL')
 
@@ -233,7 +232,7 @@ def my_id():
     return jsonify({"id": employee.id}), 200
 
 
-@api.route("/assigndepartment", methods=["POST"])
+@api.route("/assigndepartment", methods=["PUT"])
 @jwt_required()
 # solo un supervisor puede asignarle el departamento a un empleado
 def assign_department():
@@ -254,10 +253,10 @@ def assign_department():
 
     employee.department_id = department_id
     db.session.commit()
-    return jsonify({"msg": "successfully assigned"}), 201
+    return jsonify({"msg": "successfully assigned"}), 200
 
 
-@api.route("/assign-supervisor-department", methods=["POST"])
+@api.route("/assign-supervisor-department", methods=["PUT"])
 @jwt_required()
 def assign_supervisor_department():
     supervisor_id = get_jwt_identity()
@@ -291,7 +290,7 @@ def assign_supervisor_department():
     supervisor_to_assign.department_id = department_id
     db.session.commit()
 
-    return jsonify({"msg": "Supervisor assigned to department successfully"}), 201
+    return jsonify({"msg": "Supervisor assigned to department successfully"}), 200
 
 
 @api.route("/supervisor-area", methods=["GET"])
@@ -307,8 +306,7 @@ def supervisor_area():
                     "data": {
                         "rol": rol,
                         "access_level": claims.get("lvl")}
-                    })
-
+                    }), 200
 
 @api.route("/bills/<int:bill_id>/state", methods=["PATCH"])
 @jwt_required()
@@ -401,6 +399,26 @@ def update_budget_state(budget_id):
 # y enviar a frontend. y una vez en el frontend, guardar los datos en el store. Una vez guardado en el store
 # usar useParams para acceder al ID.
 
+@api.route("/supervisor-budgets-bills", methods=["GET"])
+@jwt_required()
+def get_department_budgets_and_bills():
+    current_user_id = get_jwt_identity()
+    supervisor = Employee.query.get(current_user_id)
+
+    if not supervisor or supervisor.is_supervisor:
+        return jsonify({"error": "Unauthorized or not a supervisor"}), 403
+
+    department_id = supervisor.department_id
+
+    if not department_id:
+        return jsonify({"error": "Supervisor has no department assigned"}), 400
+
+    budgets = Budget.query.filter_by(department_id=department_id).all()
+
+    serialized_data = [budget.serialize() for budget in budgets]
+
+    return jsonify({"department_id": department_id, "budgets": serialized_data}), 200
+
 
 @api.route("/refresh", methods=["POST"])
 @jwt_required(refresh=True)
@@ -458,7 +476,7 @@ def budget_create():
                         department_id=user.department_id, 
                         amount=amount, 
                         available=amount, 
-                        state=state_budget.PENDING, #changed from the string "Pending" 
+                        state=StateBudget.PENDING, #changed from the string "Pending" 
                         condition=None)
     db.session.add(new_budget)
     db.session.commit()
@@ -508,7 +526,7 @@ def bill_create():
     date = body["date"]
 
     budget = Budget.query.filter_by(
-        employee_id=user.id, state="PENDING").order_by(Budget.id.desc()).first()
+        employee_id=user.id, state="ACCEPTED").order_by(Budget.id.desc()).first()
 
     if budget is None:
         return jsonify({"msg": "Invalid credentials"}), 404

@@ -76,10 +76,20 @@ const BudgetListComponent = () => {
                                 <span className="font-semibold text-gray-700">Status:</span>{" "}
                                 {budget.state}
                             </p>
+                            <p className="text-sm text-gray-500 mt-3">
+                                <span className="font-semibold text-gray-700">Budget amount:</span>{" "}
+                                ${parseFloat(budget.amount).toFixed(2)}
+                            </p>
 
                             <p className="text-sm font-medium text-gray-800 mb-4">
                                 Total Bills: <span className="text-green-600 font-bold">${totalBills.toFixed(2)}</span>
                             </p>
+
+                            <p className="text-sm text-gray-500 mt-3">
+                                <span className="font-semibold text-gray-700">available:</span>{" "}
+                                ${(budget.amount - totalBills).toFixed(2)}
+                            </p>
+
 
                             {expandedBudgets[index] && (
                                 <ul className="space-y-4 text-sm">
