@@ -7,3 +7,5 @@ const useBudgetAccepted = () => {
 }
 
 export default useBudgetAccepted
+
+//Donde se guarda los budgets aceptados

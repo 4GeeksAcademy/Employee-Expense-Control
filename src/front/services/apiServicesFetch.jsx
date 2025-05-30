@@ -487,7 +487,7 @@ export const budgetValidation = async(dispatch, budget_id, state, amount = null)
       throw new Error(`Error fetching data ${response.status}`)
      }
      const data = await response.json()
-     dispatch({ type: "EDIT_BUDGET", payload: data});
+    dispatch({ type: "UPDATE_BUDGET_STATE", payload: { budgetId: budget_id, newState: state.toUpperCase(), newAmount: amount } })
      console.log(data)
   } catch (error) {
     console.error(error)

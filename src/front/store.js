@@ -85,7 +85,20 @@ export default function storeReducer(store, action = {}) {
         ),
       };
 
-      
+   case "UPDATE_BUDGET_STATE":
+      const { budgetId: updatedBudgetId, newState, newAmount } = action.payload;
+      return {
+        ...store,
+        budgets: store.budgets.map((budget) =>
+          budget.id === updatedBudgetId
+            ? {
+                ...budget,
+                state: newState,
+                ...(newAmount && { amount: newAmount }),
+              }
+            : budget
+        ),
+      };
 
     case "set_employee_id":
       return {

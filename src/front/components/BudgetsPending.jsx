@@ -1,16 +1,20 @@
+import React, {useState, useEffect} from "react"
 import useSupervisorBudget from "../hooks/useSupervisorBudget"
 
+ 
 
 
 const BudgetsPending = () => {
-    const { store, dispatch, selectedEmployeeId, setSelectedEmployeeId, editedAmount, setEditedAmount, budgetValidation, navigate} = useSupervisorBudget()
+
+    const { store, dispatch, selectedEmployeeId, setSelectedEmployeeId, editedAmount, setEditedAmount, budgetValidation} = useSupervisorBudget()
+    
     const handleAccept = async (budgetId, amount) => {
-        budgetValidation(dispatch, budgetId, "accepted", amount)
+       await  budgetValidation(dispatch, budgetId, "accepted", amount)
         console.log("Aceptar", budgetId, amount);
     };
 
     const handleReject = async (budgetId) => {
-        budgetValidation(dispatch, budgetId, "rejected")
+        await budgetValidation(dispatch, budgetId, "rejected")
         console.log("Rechazar", budgetId);
     };
 
@@ -18,9 +22,7 @@ const BudgetsPending = () => {
         setEditedAmount((prev) => ({ ...prev, [budgetId]: newAmount }));
     };
 
-    const pendingBudgets = store.budgets.filter(
-        (b) => b.state === "PENDING"
-    );
+    const pendingBudgets = store.budgets.filter((b) => b.state === "PENDING");
 
     const filteredBudgets = selectedEmployeeId
         ? pendingBudgets.filter((b) => b.employee_id === selectedEmployeeId)
