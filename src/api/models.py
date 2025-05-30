@@ -140,7 +140,7 @@ class Budget(db.Model):
     condition: Mapped[str] = mapped_column(Text(), nullable=True)
     employee_id: Mapped[int] = mapped_column(ForeignKey('employees.id'), nullable=False)
     #employee: Mapped['Employee'] = relationship(back_populates="budgets")   
-    evaluator_id: Mapped[int] = mapped_column(ForeignKey('employees.id'), nullable=False)
+    evaluator_id: Mapped[int] = mapped_column(ForeignKey('employees.id'), nullable=True)
     #evaluator: Mapped['Employee'] = relationship(back_populates="supervised_budget")  
     date_approved: Mapped[datetime] = mapped_column(DateTime, nullable=True) 
     department_id: Mapped[int] = mapped_column( ForeignKey('departments.id'), nullable=False)
@@ -169,7 +169,7 @@ class Budget(db.Model):
             "employee_id": self.employee_id,
             "employee_name": self.employee.name if self.employee else None,
             "evaluator_id": self.employee_id,
-            "evaluator_name": self.evaluator.name if self.employee else None,
+            "evaluator_name": self.evaluator.name if self.evaluator else None,
             "department_id": self.department_id,
             "bills": [bill.serialize() for bill in self.bills],
             "employee": self.employee.serialize() if self.employee else None,

@@ -1,13 +1,16 @@
 import useSupervisorBudget from "../hooks/useSupervisorBudget"
+
+
+
 const BudgetsPending = () => {
-    const { store, dispatch, selectedEmployeeId, setSelectedEmployeeId, editedAmount, setEditedAmount, acceptBudget, rejectBudget } = useSupervisorBudget()
+    const { store, dispatch, selectedEmployeeId, setSelectedEmployeeId, editedAmount, setEditedAmount, budgetValidation, navigate} = useSupervisorBudget()
     const handleAccept = async (budgetId, amount) => {
-        acceptBudget(budgetId)
+        budgetValidation(dispatch, budgetId, "accepted", amount)
         console.log("Aceptar", budgetId, amount);
     };
 
     const handleReject = async (budgetId) => {
-        rejectBudget(budgetId)
+        budgetValidation(dispatch, budgetId, "rejected")
         console.log("Rechazar", budgetId);
     };
 

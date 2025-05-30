@@ -367,9 +367,10 @@ def update_budget_state(budget_id):
 
     data = request.get_json()
     new_state = data.get("state")  # "approved" or "rejected"
+    new_amount = data.get("amount")
 
     # Validate input
-    if not new_state not in ["accepted", "rejected"]:
+    if not new_state in ["accepted", "rejected"]:
         return jsonify({"msg": "Invalid budget ID or state"}), 400
 
     budget = Budget.query.get(budget_id)
@@ -381,6 +382,20 @@ def update_budget_state(budget_id):
     if budget.state in [StateBudget.ACCEPTED, StateBudget.REJECTED]:
         return jsonify({"msg": f"Budget already {budget.state.name.lower()}."}), 400
 
+ # If amount is given, validate and update
+    if new_amount is not None:
+        try:
+            new_amount = float(new_amount)
+            if new_amount <= 0:
+                return jsonify({"msg": "Amount must be a positive number"}), 400
+            budget.amount = new_amount
+            budget.available = new_amount  # update available as well if logic permits
+        except (ValueError, TypeError):
+            return jsonify({"msg": "Invalid amount format"}), 400
+        
+    if new_amount is not None and new_state == "rejected":
+        return jsonify({"msg": "Cannot update amount for a rejected budget"}), 400
+    
      # Update budget state
     try:
         budget.state = StateBudget[new_state.upper()]
@@ -408,7 +423,7 @@ def get_department_budgets_and_bills():
     current_user_id = get_jwt_identity()
     supervisor = Employee.query.get(current_user_id)
 
-    if not supervisor or supervisor.is_supervisor:
+    if not supervisor or not supervisor.is_supervisor:
         return jsonify({"error": "Unauthorized or not a supervisor"}), 403
 
     department_id = supervisor.department_id
@@ -480,8 +495,7 @@ def budget_create():
                         department_id=user.department_id, 
                         amount=amount, 
                         available=amount, 
-                        state= "pending",
-                        #state=StateBudget.PENDING, #changed from the string "Pending" 
+                        state=StateBudget.PENDING, #changed from the string "Pending" 
                         condition=None)
         db.session.add(new_budget)
         db.session.commit()
@@ -489,10 +503,6 @@ def budget_create():
     except Exception as e:
         print(e)
         return jsonify({"msg": "error"}), 500
-
-
-
-    
 
 
 @api.route("/mybudgets", methods=["GET"])

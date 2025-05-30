@@ -203,7 +203,7 @@ export const budgetListFetch = async (dispatch) => {
     console.error(error);
   }
 };
-
+// payload: data.budget_list,
 export const fetchImageBill = async (image, description, location, amount) => {
   try {
     if (
@@ -433,47 +433,6 @@ export const supervisorBudgetFetch = async (dispatch) => {
   }
 }
 
-export const acceptBudget = async (budgetId, amount, dispatch) => {
-  try {
-    const response = await authFetch(`/budgets/${budgetId}/accept`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ amount }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Error al aceptar el presupuesto");
-    }
-
-    const updatedBudget = await response.json();
-
-    dispatch({ type: "EDIT_BUDGET", payload: updatedBudget });
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-export const rejectBudget = async (budgetId, dispatch) => {
-  try {
-    
-    const response = await authFetch(`/budgets/${budgetId}/reject`, {
-      method: "PUT",
-    });
-
-    if (!response.ok) {
-      throw new Error("Error al rechazar el presupuesto");
-    }
-
-    const updatedBudget = await response.json();
-
-    dispatch({ type: "EDIT_BUDGET", payload: updatedBudget });
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 export const assignDepartmentEmployee = async (employeeId, departmentId) => {
   try {
     const token = localStorage.getItem("token");
@@ -517,6 +476,38 @@ export const assignDepartmentSupervisor = async (supervisorId, departmentId) => 
   }
 }
 
+export const budgetValidation = async(dispatch, budget_id, state, amount = null) => {
+  try {
+     const body = amount !== null 
+      ? JSON.stringify({ state, amount }) 
+      : JSON.stringify({ state });
+    const response = await authFetch(`/budgets/${budget_id}/state`,
+     { method: "PATCH", headers: { "Content-Type": "application/json",}, body: body })
+     if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`)
+     }
+     const data = await response.json()
+     dispatch({ type: "EDIT_BUDGET", payload: data});
+     console.log(data)
+  } catch (error) {
+    console.error(error)
+  }
+}
 
+export const billValidation = async(bill_id, state) => {
+  try {
+    const response = await authFetch(`/bills/${bill_id}/state`,
+     { method: "PATCH", headers: { "Content-Type": "application/json",}, body: json.stringify({state}) })
+     if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`)
+     }
+     const data = await response.json()
+     dispatch({ type: "EDIT_BILL", payload: data});
+     console.log(data)
+    
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 
