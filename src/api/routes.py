@@ -13,7 +13,9 @@ import re
 import cloudinary.uploader
 from dotenv import load_dotenv
 import os
-from .models import state_budget
+from datetime import datetime, timezone
+from .models import StateType
+from .models import StateBudget
 
 load_dotenv()  # Carga las variables desde .env
 FRONTEND_URL = os.getenv('FRONTEND_URL')
@@ -95,7 +97,7 @@ def forgot_password():
 
     # Si no existe un empleado con ese email, devuelve un error
     if not employee:
-        return jsonify({"msg": "Email no registrado"}), 404
+        return jsonify({"msg": "Email not registered. Please sign up."}), 404
 
     # Genera un token de recuperación usando el id del empleado
     token = generate_reset_token(employee.id)
@@ -105,25 +107,25 @@ def forgot_password():
     reset_link = f"{frontend_url}/reset-password?token={token}"
 
     # Crea el correo con el enlace de recuperación
-    msg = Message("Restablecer contraseña", recipients=[email])
+    msg = Message("Reset password", recipients=[email])
     msg.body = f"""
-             Hola,
+             Hello,
 
-            Recibiste este correo porque se solicitó un cambio de contraseña para tu cuenta.
+            You received this email because a password reset was requested for your account.
 
-            Haz clic en el siguiente enlace para restablecer tu contraseña. Este enlace es válido por 15 minutos:{reset_link}
+            Click the following link to reset your password. This link is valid for 15 minutes: {reset_link}
 
-            Si no solicitaste este cambio, puedes ignorar este mensaje. Tu contraseña actual permanecerá segura.
+            If you did not request this change, you can ignore this message. Your current password will remain secure.
 
-            Saludos,
-            El equipo de soporte Melena de cangrejo (Bless, Juan, Giovanny, Carlos)
+            Regards,  
+                    El Melena de cangrejo support team (Bless, Juan, Giovanny, Carlos)
             """
     print(msg)
     # Envía el correo
     mail.send(msg)
 
     # Responde al frontend confirmando que el correo fue enviado
-    return jsonify({"msg": "Correo enviado"}), 200
+    return jsonify({"msg": "Email sent"}), 200
 
 
 @api.route('/reset-password', methods=['POST'])
@@ -133,23 +135,24 @@ def reset_password():
     new_password = data.get('password')
 
     if not token or not new_password:
-        return jsonify({'msg': 'Token y nueva contraseña son requeridos'}), 400
+        return jsonify({'msg': 'Token and new password are required.'}), 400
 
     try:
         decoded_token = decode_token(token)
         employee_id = decoded_token['sub']  # sub =subject=identity
     except Exception as e:
-        return jsonify({'msg': 'Token inválido o expirado'}), 400
+        return jsonify({'msg': 'Invalid or expired token.'}), 400
 
     employee = Employee.query.get(employee_id)
     if not employee:
-        return jsonify({'msg': 'Empleado no encontrado'}), 404
+        return jsonify({'msg': 'Employee not found'}), 404
+
     hashed_password = bcrypt.generate_password_hash(
         new_password).decode('utf-8')
     employee.password = hashed_password
     db.session.commit()
 
-    return jsonify({'msg': 'Contraseña actualizada correctamente'}), 200
+    return jsonify({'msg': 'Password updated successfully'}), 200
 
 
 @api.route('/login', methods=['POST'])
@@ -260,7 +263,7 @@ def assign_supervisor_department():
     supervisor = Employee.query.get(supervisor_id)
 
     if supervisor is None or not supervisor.is_supervisor:
-        return jsonify({"msg": "unauthorized"}), 403
+        return jsonify({"msg": "Unauthorized access"}), 403
 
     data = request.get_json()
 
@@ -297,25 +300,133 @@ def supervisor_area():
     rol = claims.get("rol")
 
     if rol != "CBJ-G13":
-        return jsonify({"msg": "Unauthorized access"}), 403
+        return jsonify({"msg": "Unauthorized"}), 403
 
     return jsonify({"msg": "Welcome",
                     "data": {
                         "rol": rol,
                         "access_level": claims.get("lvl")}
-                    })
+                    }), 200
 
+@api.route("/bills/<int:bill_id>/state", methods=["PATCH"])
+@jwt_required()
+def update_bill_state(bill_id):
+    supervisor_id = get_jwt_identity()
+    supervisor = Employee.query.get(supervisor_id)
+
+    # Ensure requester is a supervisor
+    if supervisor is None or not supervisor.is_supervisor:
+        return jsonify({"msg": "Unauthorized"}), 403
+
+    data = request.get_json()
+    # bill_id = data.get("bill_id")
+    new_state = data.get("state")  # "approved" or "denegated"
+
+    # Validate input
+    if not new_state not in ["approved", "denegated"]:
+        return jsonify({"msg": "Invalid bill ID or state"}), 400
+
+    bill = Bill.query.get(bill_id)
+
+    if bill is None:
+        return jsonify({"msg": "Bill not found"}), 404
+
+    # Prevents re-approval/denial
+    # better than bill.state.APPROVED
+    if bill.state in [StateType.APPROVED, StateType.DENEGATED]:
+        return jsonify({"msg": f"Bill already {bill.state.name.lower()}."}), 400
+
+     # Update bill state
+    try:
+        bill.state = StateType[new_state.upper()]
+    except KeyError:
+        return jsonify({"msg": "Invalid state"}), 400
+    
+    bill.evaluator_id = supervisor_id
+    bill.date_approved = datetime.now(timezone.utc)
+
+    '''Record who submitted the bill (from Budget → Employee)
+    budget = Budget.query.get(bill.budget_id) Not necessary
+    employee_id = budget.employee_id if budget else None # Attach the original submitter'''
+
+    db.session.commit()
+
+    return jsonify({"msg": f"Bill {bill_id} successfully {new_state}.",
+                    "bill": bill.serialize()}), 200
+
+
+@api.route("/budgets/<int:budget_id>/state", methods=["PATCH"])
+@jwt_required()
+def update_budget_state(budget_id):
+    supervisor_id = get_jwt_identity()
+    supervisor = Employee.query.get(supervisor_id)
+
+    # Ensure requester is a supervisor
+    if supervisor is None or not supervisor.is_supervisor:
+        return jsonify({"msg": "Unauthorized"}), 403
+
+    data = request.get_json()
+    new_state = data.get("state")  # "approved" or "rejected"
+    new_amount = data.get("amount")
+
+    # Validate input
+    if not new_state in ["accepted", "rejected"]:
+        return jsonify({"msg": "Invalid budget ID or state"}), 400
+
+    budget = Budget.query.get(budget_id)
+
+    if budget is None:
+        return jsonify({"msg": "Budget not found"}), 404
+
+    # Prevents re-approval/denial
+    if budget.state in [StateBudget.ACCEPTED, StateBudget.REJECTED]:
+        return jsonify({"msg": f"Budget already {budget.state.name.lower()}."}), 400
+
+ # If amount is given, validate and update
+    if new_amount is not None:
+        try:
+            new_amount = float(new_amount)
+            if new_amount <= 0:
+                return jsonify({"msg": "Amount must be a positive number"}), 400
+            budget.amount = new_amount
+            budget.available = new_amount  # update available as well if logic permits
+        except (ValueError, TypeError):
+            return jsonify({"msg": "Invalid amount format"}), 400
+        
+    if new_amount is not None and new_state == "rejected":
+        return jsonify({"msg": "Cannot update amount for a rejected budget"}), 400
+    
+     # Update budget state
+    try:
+        budget.state = StateBudget[new_state.upper()]
+    except KeyError:
+        return jsonify({"msg": "Invalid state"}), 400
+    
+
+    # Assign evaluator to budget (supervisor who approved/denied the bill)
+    budget.evaluator_id = supervisor_id
+    budget.date_approved = datetime.now(timezone.utc)
+
+    db.session.commit()
+
+    return jsonify({"msg": f"Budget {budget_id} successfully {new_state}.",
+                    "budget": budget.serialize()}
+                   ), 200
+
+# un endpoint (GET) donde el supervisor pueda obtener todos los budget de su departmento. Serialize
+# y enviar a frontend. y una vez en el frontend, guardar los datos en el store. Una vez guardado en el store
+# usar useParams para acceder al ID.
 
 @api.route("/supervisor-budgets-bills", methods=["GET"])
 @jwt_required()
 def get_department_budgets_and_bills():
     current_user_id = get_jwt_identity()
-    employee = Employee.query.get(current_user_id)
+    supervisor = Employee.query.get(current_user_id)
 
-    if not employee or not employee.is_supervisor:
+    if not supervisor or not supervisor.is_supervisor:
         return jsonify({"error": "Unauthorized or not a supervisor"}), 403
 
-    department_id = employee.department_id
+    department_id = supervisor.department_id
 
     if not department_id:
         return jsonify({"error": "Supervisor has no department assigned"}), 400
@@ -325,38 +436,6 @@ def get_department_budgets_and_bills():
     serialized_data = [budget.serialize() for budget in budgets]
 
     return jsonify({"department_id": department_id, "budgets": serialized_data}), 200
-
-
-@api.route("/budgets/<int:budget_id>/accept", methods=["PUT"])
-@jwt_required()
-def accept_budget(budget_id):
-    budget = Budget.query.get(budget_id)
-    if not budget:
-        return jsonify({"error": "Budget not found"}), 404
-
-    data = request.get_json()
-    amount = data.get("amount")
-
-    if amount:
-        budget.amount = amount
-
-    budget.state = state_budget.ACCEPTED
-    db.session.commit()
-
-    return jsonify(budget.serialize()), 200
-
-
-@api.route("/budgets/<int:budget_id>/reject", methods=["PUT"])
-@jwt_required()
-def reject_budget(budget_id):
-    budget = Budget.query.get(budget_id)
-    if not budget:
-        return jsonify({"error": "Budget not found"}), 404
-
-    budget.state = state_budget.REJECTED
-    db.session.commit()
-
-    return jsonify(budget.serialize()), 200
 
 
 @api.route("/refresh", methods=["POST"])
@@ -402,7 +481,7 @@ def budget_create():
 
     for field in fields_required:
         if field not in body:
-            return jsonify({"msg": "Invalid creedentials"}), 402
+            return jsonify({"msg": "Invalid credentials"}), 402
 
     if body["budget_description"].strip() == "" or body["amount"].strip() == "":
         return jsonify({"msg": "Invalid credentials"}), 403
@@ -410,11 +489,20 @@ def budget_create():
     budget_description = body["budget_description"]
     amount = float(body["amount"])
 
-    new_budget = Budget(budget_description=budget_description,
-                        employee_id=user.id, department_id=user.department_id, amount=amount, available=amount, state="PENDING", condition=None)
-    db.session.add(new_budget)
-    db.session.commit()
-    return jsonify({"msg": "Budget created successfully"}), 201
+    try:
+        new_budget = Budget(budget_description=budget_description,
+                        employee_id=user.id, 
+                        department_id=user.department_id, 
+                        amount=amount, 
+                        available=amount, 
+                        state=StateBudget.PENDING, #changed from the string "Pending" 
+                        condition=None)
+        db.session.add(new_budget)
+        db.session.commit()
+        return jsonify({"msg": "Budget created successfully"}), 201
+    except Exception as e:
+        print(e)
+        return jsonify({"msg": "error"}), 500
 
 
 @api.route("/mybudgets", methods=["GET"])
