@@ -88,6 +88,7 @@ class Department(db.Model):
         back_populates="department"
     )
 
+#Para poder identificar el depart. y su id con mas facilidad, creo que mejor serializar con id y name 
 
 class Bill(db.Model):
     __tablename__ = "bills"

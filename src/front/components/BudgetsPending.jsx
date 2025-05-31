@@ -1,15 +1,19 @@
-import React, {useState, useEffect} from "react"
+import React, { useState, useEffect } from "react"
 import useSupervisorBudget from "../hooks/useSupervisorBudget"
 
- 
+
 
 
 const BudgetsPending = () => {
 
-    const { store, dispatch, selectedEmployeeId, setSelectedEmployeeId, editedAmount, setEditedAmount, budgetValidation} = useSupervisorBudget()
-    
+    const [pendingAction, setPendingAction] = useState(null); // 'accept' or 'reject'
+    const [pendingBudgetId, setPendingBudgetId] = useState(null);
+    const [pendingAmount, setPendingAmount] = useState(null);
+
+    const { store, dispatch, selectedEmployeeId, setSelectedEmployeeId, editedAmount, setEditedAmount, budgetValidation } = useSupervisorBudget()
+
     const handleAccept = async (budgetId, amount) => {
-       await  budgetValidation(dispatch, budgetId, "accepted", amount)
+        await budgetValidation(dispatch, budgetId, "accepted", amount)
         console.log("Aceptar", budgetId, amount);
     };
 
@@ -20,6 +24,25 @@ const BudgetsPending = () => {
 
     const handleAmountChange = (budgetId, newAmount) => {
         setEditedAmount((prev) => ({ ...prev, [budgetId]: newAmount }));
+    };
+
+    const handleModalConfirm = async () => {
+        if (pendingAction === "accept") {
+            await handleAccept(pendingBudgetId, pendingAmount);
+        } else if (pendingAction === "reject") {
+            await handleReject(pendingBudgetId);
+        }
+
+        // Close the Bootstrap modal
+        const modal = window.bootstrap.Modal.getInstance(
+            document.getElementById("exampleModal")
+        );
+        if (modal) modal.hide();
+
+        // Reset modal state
+        setPendingAction(null);
+        setPendingBudgetId(null);
+        setPendingAmount(null);
     };
 
     const pendingBudgets = store.budgets.filter((b) => b.state === "PENDING");
@@ -38,18 +61,18 @@ const BudgetsPending = () => {
     };
     return (<>
         <div className="p-4">
-            <h2 className="text-xl font-bold mb-4">Budgets Pendientes</h2>
+            <h2 className="text-xl font-bold mb-4">Pending Budgets</h2>
 
             {filteredBudgets.length === 0 ? (
-                <p className="text-gray-600">No hay budgets por aprobar.</p>
+                <p className="text-gray-600">There are no budgets to approve.</p>
             ) : (
                 filteredBudgets.map((budget) => (
                     <div key={budget.id} className="border p-4 mb-4 rounded shadow">
                         <p>
-                            <strong>Descripción:</strong> {budget.budget_description}
+                            <strong>Description:</strong> {budget.budget_description}
                         </p>
                         <p>
-                            <strong>Monto Solicitado:</strong>{" "}
+                            <strong>Requested Amount::</strong>{" "}
                             <input
                                 type="number"
                                 value={editedAmount[budget.id] || budget.amount}
@@ -60,7 +83,7 @@ const BudgetsPending = () => {
                             />
                         </p>
                         <p>
-                            <strong>Empleado:</strong>{" "}
+                            <strong>Employee:</strong>{" "}
                             <button
                                 onClick={() => setSelectedEmployeeId(budget.employee_id)}
                                 className="text-blue-600 underline"
@@ -71,18 +94,25 @@ const BudgetsPending = () => {
 
                         <div className="mt-2 space-x-2">
                             <button
-                                onClick={() =>
-                                    handleAccept(budget.id, editedAmount[budget.id] || budget.amount)
-                                }
+                                type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                onClick={() => {
+                                    setPendingAction('accept');
+                                    setPendingBudgetId(budget.id);
+                                    setPendingAmount(editedAmount[budget.id] || budget.amount);
+                                }}
                                 className="bg-green-500 text-black px-3 py-1 rounded"
                             >
-                                Aceptar
+                                Accept
                             </button>
                             <button
-                                onClick={() => handleReject(budget.id)}
+                                type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                onClick={() => {
+                                    setPendingAction('reject');
+                                    setPendingBudgetId(budget.id);
+                                }}
                                 className="bg-red-500 text-black px-3 py-1 rounded"
                             >
-                                Rechazar
+                                Reject
                             </button>
                         </div>
                     </div>
@@ -99,6 +129,27 @@ const BudgetsPending = () => {
                     </button>
                 </div>
             )}
+        </div>
+
+        {/* Modal */}
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirm Budget Action</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {pendingAction === "accept"
+                            ? "Are you sure you want to accept this budget?"
+                            : "Are you sure you want to reject this budget?"}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onClick={handleModalConfirm}>Confirm</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </>)
 }
