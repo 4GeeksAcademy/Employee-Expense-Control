@@ -621,6 +621,49 @@ def update_bill():
 
     return jsonify({"msg": "Bill updated successfully", "bill": bill.serialize()}), 200
 
+@api.route("/employee-expense", methods=["GET"])
+@jwt_required()
+def get_employee_expenses():
+    supervisor_id = get_jwt_identity()
+    supervisor = Employee.query.get(supervisor_id)
+
+    if not supervisor or not supervisor.is_supervisor:
+        return({"msg": "Unauthorized"}), 403
+    
+    department_id = supervisor.department_id
+    if not department_id:
+        return({"msg": "Supervisor has no department assigned"}), 400
+
+    employees= Employee.query.filter_by(department_id=supervisor.department_id).all()
+
+    result = []
+
+    for employee in employees:
+        total_expense = 0
+        budgets_data =[]
+        for budget in employee.budgets:
+            summary = budget.sumary()
+            total_expense+= summary["total_bills"]
+        
+            budgets_data.append({
+                "budget_id": budget.id,
+                "budget_description": budget.budget_description,
+                "total_bills": summary["total_bills"],
+                "bills": [bill.serialize() for bill in budget.bills]
+            })
+
+        result.append({
+            "employee_id": employee.id,
+            "employee_name": employee.name,
+            "total_expense": total_expense,
+            "budgets": budgets_data
+        })
+    return ({
+        "department_id": supervisor.department_id,
+        "department_name": supervisor.department.name if supervisor.department else None,
+        "employees": result
+    }),200
+
 
 @api.route("/logout", methods=['POST'])
 @jwt_required()
