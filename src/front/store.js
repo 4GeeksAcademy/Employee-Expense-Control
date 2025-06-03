@@ -2,6 +2,7 @@ export const initialStore = () => {
   return {
     signup: [],
     budgets: [],
+    total:[],
     todos: [
       {
         id: 1,
@@ -63,6 +64,12 @@ export default function storeReducer(store, action = {}) {
         ...store,
         budgets: action.payload,
       };
+
+      case "SET_TOTAL_DEPARTMENT":
+        return {
+          ... store,
+          total: action.payload
+        }
     case "set_hello":
       return {
         ...store,

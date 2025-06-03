@@ -124,7 +124,7 @@ export const fetchUserProfile = async () => {
     throw new Error("No token found");
   }
 
-//USAR authFetch en las rutas que requieran token
+  //USAR authFetch en las rutas que requieran token
 
   const response = await authFetch('/me', {
     method: "GET",
@@ -415,7 +415,7 @@ export const supervisorBudgetFetch = async (dispatch) => {
     if (!token) {
       throw new Error("the token was not obtained")
     }
-    const response = await authFetch('/supervisor-budgets-bills', { method: "GET",})
+    const response = await authFetch('/supervisor-budgets-bills', { method: "GET", })
     if (!response.ok) {
       throw new Error(`Error fetching data ${response.status}`)
     }
@@ -433,17 +433,41 @@ export const supervisorBudgetFetch = async (dispatch) => {
   }
 }
 
+export const totalExpenseDepartment = async (dispatch) => {
+  try {
+    const response = await authFetch("/supervisor-department-total-bills", { method: "GET" })
+    if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    if (!data) {
+      throw new Error("Error obtaining the data")
+    }
+    const action = {
+      type: "SET_TOTAL_DEPARTMENT",
+      payload: data
+    }
+    dispatch(action)
+    console.log(data)
+
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const assignDepartmentEmployee = async (employeeId, departmentId) => {
   try {
     const token = localStorage.getItem("token");
     if (!token) {
       throw new Error("Token not found")
     }
-    if (!employeeId || employeeId.trim() === "" || !departmentId || departmentId.trim() ==="") {
+    if (!employeeId || employeeId.trim() === "" || !departmentId || departmentId.trim() === "") {
       throw new Error("the data has not been passed correctly")
     }
     const rawData = JSON.stringify({ id_employee: employeeId, id_department: departmentId })
-    const response = await authFetch('/assigndepartment', { method: "PUT", headers: { "Content-Type": "application/json",}, body: rawData })
+    const response = await authFetch('/assigndepartment', { method: "PUT", headers: { "Content-Type": "application/json", }, body: rawData })
     if (!response.ok) {
       throw new Error(`Error fetching data ${response.status}`)
     }
@@ -464,7 +488,7 @@ export const assignDepartmentSupervisor = async (supervisorId, departmentId) => 
       throw new Error("the data has not been passed correctly")
     }
     const rawData = JSON.stringify({ id_employee: supervisorId, id_department: departmentId })
-    const response = await authFetch(`/assign-supervisor-department`, { method: "PUT", headers: { "Content-Type": "application/json",}, body: rawData })
+    const response = await authFetch(`/assign-supervisor-department`, { method: "PUT", headers: { "Content-Type": "application/json", }, body: rawData })
     if (!response.ok) {
       throw new Error(`Error fetching data ${response.status}`)
     }
@@ -476,35 +500,35 @@ export const assignDepartmentSupervisor = async (supervisorId, departmentId) => 
   }
 }
 
-export const budgetValidation = async(dispatch, budget_id, state, amount = null) => {
+export const budgetValidation = async (dispatch, budget_id, state, amount = null) => {
   try {
-     const body = amount !== null 
-      ? JSON.stringify({ state, amount }) 
+    const body = amount !== null
+      ? JSON.stringify({ state, amount })
       : JSON.stringify({ state });
     const response = await authFetch(`/budgets/${budget_id}/state`,
-     { method: "PATCH", headers: { "Content-Type": "application/json",}, body: body })
-     if (!response.ok) {
+      { method: "PATCH", headers: { "Content-Type": "application/json", }, body: body })
+    if (!response.ok) {
       throw new Error(`Error fetching data ${response.status}`)
-     }
-     const data = await response.json()
+    }
+    const data = await response.json()
     dispatch({ type: "UPDATE_BUDGET_STATE", payload: { budgetId: budget_id, newState: state.toUpperCase(), newAmount: amount } })
-     console.log(data)
+    console.log(data)
   } catch (error) {
     console.error(error)
   }
 }
 
-export const billValidation = async(bill_id, state) => {
+export const billValidation = async (bill_id, state) => {
   try {
     const response = await authFetch(`/bills/${bill_id}/state`,
-     { method: "PATCH", headers: { "Content-Type": "application/json",}, body: json.stringify({state}) })
-     if (!response.ok) {
+      { method: "PATCH", headers: { "Content-Type": "application/json", }, body: json.stringify({ state }) })
+    if (!response.ok) {
       throw new Error(`Error fetching data ${response.status}`)
-     }
-     const data = await response.json()
-     dispatch({ type: "EDIT_BILL", payload: data});
-     console.log(data)
-    
+    }
+    const data = await response.json()
+    dispatch({ type: "EDIT_BILL", payload: data });
+    console.log(data)
+
   } catch (error) {
     console.error(error)
   }
