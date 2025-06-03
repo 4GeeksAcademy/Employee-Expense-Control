@@ -308,6 +308,7 @@ def supervisor_area():
                         "access_level": claims.get("lvl")}
                     }), 200
 
+
 @api.route("/bills/<int:bill_id>/state", methods=["PATCH"])
 @jwt_required()
 def update_bill_state(bill_id):
@@ -341,7 +342,7 @@ def update_bill_state(bill_id):
         bill.state = StateType[new_state.upper()]
     except KeyError:
         return jsonify({"msg": "Invalid state"}), 400
-    
+
     bill.evaluator_id = supervisor_id
     bill.date_approved = datetime.now(timezone.utc)
 
@@ -392,16 +393,15 @@ def update_budget_state(budget_id):
             budget.available = new_amount  # update available as well if logic permits
         except (ValueError, TypeError):
             return jsonify({"msg": "Invalid amount format"}), 400
-        
+
     if new_amount is not None and new_state == "rejected":
         return jsonify({"msg": "Cannot update amount for a rejected budget"}), 400
-    
+
      # Update budget state
     try:
         budget.state = StateBudget[new_state.upper()]
     except KeyError:
         return jsonify({"msg": "Invalid state"}), 400
-    
 
     # Assign evaluator to budget (supervisor who approved/denied the bill)
     budget.evaluator_id = supervisor_id
@@ -416,6 +416,7 @@ def update_budget_state(budget_id):
 # un endpoint (GET) donde el supervisor pueda obtener todos los budget de su departmento. Serialize
 # y enviar a frontend. y una vez en el frontend, guardar los datos en el store. Una vez guardado en el store
 # usar useParams para acceder al ID.
+
 
 @api.route("/supervisor-budgets-bills", methods=["GET"])
 @jwt_required()
@@ -436,6 +437,53 @@ def get_department_budgets_and_bills():
     serialized_data = [budget.serialize() for budget in budgets]
 
     return jsonify({"department_id": department_id, "budgets": serialized_data}), 200
+
+
+@api.route("/supervisor-department-total-bills", methods=["GET"])
+@jwt_required()
+def get_total_bills_by_department():
+    current_user_id = get_jwt_identity()
+    supervisor = Employee.query.get(current_user_id)
+
+    if not supervisor or not supervisor.is_supervisor:
+        return jsonify({"error": "Unauthorized or not a supervisor"}), 403
+
+    department_id = supervisor.department_id
+
+    if not department_id:
+        return jsonify({"error": "Supervisor has no department assigned"}), 400
+
+    budgets = Budget.query.filter_by(department_id=department_id).all()
+    
+    total_bills_amount = 0.0
+    employee_bill_totals = {}
+
+    for budget in budgets:
+        employee = budget.employee
+        if not employee:
+            continue
+
+        employee_id = employee.id
+        employee_name = employee.name
+
+        if employee_id not in employee_bill_totals:
+            employee_bill_totals[employee_id] = {
+                "employee_id": employee_id,
+                "employee_name": employee_name,
+                "total_bills_amount": 0.0
+            }
+
+        for bill in budget.bills:
+            amount = float(bill.amount)
+            total_bills_amount += amount
+            employee_bill_totals[employee_id]["total_bills_amount"] += amount
+
+    return jsonify({
+        "department_id": department_id,
+        "total_bills_amount": total_bills_amount,
+        "employees": list(employee_bill_totals.values())
+    }), 200
+
 
 
 @api.route("/refresh", methods=["POST"])
@@ -491,12 +539,12 @@ def budget_create():
 
     try:
         new_budget = Budget(budget_description=budget_description,
-                        employee_id=user.id, 
-                        department_id=user.department_id, 
-                        amount=amount, 
-                        available=amount, 
-                        state=StateBudget.PENDING, #changed from the string "Pending" 
-                        condition=None)
+                            employee_id=user.id,
+                            department_id=user.department_id,
+                            amount=amount,
+                            available=amount,
+                            state=StateBudget.PENDING,  # changed from the string "Pending"
+                            condition=None)
         db.session.add(new_budget)
         db.session.commit()
         return jsonify({"msg": "Budget created successfully"}), 201

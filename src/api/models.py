@@ -128,7 +128,7 @@ class Bill(db.Model):
             "budget_id": self.budget_id,
             "submitted_by": self.budget.employee.name if self.budget and self.budget.employee else None
         }
-
+    
 
 class Budget(db.Model):
     __tablename__ = "budgets"
