@@ -2,7 +2,7 @@ import React, { useState } from "react"; //useState is imported from react
 import { useNavigate } from "react-router-dom"; //useParam, useLocation, Link, useNavigate de react-dom
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { createSignup } from "../services/apiServicesFetch";
-import "../Styles/signup.css"
+import "../DesignComponents/SignUp/signup.css"
 
 
 
