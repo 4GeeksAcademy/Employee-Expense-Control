@@ -29,15 +29,9 @@ const SupervisorOpcions = () => {
                     </Link>
                 </div>
 
-                <div style={{ width: '100%', maxWidth: '300px', backgroundColor: '#fff', padding: '1.5rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', borderRadius: '0.5rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem', textAlign: 'center' }}>See employee expenses</h2>
-                    <Link>
-                        <button style={{ width: '100%', padding: '0.75rem', backgroundColor: '#3b82f6', color: '#fff', border: 'none', borderRadius: '0.375rem' }}>See expenses</button>
-                    </Link>
-                </div>
 
                 <div style={{ width: '100%', maxWidth: '300px', backgroundColor: '#fff', padding: '1.5rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', borderRadius: '0.5rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem', textAlign: 'center' }}>See department expenses</h2>
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem', textAlign: 'center' }}>See total expenses</h2>
                     <Link to={"/totaldepartment"}>
                         <button style={{ width: '100%', padding: '0.75rem', backgroundColor: '#3b82f6', color: '#fff', border: 'none', borderRadius: '0.375rem' }}>See expenses</button>
                     </Link>

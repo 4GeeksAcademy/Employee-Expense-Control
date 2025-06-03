@@ -454,7 +454,7 @@ def get_total_bills_by_department():
         return jsonify({"error": "Supervisor has no department assigned"}), 400
 
     budgets = Budget.query.filter_by(department_id=department_id).all()
-    
+
     total_bills_amount = 0.0
     employee_bill_totals = {}
 
@@ -483,7 +483,6 @@ def get_total_bills_by_department():
         "total_bills_amount": total_bills_amount,
         "employees": list(employee_bill_totals.values())
     }), 200
-
 
 
 @api.route("/refresh", methods=["POST"])
@@ -520,10 +519,16 @@ def budget_create():
     if user is None:
         return jsonify({"msg": "Invalid credentials"}), 404
 
+    existing_pending_budget = Budget.query.filter_by(
+        employee_id=user.id, state=StateBudget.PENDING).first()
+    if existing_pending_budget:
+        # 409 Conflict
+        return jsonify({"msg": "You already have a pending budget"}), 409
+
     body = request.get_json(silent=True)
 
     if body is None:
-        return ({"msg": "Invalid object"}), 401
+        return jsonify({"msg": "Invalid object"}), 401
 
     fields_required = ["budget_description", "amount"]
 
@@ -538,13 +543,15 @@ def budget_create():
     amount = float(body["amount"])
 
     try:
-        new_budget = Budget(budget_description=budget_description,
-                            employee_id=user.id,
-                            department_id=user.department_id,
-                            amount=amount,
-                            available=amount,
-                            state=StateBudget.PENDING,  # changed from the string "Pending"
-                            condition=None)
+        new_budget = Budget(
+            budget_description=budget_description,
+            employee_id=user.id,
+            department_id=user.department_id,
+            amount=amount,
+            available=amount,
+            state=StateBudget.PENDING,
+            condition=None
+        )
         db.session.add(new_budget)
         db.session.commit()
         return jsonify({"msg": "Budget created successfully"}), 201
