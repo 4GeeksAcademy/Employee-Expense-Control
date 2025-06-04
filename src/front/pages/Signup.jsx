@@ -1,6 +1,7 @@
-import React, { useState } from "react"; //useState is imported from react
+import React, { useState, useEffect } from "react"; //useState is imported from react
 import { useNavigate } from "react-router-dom"; //useParam, useLocation, Link, useNavigate de react-dom
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import { Link } from "react-router-dom";
 import { createSignup } from "../services/apiServicesFetch";
 import "../DesignComponents/SignUp/signup.css";
 import AnimatedBackground from "../DesignComponents/GlobalComponents/AnimatedBackground";
@@ -8,6 +9,8 @@ import AnimatedBackground from "../DesignComponents/GlobalComponents/AnimatedBac
 
 
 const SignUp = () => {
+
+
     const navigate = useNavigate()
     const { store, dispatch } = useGlobalReducer()
     const [signupData, setSignupData] = useState({
@@ -167,6 +170,10 @@ const SignUp = () => {
                     {error && <div className="alert alert-danger errorAlert">{error}</div>}
                     {msg && <div className="alert alert-success successAlert">{msg}</div>}
                     <div className="mb-3 d-grid gap-2 contBtn"><button className="btnSign btn" type="submit">Continue</button></div>
+                     <div className="form-text emailHelp">
+                    Already have an account? <Link to="/login">Login</Link>
+                        </div>
+                
                 </div>
             </form>
         </div>
@@ -174,3 +181,8 @@ const SignUp = () => {
 };
 
 export default SignUp;
+
+
+//  <div id="emailHelp" className="form-text">
+//      Already have an account? <Link to="/login">Register</Link>
+//          </div>

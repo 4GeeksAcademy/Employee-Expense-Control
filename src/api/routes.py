@@ -308,6 +308,7 @@ def supervisor_area():
                         "access_level": claims.get("lvl")}
                     }), 200
 
+
 @api.route("/bills/<int:bill_id>/state", methods=["PATCH"])
 @jwt_required()
 def update_bill_state(bill_id):
@@ -341,7 +342,7 @@ def update_bill_state(bill_id):
         bill.state = StateType[new_state.upper()]
     except KeyError:
         return jsonify({"msg": "Invalid state"}), 400
-    
+
     bill.evaluator_id = supervisor_id
     bill.date_approved = datetime.now(timezone.utc)
 
@@ -392,16 +393,15 @@ def update_budget_state(budget_id):
             budget.available = new_amount  # update available as well if logic permits
         except (ValueError, TypeError):
             return jsonify({"msg": "Invalid amount format"}), 400
-        
+
     if new_amount is not None and new_state == "rejected":
         return jsonify({"msg": "Cannot update amount for a rejected budget"}), 400
-    
+
      # Update budget state
     try:
         budget.state = StateBudget[new_state.upper()]
     except KeyError:
         return jsonify({"msg": "Invalid state"}), 400
-    
 
     # Assign evaluator to budget (supervisor who approved/denied the bill)
     budget.evaluator_id = supervisor_id
@@ -416,6 +416,7 @@ def update_budget_state(budget_id):
 # un endpoint (GET) donde el supervisor pueda obtener todos los budget de su departmento. Serialize
 # y enviar a frontend. y una vez en el frontend, guardar los datos en el store. Una vez guardado en el store
 # usar useParams para acceder al ID.
+
 
 @api.route("/supervisor-budgets-bills", methods=["GET"])
 @jwt_required()
@@ -436,6 +437,80 @@ def get_department_budgets_and_bills():
     serialized_data = [budget.serialize() for budget in budgets]
 
     return jsonify({"department_id": department_id, "budgets": serialized_data}), 200
+
+
+@api.route("/supervisor-total-expense", methods=["GET"])
+@jwt_required()
+def get_total_expense():
+    current_user_id = get_jwt_identity()
+    supervisor = Employee.query.get(current_user_id)
+
+    if not supervisor or not supervisor.is_supervisor:
+        return jsonify({"error": "Unauthorized or not a supervisor"}), 403
+
+    department_id = supervisor.department_id
+    if not department_id:
+        return jsonify({"error": "Supervisor has no department assigned"}), 400
+
+# #AÑADIR UN FILTRO PARA DIVIDIR UNA LISTA DE TODOS LOS EMPLEADOS Y DEPARTAMENTOS DE FORMA INDIVIDUAL
+# #USAMOS REQUEST.ARGS.GET PARA OBTENER LOS PARAMETROS A TRAVES DE LA URL Y AÑADIMOS TYPE=INT PARA
+# #BUSCAR EL PARAMETRO EMPLOYEE_ID EN LA URL SI EXISTE LO CONVIERTE EN INT AUTOMATICAMENTE Y SI NO DEVUELVE NONE
+# 
+    department = Department.query.get(department_id)
+
+    # Obtener parámetro employee_id desde la URL
+    employee_id_param = request.args.get("employee_id", type=int)
+    if employee_id_param:
+        employees = Employee.query.filter_by(id=employee_id_param, department_id=department_id).all()
+    else:
+        employees = Employee.query.filter_by(department_id=department_id, is_supervisor =False).all()
+
+    department_total = 0.0
+    employees_data = []
+    total_active_budgets = 0
+
+    for employee in employees:
+        employee_total = 0.0
+        employee_budgets = []
+
+        for budget in employee.budgets:
+            summary = budget.sumary()
+            budget_total = float(summary["total_bills"])  # Convertimos a float
+
+            employee_total += budget_total
+            department_total += budget_total
+
+            employee_budgets.append({
+                "budget_id": budget.id,
+                "description": budget.budget_description,
+                "total": budget_total,
+                "state": budget.state.name,
+                "bills": [bill.serialize() for bill in budget.bills]
+            })
+
+            total_active_budgets += 1
+
+        employees_data.append({
+            "employee_id": employee.id,
+            "name": employee.name,
+            "total_expenses": employee_total,
+            "budgets": employee_budgets
+        })
+
+    response = {
+        "department": {
+            "id": department.id,
+            "name": department.name,
+            "total_expenses": department_total
+        },
+        "employees": employees_data,
+        "summary": {
+            "total_employees": len(employees_data),
+            "active_budgets": total_active_budgets
+        }
+    }
+
+    return jsonify(response), 200
 
 
 @api.route("/refresh", methods=["POST"])
@@ -472,10 +547,16 @@ def budget_create():
     if user is None:
         return jsonify({"msg": "Invalid credentials"}), 404
 
+    existing_pending_budget = Budget.query.filter_by(
+        employee_id=user.id, state=StateBudget.PENDING).first()
+    if existing_pending_budget:
+        # 409 Conflict
+        return jsonify({"msg": "You already have a pending budget"}), 409
+
     body = request.get_json(silent=True)
 
     if body is None:
-        return ({"msg": "Invalid object"}), 401
+        return jsonify({"msg": "Invalid object"}), 401
 
     fields_required = ["budget_description", "amount"]
 
@@ -490,13 +571,15 @@ def budget_create():
     amount = float(body["amount"])
 
     try:
-        new_budget = Budget(budget_description=budget_description,
-                        employee_id=user.id, 
-                        department_id=user.department_id, 
-                        amount=amount, 
-                        available=amount, 
-                        state=StateBudget.PENDING, #changed from the string "Pending" 
-                        condition=None)
+        new_budget = Budget(
+            budget_description=budget_description,
+            employee_id=user.id,
+            department_id=user.department_id,
+            amount=amount,
+            available=amount,
+            state=StateBudget.PENDING,
+            condition=None
+        )
         db.session.add(new_budget)
         db.session.commit()
         return jsonify({"msg": "Budget created successfully"}), 201
@@ -620,6 +703,49 @@ def update_bill():
     db.session.commit()
 
     return jsonify({"msg": "Bill updated successfully", "bill": bill.serialize()}), 200
+
+# @api.route("/employee-expense", methods=["GET"])
+# @jwt_required()
+# def get_employee_expenses():
+#     supervisor_id = get_jwt_identity()
+#     supervisor = Employee.query.get(supervisor_id)
+
+#     if not supervisor or not supervisor.is_supervisor:
+#         return({"msg": "Unauthorized"}), 403
+    
+#     department_id = supervisor.department_id
+#     if not department_id:
+#         return({"msg": "Supervisor has no department assigned"}), 400
+
+#     employees= Employee.query.filter_by(department_id=supervisor.department_id).all()
+
+#     result = []
+
+#     for employee in employees:
+#         total_expense = 0
+#         budgets_data =[]
+#         for budget in employee.budgets:
+#             summary = budget.sumary()
+#             total_expense+= summary["total_bills"]
+        
+#             budgets_data.append({
+#                 "budget_id": budget.id,
+#                 "budget_description": budget.budget_description,
+#                 "total_bills": summary["total_bills"],
+#                 "bills": [bill.serialize() for bill in budget.bills]
+#             })
+
+#         result.append({
+#             "employee_id": employee.id,
+#             "employee_name": employee.name,
+#             "total_expense": total_expense,
+#             "budgets": budgets_data
+#         })
+#     return ({
+#         "department_id": supervisor.department_id,
+#         "department_name": supervisor.department.name if supervisor.department else None,
+#         "employees": result
+#     }),200
 
 
 @api.route("/logout", methods=['POST'])
