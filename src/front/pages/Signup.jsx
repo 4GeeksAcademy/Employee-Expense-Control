@@ -77,8 +77,9 @@ const SignUp = () => {
     };
     //onChange={(e) => setFormData(prevData => ({...prevData, email:e.target.value}))}
     return (
+
         <div className="signMain">
-            <AnimatedBackground/>
+            <AnimatedBackground />
             <form onSubmit={handleFormInput} className="signForm">
                 <div className="signHeading"><h2>Create an account</h2></div>
                 <div className="container">

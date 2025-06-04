@@ -24,6 +24,7 @@ import SupervisorBudgetPending from "./pages/SupervisorBudgetPending";
 import SupervisorBudgetAccepted from "./pages/SupervisorBudgetsAccepted";
 import AssignDepartmentEmployee from "./pages/AssignDepartmentEmployee";
 import AssingDepartmentSupervisor from "./pages/AssingDepartmentSupervisor";
+import SupervisorTotalExpense from "./pages/SupervisorTotalExpense";
 
 
 
@@ -65,6 +66,8 @@ export const router = createBrowserRouter(
       <Route path="/budgetsaccepted" element={<PrivateRoute onlyFor="supervisor"><SupervisorBudgetAccepted /></PrivateRoute>} />
       <Route path="/assignDepartmentEmployee" element={<PrivateRoute onlyFor="supervisor"><AssignDepartmentEmployee /></PrivateRoute>} />
       <Route path="/assignDepartmentSupervisor" element={<PrivateRoute onlyFor="supervisor"><AssingDepartmentSupervisor /></PrivateRoute>} />
+      <Route path="/totaldepartment" element={<PrivateRoute onlyFor="supervisor"><SupervisorTotalExpense /></PrivateRoute>} />
+
 
 
       {/* 🔒 RUTAS COMPARTIDAS */}
