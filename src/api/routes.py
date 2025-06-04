@@ -439,9 +439,9 @@ def get_department_budgets_and_bills():
     return jsonify({"department_id": department_id, "budgets": serialized_data}), 200
 
 
-@api.route("/supervisor-department-total-bills", methods=["GET"])
+@api.route("/supervisor-total-expense", methods=["GET"])
 @jwt_required()
-def get_total_bills_by_department():
+def get_total_expense():
     current_user_id = get_jwt_identity()
     supervisor = Employee.query.get(current_user_id)
 
@@ -449,40 +449,68 @@ def get_total_bills_by_department():
         return jsonify({"error": "Unauthorized or not a supervisor"}), 403
 
     department_id = supervisor.department_id
-
     if not department_id:
         return jsonify({"error": "Supervisor has no department assigned"}), 400
 
-    budgets = Budget.query.filter_by(department_id=department_id).all()
+# #AÑADIR UN FILTRO PARA DIVIDIR UNA LISTA DE TODOS LOS EMPLEADOS Y DEPARTAMENTOS DE FORMA INDIVIDUAL
+# #USAMOS REQUEST.ARGS.GET PARA OBTENER LOS PARAMETROS A TRAVES DE LA URL Y AÑADIMOS TYPE=INT PARA
+# #BUSCAR EL PARAMETRO EMPLOYEE_ID EN LA URL SI EXISTE LO CONVIERTE EN INT AUTOMATICAMENTE Y SI NO DEVUELVE NONE
+# 
+    department = Department.query.get(department_id)
 
-    total_bills_amount = 0.0
-    employee_bill_totals = {}
+    # Obtener parámetro employee_id desde la URL
+    employee_id_param = request.args.get("employee_id", type=int)
+    if employee_id_param:
+        employees = Employee.query.filter_by(id=employee_id_param, department_id=department_id).all()
+    else:
+        employees = Employee.query.filter_by(department_id=department_id, is_supervisor =False).all()
 
-    for budget in budgets:
-        employee = budget.employee
-        if not employee:
-            continue
+    department_total = 0.0
+    employees_data = []
+    total_active_budgets = 0
 
-        employee_id = employee.id
-        employee_name = employee.name
+    for employee in employees:
+        employee_total = 0.0
+        employee_budgets = []
 
-        if employee_id not in employee_bill_totals:
-            employee_bill_totals[employee_id] = {
-                "employee_id": employee_id,
-                "employee_name": employee_name,
-                "total_bills_amount": 0.0
-            }
+        for budget in employee.budgets:
+            summary = budget.sumary()
+            budget_total = float(summary["total_bills"])  # Convertimos a float
 
-        for bill in budget.bills:
-            amount = float(bill.amount)
-            total_bills_amount += amount
-            employee_bill_totals[employee_id]["total_bills_amount"] += amount
+            employee_total += budget_total
+            department_total += budget_total
 
-    return jsonify({
-        "department_id": department_id,
-        "total_bills_amount": total_bills_amount,
-        "employees": list(employee_bill_totals.values())
-    }), 200
+            employee_budgets.append({
+                "budget_id": budget.id,
+                "description": budget.budget_description,
+                "total": budget_total,
+                "state": budget.state.name,
+                "bills": [bill.serialize() for bill in budget.bills]
+            })
+
+            total_active_budgets += 1
+
+        employees_data.append({
+            "employee_id": employee.id,
+            "name": employee.name,
+            "total_expenses": employee_total,
+            "budgets": employee_budgets
+        })
+
+    response = {
+        "department": {
+            "id": department.id,
+            "name": department.name,
+            "total_expenses": department_total
+        },
+        "employees": employees_data,
+        "summary": {
+            "total_employees": len(employees_data),
+            "active_budgets": total_active_budgets
+        }
+    }
+
+    return jsonify(response), 200
 
 
 @api.route("/refresh", methods=["POST"])
@@ -676,48 +704,48 @@ def update_bill():
 
     return jsonify({"msg": "Bill updated successfully", "bill": bill.serialize()}), 200
 
-@api.route("/employee-expense", methods=["GET"])
-@jwt_required()
-def get_employee_expenses():
-    supervisor_id = get_jwt_identity()
-    supervisor = Employee.query.get(supervisor_id)
+# @api.route("/employee-expense", methods=["GET"])
+# @jwt_required()
+# def get_employee_expenses():
+#     supervisor_id = get_jwt_identity()
+#     supervisor = Employee.query.get(supervisor_id)
 
-    if not supervisor or not supervisor.is_supervisor:
-        return({"msg": "Unauthorized"}), 403
+#     if not supervisor or not supervisor.is_supervisor:
+#         return({"msg": "Unauthorized"}), 403
     
-    department_id = supervisor.department_id
-    if not department_id:
-        return({"msg": "Supervisor has no department assigned"}), 400
+#     department_id = supervisor.department_id
+#     if not department_id:
+#         return({"msg": "Supervisor has no department assigned"}), 400
 
-    employees= Employee.query.filter_by(department_id=supervisor.department_id).all()
+#     employees= Employee.query.filter_by(department_id=supervisor.department_id).all()
 
-    result = []
+#     result = []
 
-    for employee in employees:
-        total_expense = 0
-        budgets_data =[]
-        for budget in employee.budgets:
-            summary = budget.sumary()
-            total_expense+= summary["total_bills"]
+#     for employee in employees:
+#         total_expense = 0
+#         budgets_data =[]
+#         for budget in employee.budgets:
+#             summary = budget.sumary()
+#             total_expense+= summary["total_bills"]
         
-            budgets_data.append({
-                "budget_id": budget.id,
-                "budget_description": budget.budget_description,
-                "total_bills": summary["total_bills"],
-                "bills": [bill.serialize() for bill in budget.bills]
-            })
+#             budgets_data.append({
+#                 "budget_id": budget.id,
+#                 "budget_description": budget.budget_description,
+#                 "total_bills": summary["total_bills"],
+#                 "bills": [bill.serialize() for bill in budget.bills]
+#             })
 
-        result.append({
-            "employee_id": employee.id,
-            "employee_name": employee.name,
-            "total_expense": total_expense,
-            "budgets": budgets_data
-        })
-    return ({
-        "department_id": supervisor.department_id,
-        "department_name": supervisor.department.name if supervisor.department else None,
-        "employees": result
-    }),200
+#         result.append({
+#             "employee_id": employee.id,
+#             "employee_name": employee.name,
+#             "total_expense": total_expense,
+#             "budgets": budgets_data
+#         })
+#     return ({
+#         "department_id": supervisor.department_id,
+#         "department_name": supervisor.department.name if supervisor.department else None,
+#         "employees": result
+#     }),200
 
 
 @api.route("/logout", methods=['POST'])

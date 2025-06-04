@@ -1,6 +1,7 @@
-import useTotalExpenseDepartment from "../hooks/useTotalExpenseDepartment"
-const TotalExpenseDepartmentComponent = () => {
-    const { total, openEmployeeIds, setOpenEmployeeIds } = useTotalExpenseDepartment()
+import useTotalExpense from "../hooks/useTotalExpense";
+
+const TotalExpenseComponent = ({employeeId}) => {
+    const { total, openEmployeeIds, setOpenEmployeeIds } = useTotalExpense(employeeId)
     if (!total || Object.keys(total).length === 0) {
         return <p className="text-gray-500">No hay información disponible.</p>;
     }
@@ -17,10 +18,10 @@ const TotalExpenseDepartmentComponent = () => {
 
             <div className="bg-white border border-gray-300 rounded-lg p-4 shadow mb-6">
                 <p className="text-lg font-semibold">
-                    ID del Departamento: <span className="text-blue-600">{total.department_id}</span>
+                    Departamento: <span className="text-blue-600">{total.department.name}</span>
                 </p>
                 <p className="text-lg font-semibold mt-2">
-                    Total General de Gastos: <span className="text-green-600">${total.total_bills_amount.toFixed(2)}</span>
+                    Total General de Gastos: <span className="text-green-600">${total.department.total_expenses.toFixed(2)}</span>
                 </p>
             </div>
 
@@ -38,12 +39,12 @@ const TotalExpenseDepartmentComponent = () => {
                             onClick={() => toggleEmployee(emp.employee_id)}
                             className="w-full text-left p-4 font-semibold text-gray-800 hover:bg-gray-100 focus:outline-none"
                         >
-                            {emp.employee_name} (ID: {emp.employee_id})
+                            {emp.name} (ID: {emp.employee_id})
                         </button>
 
                         {openEmployeeIds.includes(emp.employee_id) && (
                             <div className="px-4 pb-4">
-                                <p><strong>Total de Gastos:</strong> <span className="text-green-700">${emp.total_bills_amount.toFixed(2)}</span></p>
+                                <p><strong>Total de Gastos:</strong> <span className="text-green-700">${emp.total_expenses.toFixed(2)}</span></p>
                                 {/* Aquí podrías incluir una lista de gastos si la tienes */}
                             </div>
                         )}
@@ -55,4 +56,4 @@ const TotalExpenseDepartmentComponent = () => {
 
 }
 
-export default TotalExpenseDepartmentComponent
+export default TotalExpenseComponent

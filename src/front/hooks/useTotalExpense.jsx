@@ -1,14 +1,14 @@
 import useGlobalReducer from "./useGlobalReducer"
-import { totalExpenseDepartment } from "../services/apiServicesFetch"
+import { totalExpense } from "../services/apiServicesFetch"
 import { useEffect, useState } from "react"
-const useTotalExpenseDepartment = () => {
+const useTotalExpense = (employeeId = null) => {
     const [openEmployeeIds, setOpenEmployeeIds] = useState([]);
     const { store, dispatch } = useGlobalReducer()
     const { total } = store
     useEffect(() => {
-        totalExpenseDepartment(dispatch)
-    }, [dispatch])
+        totalExpense(dispatch, employeeId)
+    }, [dispatch, employeeId])
     return { total,openEmployeeIds,setOpenEmployeeIds }
 }
 
-export default useTotalExpenseDepartment
+export default useTotalExpense

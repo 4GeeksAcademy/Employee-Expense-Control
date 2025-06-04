@@ -65,7 +65,7 @@ export default function storeReducer(store, action = {}) {
         budgets: action.payload,
       };
 
-      case "SET_TOTAL_DEPARTMENT":
+      case "SET_TOTAL_EXPENSE":
         return {
           ... store,
           total: action.payload

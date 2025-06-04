@@ -433,9 +433,14 @@ export const supervisorBudgetFetch = async (dispatch) => {
   }
 }
 
-export const totalExpenseDepartment = async (dispatch) => {
+export const totalExpense = async (dispatch,employeeId = null) => {
   try {
-    const response = await authFetch("/supervisor-department-total-bills", { method: "GET" })
+    let url = "/supervisor-total-expense"
+    if(employeeId){
+      url += `?employee_id=${employeeId}`
+    }
+
+    const response = await authFetch(url, { method: "GET" })
     if (!response.ok) {
       throw new Error(`Error fetching data ${response.status}`)
     }
@@ -446,7 +451,7 @@ export const totalExpenseDepartment = async (dispatch) => {
       throw new Error("Error obtaining the data")
     }
     const action = {
-      type: "SET_TOTAL_DEPARTMENT",
+      type: "SET_TOTAL_EXPENSE",
       payload: data
     }
     dispatch(action)
