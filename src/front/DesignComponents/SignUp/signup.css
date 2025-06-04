@@ -13,8 +13,14 @@
   align-items: center;
 }
 
+.linkColor{
+  color: var( --link-color);
+}
+
+
 .signForm {
   background-color: var(--ghost-dark_gray);
+  /*width: 100%;*/
   width: 416px;
   border-radius: 1rem;
   padding: 32px;

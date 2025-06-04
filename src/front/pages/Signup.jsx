@@ -171,7 +171,7 @@ const SignUp = () => {
                     {msg && <div className="alert alert-success successAlert">{msg}</div>}
                     <div className="mb-3 d-grid gap-2 contBtn"><button className="btnSign btn" type="submit">Continue</button></div>
                      <div className="form-text emailHelp">
-                    Already have an account? <Link to="/login">Login</Link>
+                    Already have an account? <Link className="linkColor" to="/login">Login</Link>
                         </div>
                 
                 </div>
