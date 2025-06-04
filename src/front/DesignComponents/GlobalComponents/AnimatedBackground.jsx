@@ -8,20 +8,15 @@ const AnimatedBackground = () => {
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(canvasParentRef);
     p5.noStroke();
-    p5.frameRate(60);
+    p5.frameRate(80);
 
-    // Crear puntos con forma general de rostro ovalado
+    points.current = [];
     for (let i = 0; i < pointCount; i++) {
-      let angle = p5.random(p5.TWO_PI);
-      let radiusX = p5.random(160, 160);
-      let radiusY = p5.random(200, 200);
-      let x = p5.cos(angle) * radiusX;
-      let y = p5.sin(angle) * radiusY;
-
-      // Simulación 3D con Z y variación
-      let z = p5.random(-20, 20);
-
-      points.current.push({ x, y, z, baseX: x, baseY: y, baseZ: z });
+      let x = p5.random(-p5.width / 1, p5.width / 1);
+      let y = p5.random(-p5.height / 1, p5.height / 1);
+      let z = p5.random(-60, 60);
+      let color = i < pointCount / 2 ? [242, 242, 242, 160] : [68, 143, 115, 160]; // mitad ghost white, mitad ghost green
+      points.current.push({ x, y, z, baseX: x, baseY: y, baseZ: z, color });
     }
   };
 
@@ -29,19 +24,16 @@ const AnimatedBackground = () => {
     p5.background(13, 13, 13);
     p5.translate(p5.width / 2, p5.height / 2);
 
-    const mouseOffsetX = (p5.mouseX - p5.width / 2) * 0.002;
-    const mouseOffsetY = (p5.mouseY - p5.height / 2) * 0.002;
+    const mouseOffsetX = (p5.mouseX - p5.width / 2) * 0.001;
+    const mouseOffsetY = (p5.mouseY - p5.height / 2) * 0.001;
 
     for (let i = 0; i < points.current.length; i++) {
       const pt = points.current[i];
+      let moveX = pt.baseX + pt.z * mouseOffsetX * 40;
+      let moveY = pt.baseY + pt.z * mouseOffsetY * 40;
 
-      // Simular movimiento de cabeza con el puntero
-      let moveX = pt.baseX + pt.z * mouseOffsetX * 60;
-      let moveY = pt.baseY + pt.z * mouseOffsetY * 60;
-
-      // Color tipo estrella tenue
-      p5.fill(242, 242, 242, 200); // ghost white
-      p5.circle(moveX, moveY, 1.5);
+      p5.fill(...pt.color);
+      p5.circle(moveX, moveY, 2);
     }
   };
 
@@ -54,7 +46,17 @@ const AnimatedBackground = () => {
       setup={setup}
       draw={draw}
       windowResized={windowResized}
-      style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 0 }}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        margin: 0,
+        padding: 0,
+        width: "100vw",
+        height: "100vh",
+        zIndex: 0,
+        pointerEvents: "none"
+      }}
     />
   );
 };
