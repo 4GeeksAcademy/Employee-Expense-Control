@@ -6,14 +6,17 @@
   background-color: rgb(182, 41, 41);
 }*/
 
-
 .signMain {
+  position: relative;
+  min-height: 100vh;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  z-index: 1;
 }
 
 .signForm {
+  position: relative;
   background-color: var(--ghost-dark_gray);
   width: 416px;
   border-radius: 1rem;
@@ -26,6 +29,7 @@
     rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
   transition: box-shadow 0.3s ease, transform 0.3s ease;
   filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.25));
+  z-index: 2;
 }
 
 .signForm:hover {
@@ -111,3 +115,6 @@
   border: 5px ridge rgb(7, 6, 6);
   font-family: var(--font-family-register);
 }
+
+
+
