@@ -324,7 +324,7 @@ def update_bill_state(bill_id):
     new_state = data.get("state")  # "approved" or "denegated"
 
     # Validate input
-    if not new_state not in ["approved", "denegated"]:
+    if new_state not in ["approved", "denegated"]:
         return jsonify({"msg": "Invalid bill ID or state"}), 400
 
     bill = Bill.query.get(bill_id)
@@ -346,14 +346,22 @@ def update_bill_state(bill_id):
     bill.evaluator_id = supervisor_id
     bill.date_approved = datetime.now(timezone.utc)
 
-    '''Record who submitted the bill (from Budget → Employee)
-    budget = Budget.query.get(bill.budget_id) Not necessary
-    employee_id = budget.employee_id if budget else None # Attach the original submitter'''
+    '''Record who submitted the bill (from Budget → Employee)'''
+    budget = Budget.query.get(bill.budget_id) 
+    employee_id = budget.employee_id if budget else None # Attach the original submitter
 
     db.session.commit()
 
+    # ✅ Add employee_id to serialized response
+    bill_data = bill.serialize()
+    bill_data["employee_id"] = employee_id
+
+    print("Budget:", budget)
+    print("Budget employee_id:", employee_id)
+    print("Serialized bill data:", bill_data)
+
     return jsonify({"msg": f"Bill {bill_id} successfully {new_state}.",
-                    "bill": bill.serialize()}), 200
+                    "bill": bill_data}), 200
 
 
 @api.route("/budgets/<int:budget_id>/state", methods=["PATCH"])
@@ -437,6 +445,34 @@ def get_department_budgets_and_bills():
     serialized_data = [budget.serialize() for budget in budgets]
 
     return jsonify({"department_id": department_id, "budgets": serialized_data}), 200
+
+
+@api.route("/supervisor-get-bills", methods=["GET"])
+@jwt_required()
+def supervisor_get_bills():
+    try:
+        supervisor_id = get_jwt_identity()
+
+        if not supervisor_id:
+            return jsonify({"msg": "Invalid token"}), 401
+
+        supervisor = Employee.query.get(supervisor_id)
+        if not supervisor or not supervisor.is_supervisor:
+            return jsonify({"msg": "Supervisor not found or unauthorized"}), 404
+
+          # Get all budgets evaluated by this supervisor
+        budgets = Budget.query.filter_by(evaluator_id=supervisor_id).all()
+
+        # Collect all bills from these budgets
+        all_bills = []
+        for budget in budgets:
+            all_bills.extend(budget.bills)
+
+        return jsonify({"bills": [bill.serialize() for bill in all_bills]})
+
+    except Exception as e:
+        print("❌ Server Error in /supervisor-get-bills:", e)
+        return jsonify({"msg": "Internal server error"}), 500
 
 
 @api.route("/supervisor-total-expense", methods=["GET"])
@@ -649,6 +685,32 @@ def bill_create():
     db.session.add(new_bill)
     db.session.commit()
     return jsonify({"msg": "bill created successfully"}), 201
+
+@api.route("/mybills", methods=["GET"])
+@jwt_required()
+def my_bills():
+    try:
+        employee_id = get_jwt_identity()
+
+        if not employee_id:
+            return jsonify({"msg": "Invalid token"}), 401
+
+        employee = Employee.query.get(employee_id)
+        if not employee:
+            return jsonify({"msg": "Employee not found"}), 404
+
+        budgets = Budget.query.filter_by(employee_id=employee_id).all()
+       
+        # collect all bills from all budgets
+        all_bills = []
+        for budget in budgets:
+            all_bills.extend(budget.bills) 
+        
+        return jsonify({"bill_list": [bill.serialize() for bill in all_bills]})
+
+    except Exception as e:
+        print("❌ Server Error in /mybills:", e)
+        return jsonify({"msg": "Internal server error"}), 500
 
 
 @api.route("/deletebill", methods=["DELETE"])

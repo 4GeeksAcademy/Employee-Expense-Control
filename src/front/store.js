@@ -2,6 +2,7 @@ export const initialStore = () => {
   return {
     signup: [],
     budgets: [],
+    bills: [],
     total:[],
     todos: [
       {
@@ -21,11 +22,19 @@ export const initialStore = () => {
 
 export default function storeReducer(store, action = {}) {
   switch (action.type) {
+
     case "signup":
       return {
         ...store,
         signup: [...store.signup, action.payload],
       };
+
+       case "SET_BILLS":
+      return {
+        ...store,
+        bills: action.payload,
+      };
+
     case "EDIT_BILL":
       const updatedBill = action.payload;
 
@@ -69,12 +78,14 @@ export default function storeReducer(store, action = {}) {
         return {
           ... store,
           total: action.payload
-        }
+        };
+
     case "set_hello":
       return {
         ...store,
         message: action.payload,
       };
+
     case "add_task":
       const { id, color } = action.payload;
       return {
@@ -83,6 +94,7 @@ export default function storeReducer(store, action = {}) {
           todo.id === id ? { ...todo, background: color } : todo
         ),
       };
+
     case "EDIT_BUDGET":
       const updated = action.payload;
       return {
@@ -104,6 +116,21 @@ export default function storeReducer(store, action = {}) {
                 ...(newAmount && { amount: newAmount }),
               }
             : budget
+        ),
+      };
+
+      case "UPDATE_BILL_STATE":
+      const { billId: updatedBillId, newState: updatedNewState, employeeId} = action.payload;
+      return {
+        ...store,
+        bills: store.bills.map((bill) =>
+          bill.id === updatedBillId
+            ? {
+                ...bill,
+                state: updatedNewState,
+                employee_id: employeeId,
+            }
+            : bill
         ),
       };
 

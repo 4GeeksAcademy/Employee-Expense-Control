@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react"
 import useSupervisorBudget from "../hooks/useSupervisorBudget"
 
-
-
-
 const BudgetsPending = () => {
 
     const [pendingAction, setPendingAction] = useState(null); // 'accept' or 'reject'
@@ -72,7 +69,7 @@ const BudgetsPending = () => {
                             <strong>Description:</strong> {budget.budget_description}
                         </p>
                         <p>
-                            <strong>Requested Amount::</strong>{" "}
+                            <strong>Requested Amount:</strong>{" "}
                             <input
                                 type="number"
                                 value={editedAmount[budget.id] || budget.amount}
@@ -141,7 +138,7 @@ const BudgetsPending = () => {
                     </div>
                     <div class="modal-body">
                         {pendingAction === "accept"
-                            ? "Are you sure you want to accept this budget?"
+                            ? `Are you sure you want to accept this budget of ${pendingAmount}€?`
                             : "Are you sure you want to reject this budget?"}
                     </div>
                     <div class="modal-footer">

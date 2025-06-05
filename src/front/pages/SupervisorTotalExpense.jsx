@@ -1,4 +1,6 @@
 import TotalExpenseComponent from "../components/TotalExpenseComponent"
+
+
 const SupervisorTotalExpense = () => {
     return (<>
         <TotalExpenseComponent></TotalExpenseComponent>
