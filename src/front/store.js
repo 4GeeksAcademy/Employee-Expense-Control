@@ -120,15 +120,14 @@ export default function storeReducer(store, action = {}) {
       };
 
       case "UPDATE_BILL_STATE":
-      const { billId: updatedBillId, newState: updatedNewState, employeeId} = action.payload;
+      const { billId: updatedBillId, newState: updatedNewState} = action.payload;
       return {
         ...store,
         bills: store.bills.map((bill) =>
           bill.id === updatedBillId
             ? {
                 ...bill,
-                state: updatedNewState,
-                employee_id: employeeId,
+              state: updatedNewState,
             }
             : bill
         ),

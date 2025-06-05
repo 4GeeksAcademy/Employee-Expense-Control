@@ -501,7 +501,7 @@ export const totalExpense = async (dispatch,employeeId = null) => {
       payload: data
     }
     dispatch(action)
-    console.log(data)
+    // console.log(data)
 
   } catch (error) {
     console.error(error)
@@ -577,17 +577,15 @@ export const billValidation = async (dispatch, bill_id, state) => {
       throw new Error(`Error fetching data ${response.status}`)
     }
     const data = await response.json();
-    console.log(data)
 
     dispatch({
   type: "UPDATE_BILL_STATE",
   payload: {
     billId: bill_id,
-    newState: state.toUpperCase(),
-    employeeId: data.bill.employee_id, 
+    newState: state.toUpperCase(), 
   },
 });
-    console.log(data)
+ console.log(data)
 
   } catch (error) {
     console.error(error)
