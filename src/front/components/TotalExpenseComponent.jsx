@@ -1,6 +1,7 @@
 import useTotalExpense from "../hooks/useTotalExpense";
+import { Link } from "react-router-dom";
 
-const TotalExpenseComponent = ({employeeId}) => {
+const TotalExpenseComponent = ({ employeeId }) => {
     const { total, openEmployeeIds, setOpenEmployeeIds } = useTotalExpense(employeeId)
     if (!total || Object.keys(total).length === 0) {
         return <p className="text-gray-500">No hay información disponible.</p>;
@@ -13,6 +14,12 @@ const TotalExpenseComponent = ({employeeId}) => {
         );
     };
     return (<>
+        <Link
+            to="/supervisor"
+            className="inline-block mb-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+        >
+            <button type="button" class="btn btn-primary">Go Home</button>
+        </Link>
         <div className="p-6 max-w-3xl mx-auto">
             <h2 className="text-2xl font-bold mb-4 text-center">Gastos del Departamento</h2>
 

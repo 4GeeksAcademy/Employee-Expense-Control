@@ -455,15 +455,17 @@ def get_total_expense():
 # #AÑADIR UN FILTRO PARA DIVIDIR UNA LISTA DE TODOS LOS EMPLEADOS Y DEPARTAMENTOS DE FORMA INDIVIDUAL
 # #USAMOS REQUEST.ARGS.GET PARA OBTENER LOS PARAMETROS A TRAVES DE LA URL Y AÑADIMOS TYPE=INT PARA
 # #BUSCAR EL PARAMETRO EMPLOYEE_ID EN LA URL SI EXISTE LO CONVIERTE EN INT AUTOMATICAMENTE Y SI NO DEVUELVE NONE
-# 
+#
     department = Department.query.get(department_id)
 
     # Obtener parámetro employee_id desde la URL
     employee_id_param = request.args.get("employee_id", type=int)
     if employee_id_param:
-        employees = Employee.query.filter_by(id=employee_id_param, department_id=department_id).all()
+        employees = Employee.query.filter_by(
+            id=employee_id_param, department_id=department_id).all()
     else:
-        employees = Employee.query.filter_by(department_id=department_id, is_supervisor =False).all()
+        employees = Employee.query.filter_by(
+            department_id=department_id, is_supervisor=False).all()
 
     department_total = 0.0
     employees_data = []
@@ -473,29 +475,34 @@ def get_total_expense():
         employee_total = 0.0
         employee_budgets = []
 
-        for budget in employee.budgets:
-            summary = budget.sumary()
-            budget_total = float(summary["total_bills"])  # Convertimos a float
+    for budget in employee.budgets:
+        approved_bills = [
+            bill for bill in budget.bills if bill.state == StateType.APPROVED]
+        budget_total = sum(float(bill.amount) for bill in approved_bills)
 
+        if budget_total > 0:
             employee_total += budget_total
             department_total += budget_total
 
-            employee_budgets.append({
-                "budget_id": budget.id,
-                "description": budget.budget_description,
-                "total": budget_total,
-                "state": budget.state.name,
-                "bills": [bill.serialize() for bill in budget.bills]
-            })
+    employee_budgets.append({
+        "budget_id": budget.id,
+        "description": budget.budget_description,
+        "total": budget_total,
+        "state": budget.state.name,
+        "bills": [bill.serialize() for bill in approved_bills]
+    })
 
-            total_active_budgets += 1
+    if approved_bills:
+        total_active_budgets += 1
 
-        employees_data.append({
-            "employee_id": employee.id,
-            "name": employee.name,
-            "total_expenses": employee_total,
-            "budgets": employee_budgets
-        })
+    total_active_budgets += 1
+
+    employees_data.append({
+        "employee_id": employee.id,
+        "name": employee.name,
+        "total_expenses": employee_total,
+        "budgets": employee_budgets
+    })
 
     response = {
         "department": {
@@ -712,7 +719,7 @@ def update_bill():
 
 #     if not supervisor or not supervisor.is_supervisor:
 #         return({"msg": "Unauthorized"}), 403
-    
+
 #     department_id = supervisor.department_id
 #     if not department_id:
 #         return({"msg": "Supervisor has no department assigned"}), 400
@@ -727,7 +734,7 @@ def update_bill():
 #         for budget in employee.budgets:
 #             summary = budget.sumary()
 #             total_expense+= summary["total_bills"]
-        
+
 #             budgets_data.append({
 #                 "budget_id": budget.id,
 #                 "budget_description": budget.budget_description,

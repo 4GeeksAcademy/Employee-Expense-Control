@@ -1,4 +1,5 @@
 import useBudgetAccepted from "../hooks/useBudgetAccepted";
+import { Link } from "react-router-dom";
 
 const BudgetAccepted = () => {
     const { store, expandedEmployeeId, setExpandedEmployeeId } = useBudgetAccepted();
@@ -26,6 +27,12 @@ const BudgetAccepted = () => {
 
     return (
         <div>
+            <Link
+                to="/supervisor"
+                className="inline-block mb-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+            >
+                <button type="button" class="btn btn-primary">Go Home</button>
+            </Link>
             <h2>Presupuestos Aprobados por Empleado</h2>
             {employees.length === 0 ? (
                 <p>No hay presupuestos aprobados.</p>
