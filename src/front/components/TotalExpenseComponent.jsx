@@ -169,7 +169,7 @@ const TotalExpenseComponent = ({ employeeId }) => {
         </div>
       </div>
 
-      {/* Reusable modal used for accept/reject confirmation */}
+      {/* Reusable modal used for accept/reject confirmation test */}
       {/* Modal */}
       <div className="modal fade" id="exampleModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div className="modal-dialog">
