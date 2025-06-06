@@ -215,6 +215,33 @@ export const budgetListFetch = async (dispatch) => {
 };
 // payload: data.budget_list,
 
+
+export const billListFetch = async (dispatch) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Token not founded");
+    }
+    const response = await authFetch('/mybills', {
+      method: "GET",
+    });
+    if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`);
+    }
+    const data = await response.json();
+    if (!data || !data.bill_list) {
+      throw new Error("Error obtaining the data");
+    }
+    dispatch({
+      type: "SET_BILLS",
+      payload: data.bill_list,
+    });
+
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
 //REFACTORIZADO EL CODIGO ANTES ENVIABAMOS CONSOLE.ERROR Y NO SE INFORMABA AL USUARIO
 //NO SE SABIA SI LA IMAGEN SE SUBIA CORRECTAMENTE Y TODO ESTABA MEZCLADO Y SEPARAMOS RESPONSABILIDADES 
 //AÑADIMOS SOPORTE DE PREVISUALIZACION PARA MOSTRAR UNA VISTA PREVIA DE IMAGEN
@@ -427,6 +454,7 @@ export const deleteBill = async (billId, budgetId, dispatch) => {
     console.error(error);
   }
 };
+
 export const sendResetEmail = async (email) => {
   const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/forgot-password`, {
 
@@ -518,6 +546,22 @@ export const supervisorBudgetFetch = async (dispatch) => {
   }
 }
 
+export const supervisorBillListFetch = async (dispatch) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("the token was not obtained")
+    }
+    const response = await authFetch("/supervisor-get-bills", { method: "GET" });
+    if (!response.ok) throw new Error(`Error fetching bills ${response.status}`);
+
+    const data = await response.json();
+    dispatch({ type: "SET_BILLS", payload: data.bills });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export const totalExpense = async (dispatch,employeeId = null) => {
   try {
     let url = "/supervisor-total-expense"
@@ -540,7 +584,7 @@ export const totalExpense = async (dispatch,employeeId = null) => {
       payload: data
     }
     dispatch(action)
-    console.log(data)
+    // console.log(data)
 
   } catch (error) {
     console.error(error)
@@ -608,16 +652,23 @@ export const budgetValidation = async (dispatch, budget_id, state, amount = null
   }
 }
 
-export const billValidation = async (bill_id, state) => {
+export const billValidation = async (dispatch, bill_id, state) => {
   try {
     const response = await authFetch(`/bills/${bill_id}/state`,
-      { method: "PATCH", headers: { "Content-Type": "application/json", }, body: json.stringify({ state }) })
+      { method: "PATCH", headers: { "Content-Type": "application/json", }, body: JSON.stringify({ state }) })
     if (!response.ok) {
       throw new Error(`Error fetching data ${response.status}`)
     }
-    const data = await response.json()
-    dispatch({ type: "EDIT_BILL", payload: data });
-    console.log(data)
+    const data = await response.json();
+
+    dispatch({
+  type: "UPDATE_BILL_STATE",
+  payload: {
+    billId: bill_id,
+    newState: state.toUpperCase(), 
+  },
+});
+ console.log(data)
 
   } catch (error) {
     console.error(error)

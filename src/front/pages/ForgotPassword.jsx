@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { sendResetEmail } from "../services/apiServicesFetch";
+import { Link } from "react-router-dom"
+import "../DesignComponents/SignUp/signup.css";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");            // esto guarda el email que el usuario escribe
@@ -19,28 +21,49 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="text-center mb-4">¿Olvidaste tu contraseña brother?</h2>
-      <form onSubmit={handleSubmit} className="p-4 rounded-4 shadow-lg bg-white" style={{ maxWidth: '400px', margin: 'auto' }}>
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">Correo electrónico</label>
-          <input
-            type="email"
-            className="form-control rounded-pill"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            placeholder="No te lies mi pana"
-          />
+    <div className="signMain">
+      <form onSubmit={handleSubmit} className="signForm">
+        <div className="signHeading">
+          <h2> Forgot your password?</h2>
         </div>
-        <div className="d-grid mb-3">
-          <button type="submit" className="btn btn-primary rounded-pill py-2">Enviar enlace</button>
+        <div className="container">
+          <div className="mb-3">
+            <label htmlFor="email" className="Signform-label required-label">
+              EMAIL ADDRESS
+            </label>
+            <input
+              type="email"
+              className="form-control custom-placeholder"
+              id="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          {message && (
+            <div
+              className={`alert ${
+                message.toLowerCase().includes("error") ? "alert-danger" : "alert-success"
+              } errorAlert`}
+            >
+              {message}
+            </div>
+          )}
+
+          <div className="mb-3 d-grid gap-2 contBtn">
+            <button type="submit" className="btnSign btn">
+              Send reset link
+            </button>
+          </div>
+          <div className="form-text emailHelp">
+                Remember your password? <Link className="linkColor" to="/login">Back to login</Link>
+               </div>
         </div>
-        {message && <p className="text-center">{message}</p>}   {/* Muestra el mensaje si existe */}
       </form>
     </div>
   );
-};
+}
 
 export default ForgotPassword;
