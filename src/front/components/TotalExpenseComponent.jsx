@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import useTotalExpense from "../hooks/useTotalExpense";
 import { Link } from "react-router-dom";
+//import { totalExpense } from "../services/apiServicesFetch";
 
 
 const TotalExpenseComponent = ({ employeeId }) => {
@@ -10,12 +11,12 @@ const TotalExpenseComponent = ({ employeeId }) => {
   const [pendingBillId, setPendingBillId] = useState(null);
   const [pendingAmount, setPendingAmount] = useState(null);
 
-  const { dispatch, store, total, openEmployeeIds, setOpenEmployeeIds, billValidation } = useTotalExpense(employeeId)
+  const { dispatch, store, total, openEmployeeIds, setOpenEmployeeIds, billValidation, totalExpense } = useTotalExpense(employeeId)
 
   console.log(store)
 
   if (!total || Object.keys(total).length === 0) {
-    return <p className="text-gray-500">No hay información disponible.</p>;
+    return <p className="text-gray-500">No Information Available.</p>;
   }
 
   const handleAccept = async (billId) => {
@@ -31,6 +32,7 @@ const TotalExpenseComponent = ({ employeeId }) => {
   const handleModalConfirm = async () => {
     if (pendingAction === "approved") {
       await handleAccept(pendingBillId);
+      await totalExpense(dispatch, employeeId);
     } else if (pendingAction === "denegated") {
       await handleReject(pendingBillId);
     }
@@ -69,20 +71,20 @@ const TotalExpenseComponent = ({ employeeId }) => {
             to="/supervisor"
             className="inline-block mb-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
         >
-            <button type="button" class="btn btn-primary">Go Home</button>
+            <button type="button" className="btn btn-primary">Go Home</button>
         </Link>
       <div className="p-6 max-w-3xl mx-auto">
         <h2 className="text-2xl font-bold mb-4 text-center">
-          Gastos del Departamento
+          Departmental Expenditures
         </h2>
 
         <div className="bg-white border border-gray-300 rounded-lg p-4 shadow mb-6">
           <p className="text-lg font-semibold">
-            Departamento:{" "}
+            Departament:{" "}
             <span className="text-blue-600">{total.department.name}</span>
           </p>
           <p className="text-lg font-semibold mt-2">
-            Total General de Gastos:{" "}
+            Overall Expenditure Summary:{" "}
             <span className="text-green-600">
               ${total.department.total_expenses.toFixed(2)}
             </span>
@@ -92,7 +94,7 @@ const TotalExpenseComponent = ({ employeeId }) => {
         <hr className="my-6 border-gray-300" />
 
         <h3 className="text-xl font-semibold mb-3 text-center">
-          Gastos por Empleado
+          Expenditures per Employee
         </h3>
 
         <div className="space-y-4">
@@ -111,7 +113,7 @@ const TotalExpenseComponent = ({ employeeId }) => {
               {openEmployeeIds.includes(emp.employee_id) && (
                 <div className="px-4 pb-4">
                   <p>
-                    <strong>Total de Gastos:</strong>{" "}
+                    <strong>Total Expenditures:</strong>{" "}
                     <span className="text-green-700">
                       ${emp.total_expenses.toFixed(2)}
                     </span>
@@ -123,7 +125,7 @@ const TotalExpenseComponent = ({ employeeId }) => {
                     .flatMap((budget) =>
                       budget.bills
                         .map((bill) =>
-                          store.bills.find((b) => b.id === bill.id) || bill // get updated bill if available
+                          store.bills.find((bil) => bil.id === bill.id) || bill // get updated bill if available
                          )
                         .filter((bill) => bill.state === "PENDING")
                     )
@@ -137,7 +139,7 @@ const TotalExpenseComponent = ({ employeeId }) => {
                             {bill.trip_description}
                           </p>
                           <p className="text-sm text-gray-600">
-                            Monto: €{bill.amount}
+                            Amount: ${bill.amount}
                           </p>
                         </div>
                         <div className="space-x-2">

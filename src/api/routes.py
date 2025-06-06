@@ -504,48 +504,51 @@ def get_total_expense():
             department_id=department_id, is_supervisor=False).all()
 
     department_total = 0.0
-    employees_data = []
     total_active_budgets = 0
+    employees_data = []
 
     for employee in employees:
         employee_total = 0.0
         employee_budgets = []
 
-    for budget in employee.budgets:
-            summary = budget.sumary()
-            budget_total = float(summary["total_bills"])  # Convertimos a float
-            employee_total += budget_total
-            department_total += budget_total
+        for budget in employee.budgets:
+            # Get all bills (approved, pending, rejected)
+            all_bills = budget.bills
+            approved_bills = [bill for bill in all_bills if bill.state == StateType.APPROVED]
+
+            #  Only approved bills count toward totals
+            budget_total = sum(float(bill.amount) for bill in approved_bills)
+
+            if approved_bills:
+                employee_total += budget_total
+                department_total += budget_total
+                total_active_budgets += 1
+
             employee_budgets.append({
                 "budget_id": budget.id,
                 "description": budget.budget_description,
-                "total": budget_total,
+                "total": budget_total,  # total of approved bills only
                 "state": budget.state.name,
-                "bills": [bill.serialize() for bill in budget.bills]
+                "bills": [bill.serialize() for bill in all_bills]  # show all bills for review
             })
-            total_active_budgets += 1
 
-    employees_data.append({
-        "employee_id": employee.id,
-        "name": employee.name,
-        "total_expenses": employee_total,
-        "budgets": employee_budgets
-    })
+        employees_data.append({
+            "employee_id": employee.id,
+            "name": employee.name,
+            "total_expenses": employee_total,  #only approved
+            "budgets": employee_budgets
+        })
 
-    response = {
+    return {
         "department": {
-            "id": department.id,
             "name": department.name,
-            "total_expenses": department_total
+            "total_expenses": department_total  # only approved
         },
         "employees": employees_data,
-        "summary": {
-            "total_employees": len(employees_data),
-            "active_budgets": total_active_budgets
-        }
+        "total_active_budgets": total_active_budgets
     }
 
-    return jsonify(response), 200
+    
 
 
 @api.route("/refresh", methods=["POST"])

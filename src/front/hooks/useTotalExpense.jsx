@@ -14,7 +14,7 @@ const useTotalExpense = (employeeId = null) => {
 
     }, [dispatch, employeeId])
 
-    return { dispatch, store, total,openEmployeeIds,setOpenEmployeeIds, billValidation }
+    return { dispatch, store, total,openEmployeeIds,setOpenEmployeeIds, billValidation, totalExpense, }
 }
 
 export default useTotalExpense
