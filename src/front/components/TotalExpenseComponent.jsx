@@ -112,7 +112,8 @@ const TotalExpenseComponent = ({ employeeId }) => {
                     </span>
                   </p>
 
-                //Write a comment tomorrow
+                {/* Write a comment tomorrow */}
+
                   {emp.budgets
                     .flatMap((budget) =>
                       budget.bills
