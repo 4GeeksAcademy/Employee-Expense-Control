@@ -164,15 +164,25 @@ export const budgetFetch = async (description, amount) => {
       },
       body: rawData,
     });
-    if (!response.ok) {
-      throw new Error(`Error fetching data ${response.status}`);
-    }
     const data = await response.json();
-    console.log(data);
-  } catch (error) {
-    console.error(error);
+    
+    //NUEVO CAMPO AÑADIDO PARA DEVOLVER OBJETO CON LAS SIGUIENTES PROPIEDADES A BUDGET FORM 
+    return {
+      ok: response.ok,
+      status: response.status,
+      message: data.msg || "Budget created successfully"
+    };
+    }
+    catch (error) {
+    console.error("Error en budgetFetch:", error);
+    return {
+      ok: false,
+      message: "Error sending budget.",
+      error,
+    };
   }
 };
+
 
 export const budgetListFetch = async (dispatch) => {
   try {
@@ -232,6 +242,10 @@ export const billListFetch = async (dispatch) => {
     console.error(error);
   }
 };
+//REFACTORIZADO EL CODIGO ANTES ENVIABAMOS CONSOLE.ERROR Y NO SE INFORMABA AL USUARIO
+//NO SE SABIA SI LA IMAGEN SE SUBIA CORRECTAMENTE Y TODO ESTABA MEZCLADO Y SEPARAMOS RESPONSABILIDADES 
+//AÑADIMOS SOPORTE DE PREVISUALIZACION PARA MOSTRAR UNA VISTA PREVIA DE IMAGEN
+//DEVOLVEMOS MENSAJES CLAROS CON "OK:" PARA QUE NUESTRO BILLFORM PUEDA MANEJARLOS E INFORMARLOS AL USUARIO
 
 export const fetchImageBill = async (image, description, location, amount) => {
   try {
@@ -240,50 +254,119 @@ export const fetchImageBill = async (image, description, location, amount) => {
       location.trim() === "" ||
       amount.trim() === ""
     ) {
-      throw new Error("fields cannot be empty");
+      return { ok: false, message: "All fields are required." };
     }
+
+    if (!image) {
+      return { ok: false, message: "You must upload an image of the receipt." };
+    }
+
     const token = localStorage.getItem("token");
     if (token == null) {
-      throw new Error("token dont exist");
+      return { ok: false, message: "Token does not exist." };
     }
-    const rawData = JSON.stringify({
-      description: description,
-      location: location,
-      amount: amount,
-      date: new Date().toISOString(),
-    });
+
     const formData = new FormData();
     formData.append("bill", image);
+
     if (!formData.has("bill")) {
-      throw new Error("The image has not been loaded correctly");
+      return { ok: false, message: "The image has not been loaded correctly." };
     }
+
     const response = await fetch(`${backendUrl}/upload`, {
       method: "POST",
       body: formData,
     });
     if (!response.ok) {
-      throw new Error(`Error fetching data ${response.status}`);
+      return { ok: false, message: `Image upload failed (${response.status})` };
     }
-    const data = await response.json();
-    console.log(data);
 
-    //USAR authFetch en las rutas que requieran token
-    const billResponse = await authFetch('/bill', {
+    const rawData = JSON.stringify({
+      description,
+      location,
+      amount,
+      date: new Date().toISOString(),
+    });
+
+    const billResponse = await authFetch("/bill", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: rawData,
     });
+
     if (!billResponse.ok) {
-      throw new Error(`Error fetching data ${billResponse.status}`);
+      return { ok: false, message: `Failed to create bill (${billResponse.status})` };
     }
-    const billData = await billResponse.json();
-    console.log(billData);
+
+    const data = await billResponse.json();
+    return { ok: true, message: data?.msg || "Bill created successfully." };
   } catch (error) {
     console.error(error);
+    return { ok: false, message: error.message || "Unexpected error." };
   }
 };
+
+
+// export const fetchImageBill = async (image, description, location, amount) => {
+//   try {
+//     if (
+//       description.trim() === "" ||
+//       location.trim() === "" ||
+//       amount.trim() === ""
+//     ) {
+//       throw new Error("fields cannot be empty");  
+//     }
+
+
+//     if (!image) {
+//       return { ok: false, message: "You must upload an image of the receipt." };
+//     }
+
+//     const token = localStorage.getItem("token");
+//     if (token == null) {
+//       throw new Error("token dont exist");
+//     }
+//     const rawData = JSON.stringify({
+//       description: description,
+//       location: location,
+//       amount: amount,
+//       date: new Date().toISOString(),
+//     });
+//     const formData = new FormData();
+//     formData.append("bill", image);
+
+//     if (!formData.has("bill")) {
+//       throw new Error("The image has not been loaded correctly");
+//     }
+//     const response = await fetch(`${backendUrl}/upload`, {
+//       method: "POST",
+//       body: formData,
+//     });
+//     if (!response.ok) {
+//       throw new Error(`Error fetching data ${response.status}`);
+//     }
+//     const data = await response.json();
+//     console.log(data);
+
+//     //USAR authFetch en las rutas que requieran token
+//     const billResponse = await authFetch('/bill', {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: rawData,
+//     });
+//     if (!billResponse.ok) {
+//       throw new Error(`Error fetching data ${billResponse.status}`);
+//     }
+//     const billData = await billResponse.json();
+//     console.log(billData);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
 
 export const editBill = async (billId, editedBill, dispatch) => {
   try {

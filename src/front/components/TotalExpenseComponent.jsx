@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import useTotalExpense from "../hooks/useTotalExpense";
+import { Link } from "react-router-dom";
 
 
 const TotalExpenseComponent = ({ employeeId }) => {
@@ -48,9 +49,7 @@ const TotalExpenseComponent = ({ employeeId }) => {
 
   // const pendingBills = store.bills.filter((bill) => bill.state === "PENDING");
 
-  store.bills.forEach(bill => console.log(`Bill ${bill.id} state:`, bill.state));
-  // store.bills.forEach(bill => console.log(`Bill ${bill.id} employee_id:`, bill.employee_id));
-  console.log("Bills from store:", store.bills);
+
 
   // const filteredBills = openEmployeeIds
   //     ? pendingBills.filter((bill) => bill.employee_id === openEmployeeIds)
@@ -66,6 +65,12 @@ const TotalExpenseComponent = ({ employeeId }) => {
 
   return (
     <>
+       <Link
+            to="/supervisor"
+            className="inline-block mb-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+        >
+            <button type="button" class="btn btn-primary">Go Home</button>
+        </Link>
       <div className="p-6 max-w-3xl mx-auto">
         <h2 className="text-2xl font-bold mb-4 text-center">
           Gastos del Departamento
@@ -114,12 +119,12 @@ const TotalExpenseComponent = ({ employeeId }) => {
 
                 {/* Write a comment tomorrow test*/}
 
-                  {emp.budgets
+                  { emp.budgets
                     .flatMap((budget) =>
                       budget.bills
                         .map((bill) =>
                           store.bills.find((b) => b.id === bill.id) || bill // get updated bill if available
-                        )
+                         )
                         .filter((bill) => bill.state === "PENDING")
                     )
                     .map((bill) => (

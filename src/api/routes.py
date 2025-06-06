@@ -491,15 +491,17 @@ def get_total_expense():
 # #AÑADIR UN FILTRO PARA DIVIDIR UNA LISTA DE TODOS LOS EMPLEADOS Y DEPARTAMENTOS DE FORMA INDIVIDUAL
 # #USAMOS REQUEST.ARGS.GET PARA OBTENER LOS PARAMETROS A TRAVES DE LA URL Y AÑADIMOS TYPE=INT PARA
 # #BUSCAR EL PARAMETRO EMPLOYEE_ID EN LA URL SI EXISTE LO CONVIERTE EN INT AUTOMATICAMENTE Y SI NO DEVUELVE NONE
-# 
+#
     department = Department.query.get(department_id)
 
     # Obtener parámetro employee_id desde la URL
     employee_id_param = request.args.get("employee_id", type=int)
     if employee_id_param:
-        employees = Employee.query.filter_by(id=employee_id_param, department_id=department_id).all()
+        employees = Employee.query.filter_by(
+            id=employee_id_param, department_id=department_id).all()
     else:
-        employees = Employee.query.filter_by(department_id=department_id, is_supervisor =False).all()
+        employees = Employee.query.filter_by(
+            department_id=department_id, is_supervisor=False).all()
 
     department_total = 0.0
     employees_data = []
@@ -509,13 +511,11 @@ def get_total_expense():
         employee_total = 0.0
         employee_budgets = []
 
-        for budget in employee.budgets:
+    for budget in employee.budgets:
             summary = budget.sumary()
             budget_total = float(summary["total_bills"])  # Convertimos a float
-
             employee_total += budget_total
             department_total += budget_total
-
             employee_budgets.append({
                 "budget_id": budget.id,
                 "description": budget.budget_description,
@@ -523,15 +523,14 @@ def get_total_expense():
                 "state": budget.state.name,
                 "bills": [bill.serialize() for bill in budget.bills]
             })
-
             total_active_budgets += 1
 
-        employees_data.append({
-            "employee_id": employee.id,
-            "name": employee.name,
-            "total_expenses": employee_total,
-            "budgets": employee_budgets
-        })
+    employees_data.append({
+        "employee_id": employee.id,
+        "name": employee.name,
+        "total_expenses": employee_total,
+        "budgets": employee_budgets
+    })
 
     response = {
         "department": {
@@ -765,50 +764,6 @@ def update_bill():
     db.session.commit()
 
     return jsonify({"msg": "Bill updated successfully", "bill": bill.serialize()}), 200
-
-# @api.route("/employee-expense", methods=["GET"])
-# @jwt_required()
-# def get_employee_expenses():
-#     supervisor_id = get_jwt_identity()
-#     supervisor = Employee.query.get(supervisor_id)
-
-#     if not supervisor or not supervisor.is_supervisor:
-#         return({"msg": "Unauthorized"}), 403
-    
-#     department_id = supervisor.department_id
-#     if not department_id:
-#         return({"msg": "Supervisor has no department assigned"}), 400
-
-#     employees= Employee.query.filter_by(department_id=supervisor.department_id).all()
-
-#     result = []
-
-#     for employee in employees:
-#         total_expense = 0
-#         budgets_data =[]
-#         for budget in employee.budgets:
-#             summary = budget.sumary()
-#             total_expense+= summary["total_bills"]
-        
-#             budgets_data.append({
-#                 "budget_id": budget.id,
-#                 "budget_description": budget.budget_description,
-#                 "total_bills": summary["total_bills"],
-#                 "bills": [bill.serialize() for bill in budget.bills]
-#             })
-
-#         result.append({
-#             "employee_id": employee.id,
-#             "employee_name": employee.name,
-#             "total_expense": total_expense,
-#             "budgets": budgets_data
-#         })
-#     return ({
-#         "department_id": supervisor.department_id,
-#         "department_name": supervisor.department.name if supervisor.department else None,
-#         "employees": result
-#     }),200
-
 
 @api.route("/logout", methods=['POST'])
 @jwt_required()
