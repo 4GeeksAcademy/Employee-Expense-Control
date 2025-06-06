@@ -1,12 +1,58 @@
+
 import useBudgetForm from "../hooks/useBudgetForm"
 import { budgetFetch } from "../services/apiServicesFetch"
+import { useState } from "react"
 const BudgetForm = () => {
     const { navigate, description, setDescription, amount, setAmount } = useBudgetForm()
-    const handleSubmit = (e) => {
+
+    // AGREGADO UN ESTADO PARA MENSAJES
+    const [message, setMessage] = useState("")
+    const [error, setError] = useState(false)
+
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        budgetFetch(description,amount)
-        navigate("/mybudgets")
+
+        if (!description.trim() || !amount) {
+            setError(true)
+            setMessage("Todos los campos son obligatorios.")
+            return
+        }
+
+        if (parseFloat(amount) <= 0) {
+            setError(true)
+            setMessage("El monto debe ser mayor que 0.")
+            return
+        }
+//CORREGIDO AÑADIDO UN ESTADO DE ESPERA DE PARTE DEL FETCH CON LOS SIGUIENTES VALORES PARA PODER REDIRECCIONAR
+//ANTES NO TOMABA LOS DATOS DEL FETCH Y SIMPLEMETE "El usuario era redirigido incluso si el presupuesto fallaba en el backend."
+//Nunca sabías si el presupuesto se había creado con éxito.
+//Si el backend se demoraba, se redirigía antes de que terminara la solicitud.
+
+        try {
+            const res = await budgetFetch(description, amount)
+
+            if (res.ok === false || res.error) {
+                setError(true)
+                setMessage(res.message || "Error al crear presupuesto.")
+                return
+            }
+
+        
+            setError(false)
+            setMessage("Presupuesto creado correctamente.")
+
+            
+            setTimeout(() => {
+                navigate("/mybudgets")
+            }, 1000)
+
+        } catch (err) {
+            console.error(err)
+            setError(true)
+            setMessage("Error inesperado al enviar el presupuesto.")
+        }
     }
+
     return (<>
         <div
             style={{
@@ -31,6 +77,14 @@ const BudgetForm = () => {
             >
                 <h2 className="mb-4 text-center">Add Budget</h2>
 
+                 {message && (
+                    <div
+                        className={`alert ${error ? "alert-danger" : "alert-success"}`}
+                        role="alert"
+                    >
+                        {message}
+                    </div>
+                )}
                 {/* Input de descripción */}
                 <div className="mb-4">
                     <label htmlFor="description" className="form-label">
