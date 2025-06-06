@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import useSupervisorBudget from "../hooks/useSupervisorBudget"
+import { Link } from "react-router-dom";
 
 
 
@@ -60,6 +61,12 @@ const BudgetsPending = () => {
         return "Unknown";
     };
     return (<>
+        <Link
+            to="/supervisor"
+            className="inline-block mb-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+        >
+            <button type="button" class="btn btn-primary">Go Home</button>
+        </Link>
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4">Pending Budgets</h2>
 
