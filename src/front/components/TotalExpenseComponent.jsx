@@ -141,7 +141,6 @@ const TotalExpenseComponent = ({ employeeId }) => {
                             data-bs-toggle="modal"
                             data-bs-target="#exampleModal"
                             onClick={() => {
-                              console.log("Opening modal to accept bill", bill.id);
                               setPendingAction("approved");
                               setPendingBillId(bill.id);
                               setPendingAmount(bill.amount)
@@ -182,7 +181,7 @@ const TotalExpenseComponent = ({ employeeId }) => {
             <div className="modal-body">
               {pendingAction === "approved"
                 ? `Are you sure you want to accept this bill of ${pendingAmount}€?`
-                : "Are you sure you want to reject this budget?"}
+                : "Are you sure you want to reject this bill?"}
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
