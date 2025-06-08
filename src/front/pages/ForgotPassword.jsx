@@ -20,7 +20,7 @@ const ForgotPassword = () => {
 
   return (
     <div className="container mt-5">
-      <h2 className="text-center mb-4">¿Olvidaste tu contraseña brother?</h2>
+      <h2 className="text-center mb-4">¿Olvidaste tu contraseña?</h2>
       <form onSubmit={handleSubmit} className="p-4 rounded-4 shadow-lg bg-white" style={{ maxWidth: '400px', margin: 'auto' }}>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">Correo electrónico</label>
@@ -31,7 +31,7 @@ const ForgotPassword = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            placeholder="No te lies mi pana"
+            placeholder="Correo de registro"
           />
         </div>
         <div className="d-grid mb-3">
