@@ -1,0 +1,117 @@
+.footer {
+  background: var(--ghost-dark_gray);
+  color: var(--ghost-gray);
+  padding: 2rem 1rem;
+  font-family: var(--font-family-register);
+}
+
+/* Sección superior */
+.footer-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--ghost-gray);
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Branding */
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.footer-logo {
+  width: 2rem;
+  height: auto;
+}
+.footer-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ghost-white);
+}
+
+/* Enlaces de sección */
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+.footer-link {
+  color: var(--ghost-gray);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-link:hover {
+  color: var(--ghost-green);
+}
+
+/* Redes sociales */
+.footer-contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.contact-label {
+  font-weight: 700;
+  color: var(--ghost-white);
+}
+.footer-contact a {
+  color: var(--ghost-gray);
+  font-size: 1.25rem;
+  transition: color 0.2s;
+}
+.footer-contact a:hover {
+  color: var(--ghost-green);
+}
+
+/* Dirección */
+.footer-address {
+  font-style: normal;            
+  color: var(--ghost-silver);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+.footer-address a {
+  color: var(--ghost-gray);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-address a:hover {
+  color: var(--ghost-green);
+}
+
+/* Pie de página */
+.footer-bottom {
+  text-align: center;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.footer-copy {
+  margin: 0;
+  font-weight: 500;
+}
+.footer-credit {
+  margin: 0;
+  color: var(--ghost-silver);
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .footer-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .footer-links {
+    gap: 1rem;
+  }
+  .footer-contact {
+    gap: 0.75rem;
+  }
+}

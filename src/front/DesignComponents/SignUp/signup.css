@@ -6,11 +6,13 @@
   background-color: rgb(182, 41, 41);
 }*/
 
-
 .signMain {
+  position: relative;
+  min-height: 100vh;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  z-index: 1;
 }
 
 .linkColor{
@@ -19,6 +21,7 @@
 
 
 .signForm {
+  position: relative;
   background-color: var(--ghost-dark_gray);
   /*width: 100%;*/
   width: 416px;
@@ -32,6 +35,7 @@
     rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
   transition: box-shadow 0.3s ease, transform 0.3s ease;
   filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.25));
+  z-index: 2;
 }
 
 .signForm:hover {
@@ -88,7 +92,7 @@
 
 .contBtn {
   text-align: center;
-  background: conic-gradient(from 14deg at center, rgb(9, 187, 78), rgb(72, 72, 64), rgb(89, 137, 89), rgb(33, 62, 45), rgb(7, 147, 105));
+  background: conic-gradient(from 0deg at 50% 50%, rgb(10, 152, 64), rgb(106, 221, 147), rgb(114, 156, 131), rgb(7, 147, 105), rgb(12, 146, 63));
   color: white;
   padding: 0.75rem 1.5rem;
   border: none;
@@ -117,3 +121,6 @@
   border: 5px ridge rgb(7, 6, 6);
   font-family: var(--font-family-register);
 }
+
+
+

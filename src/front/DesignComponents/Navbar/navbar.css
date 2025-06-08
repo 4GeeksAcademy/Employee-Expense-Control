@@ -1,0 +1,95 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background: var(--ghost-dark_gray);
+  box-shadow: 0 2px 8px rgba(7, 7, 7, 0.1);
+}
+
+/* Logo y texto de marca */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+.navbar-logo {
+  width: 2.5rem;   /* 40px */
+  height: auto;
+}
+.brand-text {
+  margin-left: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ghost-gray);
+}
+
+/* Navegación principal */
+.nav-links {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 1.5rem;
+}
+.nav-link {
+  color: var(--ghost-gray);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-link:hover {
+  color: var(--ghost-green);
+}
+
+/* Área de acciones (login/logout, etc.) */
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Botones */
+.button {
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.25rem;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+/* Botón principal */
+.button:not(.logout) {
+  background: var(--ghost-green);
+  color: var(--ghost-white);
+}
+.button:not(.logout):hover {
+  background: var(--ghost-dark_gray);
+}
+
+/* Botón de logout */
+.logout {
+  background: var(--ghost-silver);
+  color: var(--ghost-black);
+}
+.logout:hover {
+  background: var(--ghost-dark_gray);
+  color: var(--ghost-white);
+}
+
+/* Responsive: en pantallas muy pequeñas, apila elementos */
+@media (max-width: 576px) {
+  .navbar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+  .navbar-actions {
+    justify-content: center;
+  }
+}

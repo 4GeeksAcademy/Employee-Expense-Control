@@ -1,6 +1,11 @@
 import React, { useEffect } from "react"
 import rigoImageUrl from "../assets/img/rigo-baby.jpg";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import { Link } from "react-router-dom"; 
+import "../DesignComponents/Home/home.css";
+
+
+
 
 export const Home = () => {
 
@@ -32,22 +37,61 @@ export const Home = () => {
 		loadMessage()
 	}, [])
 
-	return (
+	 return (
+    <main className="home">
+      {/* Hero principal */}
+      <section className="home-hero">
+        <h1 className="hero-title">Hello Rigoberto!!</h1>
+        <p className="hero-subtitle">
+          Bienvenido a Ghost Bill, tu aliado para gestionar facturas y presupuestos.
+        </p>
+        <img
+          src={rigoImageUrl}
+          className="hero-image"
+          alt="Ghost Bill Illustration"
+        />
 
-		<div className="text-center mt-5">
-			<h1 className="display-4">Hello Juancho DN!!</h1>
-			<p className="lead">
-				<img src={rigoImageUrl} className="img-fluid rounded-circle mb-3" alt="Rigo Baby" />
-			</p>
-			<div className="alert alert-info">
-				{store.message ? (
-					<span>{store.message}</span>
-				) : (
-					<span className="text-danger">
-						Loading message from the backend (make sure your python 🐍 backend is running)...
-					</span>
-				)}
-			</div>
-		</div>
-	);
-}; 
+        {/* CTA */}
+        <Link to="/signup" className="hero-cta">
+          Sign up
+        </Link>
+
+        {/* Mensaje de prueba del backend */}
+        <div className="alert alert-info hero-alert">
+          {store.message ? (
+            <span>{store.message}</span>
+          ) : (
+            <span className="text-danger">
+              Cargando mensaje desde el backend...
+            </span>
+          )}
+        </div>
+      </section>
+
+      {/* Sección de características (cards) */}
+      <section className="home-features">
+        <article className="feature-card">
+          <div className="feature-icon">🧾</div>
+          <h3 className="feature-title">Sube tus facturas</h3>
+          <p className="feature-desc">
+            Centraliza todas tus facturas en un solo lugar con un sólo click.
+          </p>
+        </article>
+        <article className="feature-card">
+          <div className="feature-icon">📊</div>
+          <h3 className="feature-title">Presupuestos flexibles</h3>
+          <p className="feature-desc">
+            Crea y aprueba presupuestos en tiempo real, sin hojas de cálculo.
+          </p>
+        </article>
+        <article className="feature-card">
+          <div className="feature-icon">📈</div>
+          <h3 className="feature-title">Reportes detallados</h3>
+          <p className="feature-desc">
+            Genera gráficos y exporta informes al instante para tus stakeholders.
+          </p>
+        </article>
+      </section>
+    </main>
+  );
+};

@@ -77,9 +77,9 @@ const SignUp = () => {
     };
     //onChange={(e) => setFormData(prevData => ({...prevData, email:e.target.value}))}
     return (
-
+        
         <div className="signMain">
-            <AnimatedBackground />
+            <AnimatedBackground/>
             <form onSubmit={handleFormInput} className="signForm">
                 <div className="signHeading"><h2>Create an account</h2></div>
                 <div className="container">
@@ -98,6 +98,7 @@ const SignUp = () => {
                         />
                     </div>
                     <div className="mb-3">
+                        
                         <label htmlFor="formGroupExampleInput6" className="Signform-label required-label">
                             LASTNAME
                         </label>
@@ -181,8 +182,3 @@ const SignUp = () => {
 };
 
 export default SignUp;
-
-
-//  <div id="emailHelp" className="form-text">
-//      Already have an account? <Link to="/login">Register</Link>
-//          </div>

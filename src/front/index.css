@@ -1,7 +1,7 @@
-.button.logout {
+/*.button.logout {
   background-color: white;
   color: #007bff; /* Azul Bootstrap */
-  border: 2px solid #007bff;
+  /*border: 2px solid #007bff;
   padding: 8px 16px;
   border-radius: 5px;
   font-weight: bold;
@@ -9,14 +9,23 @@
   align-items: center;
   font-size: 0.95rem;
   transition: all 0.2s ease;
+}*/
+
+/* Icono dentro del botón logout */
+.button.logout i {
+  font-size: 1rem;                        /* tamaño del icono */
+  color: var(--ghost-black);              /* color base */
+  transition: color 0.2s;                 /* misma transición que los links */
 }
 
-.button.logout i {
-  font-size: 1rem;
+/* Al hacer hover sobre el botón logout, cambia el color del icono */
+.button.logout:hover i {
+  color: var(--ghost-white);
 }
+
 
 .button.logout:hover {
-  background-color: #007bff;
+  background-color: var(--ghost-green);
   color: white;
 }
 
@@ -57,3 +66,5 @@
 :root {
   --font-family-register: DM Serif Text, sans-serif;
 }
+
+
