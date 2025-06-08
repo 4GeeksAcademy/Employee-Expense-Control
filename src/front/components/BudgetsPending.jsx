@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react"
 import useSupervisorBudget from "../hooks/useSupervisorBudget"
-
-
-
+import { Link } from "react-router-dom";
 
 const BudgetsPending = () => {
 
@@ -60,6 +58,12 @@ const BudgetsPending = () => {
         return "Unknown";
     };
     return (<>
+        <Link
+            to="/supervisor"
+            className="inline-block mb-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+        >
+            <button type="button" class="btn btn-primary">Go Home</button>
+        </Link>
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4">Pending Budgets</h2>
 
@@ -72,7 +76,7 @@ const BudgetsPending = () => {
                             <strong>Description:</strong> {budget.budget_description}
                         </p>
                         <p>
-                            <strong>Requested Amount::</strong>{" "}
+                            <strong>Requested Amount:</strong>{" "}
                             <input
                                 type="number"
                                 value={editedAmount[budget.id] || budget.amount}
@@ -94,23 +98,23 @@ const BudgetsPending = () => {
 
                         <div className="mt-2 space-x-2">
                             <button
-                                type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
                                 onClick={() => {
                                     setPendingAction('accept');
                                     setPendingBudgetId(budget.id);
                                     setPendingAmount(editedAmount[budget.id] || budget.amount);
                                 }}
-                                className="bg-green-500 text-black px-3 py-1 rounded"
+                                class="bg-green-500 text-black px-3 py-1 rounded"
                             >
                                 Accept
                             </button>
                             <button
-                                type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
                                 onClick={() => {
                                     setPendingAction('reject');
                                     setPendingBudgetId(budget.id);
                                 }}
-                                className="bg-red-500 text-black px-3 py-1 rounded"
+                                class="bg-red-500 text-black px-3 py-1 rounded"
                             >
                                 Reject
                             </button>
@@ -132,21 +136,21 @@ const BudgetsPending = () => {
         </div>
 
         {/* Modal */}
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Confirm Budget Action</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div className="modal-dialog">
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title" id="exampleModalLabel">Confirm Budget Action</h5>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div className="modal-body">
                         {pendingAction === "accept"
-                            ? "Are you sure you want to accept this budget?"
+                            ? `Are you sure you want to accept this budget of ${pendingAmount}€?`
                             : "Are you sure you want to reject this budget?"}
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" onClick={handleModalConfirm}>Confirm</button>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" className="btn btn-primary" onClick={handleModalConfirm}>Confirm</button>
                     </div>
                 </div>
             </div>

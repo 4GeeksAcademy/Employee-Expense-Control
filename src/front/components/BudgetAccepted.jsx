@@ -1,4 +1,5 @@
 import useBudgetAccepted from "../hooks/useBudgetAccepted";
+import { Link } from "react-router-dom";
 
 const BudgetAccepted = () => {
     const { store, expandedEmployeeId, setExpandedEmployeeId } = useBudgetAccepted();
@@ -26,9 +27,15 @@ const BudgetAccepted = () => {
 
     return (
         <div>
-            <h2>Presupuestos Aprobados por Empleado</h2>
+            <Link
+                to="/supervisor"
+                className="inline-block mb-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+            >
+                <button type="button" class="btn btn-primary">Go Home</button>
+            </Link>
+            <h2>Approved Budgets per Employee</h2>
             {employees.length === 0 ? (
-                <p>No hay presupuestos aprobados.</p>
+                <p>No Approved Budgets.</p>
             ) : (
                 <ul style={{ listStyle: "none", padding: 0 }}>
                     {employees.map(({ employee, budgets }) => {
@@ -86,23 +93,23 @@ const BudgetAccepted = () => {
                                                     }}
                                                 >
                                                     <p>
-                                                        <strong>Descripción:</strong> {budget.budget_description}
+                                                        <strong>Description:</strong> {budget.budget_description}
                                                     </p>
                                                     <p>
-                                                        <strong>Monto:</strong> ${budget.amount.toFixed(2)}
+                                                        <strong>Amount:</strong> ${budget.amount.toFixed(2)}
                                                     </p>
-                                                    <p><strong>Total en Facturas:</strong> ${totalBillsForEmployee.toFixed(2)}</p>
+                                                    <p><strong>Total Invoices:</strong> ${totalBillsForEmployee.toFixed(2)}</p>
                                                     <p>
-                                                        <strong>Disponible:</strong> ${totalAvailableForEmployee.toFixed(2)}
+                                                        <strong>Available Balance:</strong> ${totalAvailableForEmployee.toFixed(2)}
                                                     </p>
 
                                                     {budget.bills.length > 0 ? (
                                                         <>
-                                                            <strong>Facturas asociadas:</strong>
+                                                            <strong>Associated Invoices:</strong>
                                                             <ul>
                                                                 {budget.bills.map((bill) => (
                                                                     <li key={bill.id}>
-                                                                        {bill.trip_description || `Factura #${bill.id}`} - Estado:{" "}
+                                                                        {bill.trip_description || `Factura #${bill.id}`} - Invoice Staus:{" "}
                                                                         <span
                                                                             style={{
                                                                                 color:
@@ -117,14 +124,14 @@ const BudgetAccepted = () => {
                                                                             {bill.state}
                                                                         </span>
                                                                         <p>
-                                                                            <strong>Monto:</strong> ${parseFloat(bill.amount).toFixed(2)}
+                                                                            <strong>Amount:</strong> ${parseFloat(bill.amount).toFixed(2)}
                                                                         </p>
                                                                     </li>
                                                                 ))}
                                                             </ul>
                                                         </>
                                                     ) : (
-                                                        <p>No hay facturas asociadas.</p>
+                                                        <p>No Associated Invoices.</p>
                                                     )}
                                                 </div>
                                             );

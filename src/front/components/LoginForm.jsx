@@ -66,7 +66,7 @@ return (
                             required
                         />
                         <div className="form-text emailHelp">
-                             Forgot your password? <Link to="/forgot-password">Reset it here</Link>
+                             Forgot your password? <Link className="linkColor" to="/forgot-password">Reset it here</Link>
                         </div>
                         
                     </div>
@@ -77,7 +77,7 @@ return (
                         </button>  
                     </div>
                      <div className="form-text emailHelp">
-                              Need an account? <Link to="/signup">Register</Link>
+                              Need an account? <Link className="linkColor" to="/signup">Register</Link>
                         </div>
                 </div>
             </form>
@@ -89,9 +89,6 @@ return (
 export default LoginForm
 
 
-// <p className="text-center mt-3">
-                           // Need an account? <Link to="/signup">Register</Link>
-                        //</p>
 
 //     return (
 //         <>
