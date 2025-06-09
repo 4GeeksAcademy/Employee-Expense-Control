@@ -7,7 +7,7 @@
 /* Hero */
 .home-hero {
   text-align: center;
-  padding: 4rem 1rem;
+  padding: 0 1rem 4rem;
   background: var(--ghost-gray);
   position: relative;
 }
