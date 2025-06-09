@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { sendResetEmail } from "../services/apiServicesFetch";
 import { Link } from "react-router-dom"
 import "../DesignComponents/SignUp/signup.css";
+import AnimatedBackground from "../DesignComponents/GlobalComponents/AnimatedBackground";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");            // esto guarda el email que el usuario escribe
@@ -22,6 +23,7 @@ const ForgotPassword = () => {
 
   return (
     <div className="signMain">
+      <AnimatedBackground />
       <form onSubmit={handleSubmit} className="signForm">
         <div className="signHeading">
           <h2> Forgot your password?</h2>

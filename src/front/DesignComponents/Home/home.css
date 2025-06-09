@@ -31,22 +31,6 @@
   margin-bottom: 1.5rem;
 }
 
-.hero-cta {
-  display: inline-block;
-  background: var(--ghost-green);
-  color: var(--ghost-white);
-  padding: 0.75rem 2rem;
-  border-radius: 2rem;
-  font-size: 1rem;
-  font-weight: 500;
-  text-decoration: none;
-  transition: background 0.2s;
-  margin-bottom: 1.5rem;
-}
-.hero-cta:hover {
-  background: var(--ghost-dark_gray);
-}
-
 .hero-alert {
   max-width: 600px;
   margin: 0 auto;

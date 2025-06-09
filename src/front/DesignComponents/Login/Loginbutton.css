@@ -1,0 +1,20 @@
+.navLoginbtn{
+  display: inline-block;
+  background: var(--ghost-green);
+  color: var(--ghost-white);
+  padding: 0.50rem 1.5rem;
+  border-radius: 2rem;
+  border: 2px groove;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: var( --font-family-register);
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.navLoginbtn:hover {
+  background: var(--ghost-dark_gray);
+}
+.navLoginbtn:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease; /* smooth quick shrink */
+}
