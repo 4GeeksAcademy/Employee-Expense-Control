@@ -95,8 +95,8 @@
   background: conic-gradient(from 0deg at 50% 50%, rgb(10, 152, 64), rgb(106, 221, 147), rgb(114, 156, 131), rgb(7, 147, 105), rgb(12, 146, 63));
   color: white;
   padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 8px;
+  border: 2px groove;
+  border-radius: 2rem;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -108,7 +108,10 @@
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
 }
 
-
+.contBtn:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease; /* smooth quick shrink */
+}
 
 .btnSign {
   padding: 5px 20px;

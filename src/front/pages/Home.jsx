@@ -3,7 +3,15 @@ import React, { useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { Link } from "react-router-dom"; 
 import "../DesignComponents/Home/home.css";
+
 import ImageCarousel from "../DesignComponents/Home/ImageCarousel";
+
+import "../DesignComponents/GlobalComponents/GlobalButton.css"
+import { CardsFeatures } from "../DesignComponents/GlobalComponents/CardFeatures/CardsFeatures.jsx";
+
+
+
+
 
 export const Home = () => {
   const { store, dispatch } = useGlobalReducer();
@@ -74,6 +82,15 @@ export const Home = () => {
         <p className="hero-subtitle">
           Bienvenido a Ghost Bill, tu aliado para gestionar facturas y presupuestos.
         </p>
+
+
+        <img
+          src=""
+          className="hero-image"
+          alt="Ghost Bill Illustration"
+        />
+
+
         {/* CTA */}
         <Link to="/signup" className="hero-cta">
           Sign up
@@ -99,30 +116,7 @@ export const Home = () => {
         </div> */}
       </section>
 
-      {/* Sección de características (cards) */}
-      <section className="home-features">
-        <article className="feature-card">
-          <div className="feature-icon">🧾</div>
-          <h3 className="feature-title">Sube tus facturas</h3>
-          <p className="feature-desc">
-            Centraliza todas tus facturas en un solo lugar con un sólo click.
-          </p>
-        </article>
-        <article className="feature-card">
-          <div className="feature-icon">📊</div>
-          <h3 className="feature-title">Presupuestos flexibles</h3>
-          <p className="feature-desc">
-            Crea y aprueba presupuestos en tiempo real, sin hojas de cálculo.
-          </p>
-        </article>
-        <article className="feature-card">
-          <div className="feature-icon">📈</div>
-          <h3 className="feature-title">Reportes detallados</h3>
-          <p className="feature-desc">
-            Genera gráficos y exporta informes al instante para tus stakeholders.
-          </p>
-        </article>
-      </section>
+     <CardsFeatures/>
     </main>
   );
 };
