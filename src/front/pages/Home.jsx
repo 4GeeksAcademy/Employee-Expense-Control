@@ -1,65 +1,111 @@
-import React, { useEffect } from "react"
-import rigoImageUrl from "../assets/img/rigo-baby.jpg";
+import React, { useEffect } from "react";
+//import rigoImageUrl from "../assets/img/rigo-baby.jpg";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { Link } from "react-router-dom"; 
 import "../DesignComponents/Home/home.css";
+
+import ImageCarousel from "../DesignComponents/Home/ImageCarousel";
+
 import "../DesignComponents/GlobalComponents/GlobalButton.css"
 import { CardsFeatures } from "../DesignComponents/GlobalComponents/CardFeatures/CardsFeatures.jsx";
 
 
 
 
+
 export const Home = () => {
+  const { store, dispatch } = useGlobalReducer();
 
-	const { store, dispatch } = useGlobalReducer()
+  const loadMessage = async () => {
+    try {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file");
 
-	const loadMessage = async () => {
-		try {
-			const backendUrl = import.meta.env.VITE_BACKEND_URL
+      const response = await fetch(backendUrl + "/hello");
+      const data = await response.json();
+      if (response.ok) dispatch({ type: "set_hello", payload: data.message });
+      return data;
+    } catch (error) {
+      if (error.message) throw new Error(
+        `Could not fetch the message from the backend.
+         Please check if the backend is running and the backend port is public.`
+      );
+    } 
+  };
 
-			if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file")
+  useEffect(() => {
+    loadMessage();
+  }, []);
 
-			const response = await fetch(backendUrl + "/hello")
-			const data = await response.json()
+  // AQUI LAS SLIDES
+  const slides = [
+    {
+      src: "/src/front/assets/img/1.jpg",
+      alt: "Slide 1",
+      interval: 6000,
+      caption: {
+        title: "First Feature",
+        text: "Discover how Ghost Bill manages your invoices seamlessly.",
+      },
+    },
+    {
+      src: "/src/front/assets/img/2.jpg",
+      alt: "Slide 2",
+      interval: 5000,
+      caption: {
+        title: "Second Feature",
+        text: "Automated approvals and real-time tracking at your fingertips.",
+      },
+    },
+    {
+      src: "/src/front/assets/img/3.jpg",
+      alt: "Slide 3",
+      interval: 7000,
+      caption: {
+        title: "Third Feature",
+        text: "Secure cloud-based storage with 256-bit encryption.",
+      },
+    },
+  ];
 
-			if (response.ok) dispatch({ type: "set_hello", payload: data.message })
-
-			return data
-
-		} catch (error) {
-			if (error.message) throw new Error(
-				`Could not fetch the message from the backend.
-				Please check if the backend is running and the backend port is public.`
-			);
-		}
-
-	}
-
-	useEffect(() => {
-		loadMessage()
-	}, [])
-
-	 return (
+  return (
     <main className="home">
       {/* Hero principal */}
+        {/* <img
+             src={rigoImageUrl}
+             className="hero-image"
+             alt="Ghost Bill Illustration"
+           /> */}
       <section className="home-hero">
-        <h1 className="hero-title">Hello Rigoberto!!</h1>
+        {/* <h1 className="hero-title">Hello Rigoberto!!</h1> */}
+        <div className="hero-carousel-wrapper">
         <p className="hero-subtitle">
           Bienvenido a Ghost Bill, tu aliado para gestionar facturas y presupuestos.
         </p>
+
+
         <img
           src=""
           className="hero-image"
           alt="Ghost Bill Illustration"
         />
 
+
         {/* CTA */}
         <Link to="/signup" className="hero-cta">
           Sign up
         </Link>
 
+        {/* Carrusel Bootstrap */}
+        {/* ─────────────────────────────────────────────────────────────── */}
+        <div className="mt-4">
+          <ImageCarousel images={slides} />
+        </div>
+        </div>
+        {/* ─────────────────────────────────────────────────────────────── */}
+
         {/* Mensaje de prueba del backend */}
-        <div className="alert alert-info hero-alert">
+        {/* <div className="alert alert-info hero-alert">
           {store.message ? (
             <span>{store.message}</span>
           ) : (
@@ -67,7 +113,7 @@ export const Home = () => {
               Cargando mensaje desde el backend...
             </span>
           )}
-        </div>
+        </div> */}
       </section>
 
      <CardsFeatures/>
