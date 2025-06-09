@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { Link } from "react-router-dom"; 
 import "../DesignComponents/Home/home.css";
-// Importa tu nuevo componente de carrusel
 import ImageCarousel from "../DesignComponents/Home/ImageCarousel";
 
 export const Home = () => {
