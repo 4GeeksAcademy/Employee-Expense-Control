@@ -14,7 +14,7 @@ function ResetPassword() {
     e.preventDefault();
     if (password !== confirm) return setMsg("Las contraseñas no coinciden");
 
-    const res = await fetch("https://orange-goggles-w6g9qg4wwp6c644-3001.app.github.dev/api/reset-password", {  // POST al backend sin token en URL
+    const res = await fetch("https://cautious-orbit-44wgpwrxxvp2jrg7-3001.app.github.dev/api/reset-password", {  // POST al backend sin token en URL
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token, password }), // mandamos token + contraseña en body
