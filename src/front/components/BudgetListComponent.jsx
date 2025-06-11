@@ -39,14 +39,24 @@ const BudgetListComponent = () => {
         setEditingBillId(null);
     };
 
+    // ✅ Validación: si budgets no es un array, mostramos mensaje de carga
+    if (!Array.isArray(budgets)) {
+        return (
+            <div className="p-4">
+                <p className="text-gray-600">Loading budgets...</p>
+            </div>
+        );
+    }
+
     return (
         <div className="p-4">
             <Link
                 to="/employeehome"
                 className="inline-block mb-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
             >
-                <button type="button" class="btn btn-primary">Go Home</button>
+                <button type="button" className="btn btn-primary">Go Home</button>
             </Link>
+            {console.log(budgets)}
 
             <ol className="space-y-6">
                 {budgets.map((budget, index) => {
