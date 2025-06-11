@@ -1,10 +1,9 @@
-import React from 'react'; // Es buena práctica importar React
 import { FaUserShield, FaChartPie, FaSignOutAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 const Sidebar = () => {
 
-    // 1. Variantes para el contenedor principal del sidebar (animación de entrada escalonada)
+
     const sidebarVariants = {
         visible: {
             opacity: 1,
@@ -12,8 +11,8 @@ const Sidebar = () => {
             transition: {
                 duration: 0.5,
                 ease: "easeOut",
-                when: "beforeChildren", // Inicia la animación de los hijos después que el padre
-                staggerChildren: 0.1, // Retraso de 0.1s entre cada elemento hijo
+                when: "beforeChildren",
+                staggerChildren: 0.1,
             },
         },
         hidden: {
@@ -22,40 +21,37 @@ const Sidebar = () => {
         },
     };
 
-    // 2. Variantes para los elementos individuales del menú
     const itemVariants = {
-        // Estado de cada item cuando el padre está en 'visible'
+
         visible: {
             opacity: 1,
             x: 0,
             transition: {
-                type: "spring", // Animación de resorte para los ítems
+                type: "spring",
                 stiffness: 100,
                 damping: 10,
             },
         },
-        // Estado de cada item cuando el padre está en 'hidden'
         hidden: {
             opacity: 0,
-            x: -20, // Se mueve ligeramente a la izquierda
+            x: -20,
         },
-        // Efecto al pasar el ratón (hover)
+
         hover: {
             scale: 1.05,
             x: 10,
             color: "#93c5fd",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.3)", // Sombra más pronunciada
+            boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
             transition: {
                 type: "spring",
                 stiffness: 300,
                 damping: 10,
             },
         },
-        // Efecto al hacer clic (tap)
         tap: {
             scale: 0.95,
-            backgroundColor: "#3b82f6", // Un azul más brillante al tocar
-            color: "white", // Asegura que el texto siga siendo blanco
+            backgroundColor: "#3b82f6",
+            color: "white",
             transition: {
                 duration: 0.1,
                 ease: "easeOut",
@@ -63,11 +59,10 @@ const Sidebar = () => {
         },
     };
 
-    // Variantes para los iconos dentro de cada elemento del menú (opcional)
     const iconVariants = {
         hover: {
-            rotate: 10, // Rota ligeramente el icono
-            scale: 1.1, // Agranda un poco el icono
+            rotate: 10,
+            scale: 1.1,
             transition: {
                 type: "spring",
                 stiffness: 300,
@@ -98,8 +93,8 @@ const Sidebar = () => {
                 borderRadius: "0.75rem",
             }}
             variants={sidebarVariants}
-            initial="hidden" // El sidebar comienza oculto
-            animate="visible" // Y se anima a visible al cargar la página
+            initial="hidden"
+            animate="visible"
         >
             <h2
                 style={{
@@ -107,7 +102,7 @@ const Sidebar = () => {
                     marginBottom: "2rem",
                     fontWeight: "bold",
                     textAlign: "center",
-                    color: "#93c5fd",
+                    color: "#FFFFFF",
                 }}
             >
                 Supervisor Panel
@@ -129,15 +124,12 @@ const Sidebar = () => {
                             padding: "0.75rem 1rem",
                             borderRadius: "0.5rem",
                             cursor: "pointer",
-                            transition: "background-color 0.2s ease-in-out", // Transición suave para el fondo
+                            transition: "background-color 0.2s ease-in-out",
                         }}
                         variants={itemVariants}
                         whileHover="hover"
                         whileTap="tap"
-                    // `animate="visible"` e `initial="hidden"` no son necesarios aquí
-                    // porque `staggerChildren` del padre ya controla su animación.
                     >
-                        {/* Envuelve el ícono en un motion.span para animarlo individualmente */}
                         <motion.span
                             variants={iconVariants}
                             whileHover="hover"
