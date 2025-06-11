@@ -3,7 +3,8 @@ export const initialStore = () => {
     signup: [],
     budgets: [],
     bills: [],
-    total:[],
+    supervisorName: null,
+    total: [],
     todos: [
       {
         id: 1,
@@ -22,14 +23,13 @@ export const initialStore = () => {
 
 export default function storeReducer(store, action = {}) {
   switch (action.type) {
-
     case "signup":
       return {
         ...store,
         signup: [...store.signup, action.payload],
       };
 
-       case "SET_BILLS":
+    case "SET_BILLS":
       return {
         ...store,
         bills: action.payload,
@@ -68,17 +68,18 @@ export default function storeReducer(store, action = {}) {
         }),
       };
 
-    case "SET_BUDGETS":
+    case "SET_BUDGETS": // Usamos el mismo case
       return {
         ...store,
-        budgets: action.payload,
+        budgets: action.payload.budgets,
+        supervisorName: action.payload.supervisorName,
       };
 
-      case "SET_TOTAL_EXPENSE":
-        return {
-          ... store,
-          total: action.payload
-        };
+    case "SET_TOTAL_EXPENSE":
+      return {
+        ...store,
+        total: action.payload,
+      };
 
     case "set_hello":
       return {
@@ -104,7 +105,7 @@ export default function storeReducer(store, action = {}) {
         ),
       };
 
-   case "UPDATE_BUDGET_STATE":
+    case "UPDATE_BUDGET_STATE":
       const { budgetId: updatedBudgetId, newState, newAmount } = action.payload;
       return {
         ...store,
@@ -119,16 +120,17 @@ export default function storeReducer(store, action = {}) {
         ),
       };
 
-      case "UPDATE_BILL_STATE":
-      const { billId: updatedBillId, newState: updatedNewState} = action.payload;
+    case "UPDATE_BILL_STATE":
+      const { billId: updatedBillId, newState: updatedNewState } =
+        action.payload;
       return {
         ...store,
         bills: store.bills.map((bill) =>
           bill.id === updatedBillId
             ? {
                 ...bill,
-              state: updatedNewState,
-            }
+                state: updatedNewState,
+              }
             : bill
         ),
       };

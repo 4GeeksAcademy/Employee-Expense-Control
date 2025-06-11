@@ -1,58 +1,49 @@
-import { Link } from "react-router-dom"
-import useSupervisorOpcions from "../hooks/useSupervisorOpcions"
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import CardGrid from "../DesignComponents/SupervisorHome/CardGrid";
+import DashboardHeader from "../DesignComponents/SupervisorHome/DashboardHeader";
+import useSupervisorOpcions from "../hooks/useSupervisorOpcions";
+import Sidebar from "../DesignComponents/SupervisorHome/Sidebar";
+import WelcomePanel from "../DesignComponents/SupervisorHome/WelcomePanel";
+import SectionDivider from "../DesignComponents/SupervisorHome/SectionDivider";
+
 const SupervisorOpcions = () => {
-    useSupervisorOpcions()
-    return (<>
-        <div style={{ minHeight: '100vh', backgroundColor: '#f3f4f6', padding: '2rem' }}>
-            <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '2rem', textAlign: 'center' }}>
-                Hello Supervisor!
-            </h1>
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                    gap: '1.5rem',
-                    justifyItems: 'center'
-                }}
-            >
-                <div style={{ width: '100%', maxWidth: '300px', backgroundColor: '#fff', padding: '1.5rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', borderRadius: '0.5rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem', textAlign: 'center' }}>See pending budgets</h2>
-                    <Link to={"/budgetspending"}>
-                        <button style={{ width: '100%', padding: '0.75rem', backgroundColor: '#3b82f6', color: '#fff', border: 'none', borderRadius: '0.375rem' }}>See budgets</button>
-                    </Link>
-                </div>
+    useSupervisorOpcions();
 
-                <div style={{ width: '100%', maxWidth: '300px', backgroundColor: '#fff', padding: '1.5rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', borderRadius: '0.5rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem', textAlign: 'center' }}>See current budgets</h2>
-                    <Link to={"/budgetsaccepted"}>
-                        <button style={{ width: '100%', padding: '0.75rem', backgroundColor: '#3b82f6', color: '#fff', border: 'none', borderRadius: '0.375rem' }}>current budgets</button>
-                    </Link>
-                </div>
+    
+    const [showLargeScreenElements, setShowLargeScreenElements] = useState(window.innerWidth >= 768);
 
+    useEffect(() => {
+        const handleResize = () => {
+            setShowLargeScreenElements(window.innerWidth >= 768);
+        };
 
-                <div style={{ width: '100%', maxWidth: '300px', backgroundColor: '#fff', padding: '1.5rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', borderRadius: '0.5rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem', textAlign: 'center' }}>See total expenses</h2>
-                    <Link to={"/totaldepartment"}>
-                        <button style={{ width: '100%', padding: '0.75rem', backgroundColor: '#3b82f6', color: '#fff', border: 'none', borderRadius: '0.375rem' }}>See expenses</button>
-                    </Link>
-                </div>
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
-                <div style={{ width: '100%', maxWidth: '300px', backgroundColor: '#fff', padding: '1.5rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', borderRadius: '0.5rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem', textAlign: 'center' }}>Assign department to employee</h2>
-                    <Link to={"/assignDepartmentEmployee"}>
-                        <button style={{ width: '100%', padding: '0.75rem', backgroundColor: '#3b82f6', color: '#fff', border: 'none', borderRadius: '0.375rem' }}>Assign</button>
-                    </Link>
-                </div>
+    return (
+        <>
+            <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#f9fafb" }}>
+                {showLargeScreenElements && <Sidebar />}
 
-                <div style={{ width: '100%', maxWidth: '300px', backgroundColor: '#fff', padding: '1.5rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', borderRadius: '0.5rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem', textAlign: 'center' }}>Assign department to supervisor</h2>
-                    <Link to={"/assignDepartmentSupervisor"}>
-                        <button style={{ width: '100%', padding: '0.75rem', backgroundColor: '#3b82f6', color: '#fff', border: 'none', borderRadius: '0.375rem' }}>Assign </button>
-                    </Link>
-                </div>
+                <main style={{ flexGrow: 1, padding: "2rem" }}>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        <DashboardHeader />
+                        {showLargeScreenElements && <WelcomePanel />}
+                        <SectionDivider />
+                        <CardGrid />
+                    </motion.div>
+                </main>
             </div>
-        </div>
-    </>)
-}
+        </>
+    );
+};
 
-export default SupervisorOpcions
+export default SupervisorOpcions;
