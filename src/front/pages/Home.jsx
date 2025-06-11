@@ -44,8 +44,8 @@ export const Home = () => {
       alt: "Slide 1",
       interval: 6000,
       caption: {
-        title: "First Feature",
-        text: "Discover how Ghost Bill manages your invoices seamlessly.",
+        title: "Smart Budgeting",
+        text: "Create, approve, and monitor budgets in real time—no spreadsheets, just simplicity.",
       },
     },
     {
@@ -53,8 +53,8 @@ export const Home = () => {
       alt: "Slide 2",
       interval: 5000,
       caption: {
-        title: "Second Feature",
-        text: "Automated approvals and real-time tracking at your fingertips.",
+        title: "Effortless Invoice Tracking",
+        text: "Stay on top of employee expenses with centralized, automated invoice management.",
       },
     },
     {
@@ -62,8 +62,8 @@ export const Home = () => {
       alt: "Slide 3",
       interval: 7000,
       caption: {
-        title: "Third Feature",
-        text: "Secure cloud-based storage with 256-bit encryption.",
+        title: "Your Finance Hub",
+        text: "Unify expense reports, budgets, and invoices in one intuitive platform with Ghost Bill.",
       },
     },
   ];
@@ -80,7 +80,7 @@ export const Home = () => {
         {/* <h1 className="hero-title">Hello Rigoberto!!</h1> */}
         <div className="hero-carousel-wrapper">
         <p className="hero-subtitle home">
-          Bienvenido a Ghost Bill, tu aliado para gestionar facturas y presupuestos.
+          Welcome to Ghost Bill — your trusted partner for managing invoices and budgets.
         </p>
 
 

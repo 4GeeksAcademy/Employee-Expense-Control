@@ -22,6 +22,7 @@
   font-size: clamp(1rem, 3vw, 1.25rem);
   margin-bottom: 1.5rem;
   color: var(--ghost-dark_gray);
+  white-space: nowrap;
 }
 
 .hero-image {

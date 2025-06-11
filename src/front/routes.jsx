@@ -26,6 +26,7 @@ import AssignDepartmentEmployee from "./pages/AssignDepartmentEmployee";
 import AssingDepartmentSupervisor from "./pages/AssingDepartmentSupervisor";
 import SupervisorTotalExpense from "./pages/SupervisorTotalExpense";
 import Companiesprofile from "./pages/Companiesprofile";
+import PricingPage from "./pages/PricingPage";
 
 
 
@@ -52,6 +53,7 @@ export const router = createBrowserRouter(
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/companiesprofile" element={<Companiesprofile />} />
+      <Route path="/pricingpage" element={<PricingPage />} />
 
 
       {/* 🔒 RUTAS PROTEGIDAS SOLO EMPLOYEE*/}

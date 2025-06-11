@@ -49,6 +49,10 @@
 .nav-link:hover {
   color: var(--ghost-green);
 }
+.nav-link.active {
+  color: var( --link-color) !important; 
+  font-weight: bold;
+}
 
 /* Área de acciones (login/logout, etc.) */
 .navbar-actions {
