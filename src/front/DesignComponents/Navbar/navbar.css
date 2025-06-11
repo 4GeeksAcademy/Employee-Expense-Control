@@ -81,16 +81,6 @@
   background: var(--ghost-dark_gray);
 }
 
-/* Botón de logout */
-.logout {
-  background: var(--ghost-silver);
-  color: var(--ghost-black);
-}
-.logout:hover {
-  background: var(--ghost-dark_gray);
-  color: var(--ghost-white);
-}
-
 /* Responsive: en pantallas muy pequeñas, apila elementos */
 @media (max-width: 576px) {
   .navbar {
@@ -157,11 +147,6 @@
 
 .navbar-logo {
   max-height: 40px;
-}
-
-.buttonNav {
-  white-space: nowrap;
-  font-size: 0.9rem;
 }
 
 .navbar-toggler {
