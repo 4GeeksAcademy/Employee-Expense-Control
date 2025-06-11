@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { useNavigate, Link} from "react-router-dom";
+import { useNavigate, NavLink, Link} from "react-router-dom";
 import LoginButton from "./LoginButton";
 import { useAuth } from "../hooks/AuthContext";
 import ghostLogo from "../assets/img/ghost.png";
@@ -28,7 +28,7 @@ export const Navbar = () => {
   };
 
   return (
- <nav className="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
+ <nav className="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
   <div className="container-fluid">
 
     {/* 👈 Logo on the left */}
@@ -70,10 +70,10 @@ export const Navbar = () => {
     <div className="collapse navbar-collapse" id="collapsibleNavbar">
       <ul className="navbar-nav mainLinks">
         <li>
-          <Link to="/companiesprofile" className="nav-link">Companies</Link>
+          <NavLink to="/companiesprofile" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Companies</NavLink>
         </li>
         <li>
-          <Link to="/about-us" className="nav-link">Pricing</Link>
+          <NavLink to="/pricingpage" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Pricing</NavLink>
         </li>
         <li className="nav-item dropdown">
           <Link to="#" className="nav-link d-flex align-items-center" role="button">

@@ -3,11 +3,11 @@ import React, { useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { Link } from "react-router-dom"; 
 import "../DesignComponents/Home/home.css";
-
 import ImageCarousel from "../DesignComponents/Home/ImageCarousel";
-
 import "../DesignComponents/GlobalComponents/GlobalButton.css"
 import { CardsFeatures } from "../DesignComponents/GlobalComponents/CardFeatures/CardsFeatures.jsx";
+import { KnowTeam } from "../DesignComponents/Home/KnowTeam.jsx";
+import { ClientCarousel } from "../DesignComponents/Home/ClientCarousel.jsx";
 
 
 
@@ -44,8 +44,8 @@ export const Home = () => {
       alt: "Slide 1",
       interval: 6000,
       caption: {
-        title: "First Feature",
-        text: "Discover how Ghost Bill manages your invoices seamlessly.",
+        title: "Smart Budgeting",
+        text: "Create, approve, and monitor budgets in real time—no spreadsheets, just simplicity.",
       },
     },
     {
@@ -53,8 +53,8 @@ export const Home = () => {
       alt: "Slide 2",
       interval: 5000,
       caption: {
-        title: "Second Feature",
-        text: "Automated approvals and real-time tracking at your fingertips.",
+        title: "Effortless Invoice Tracking",
+        text: "Stay on top of employee expenses with centralized, automated invoice management.",
       },
     },
     {
@@ -62,14 +62,14 @@ export const Home = () => {
       alt: "Slide 3",
       interval: 7000,
       caption: {
-        title: "Third Feature",
-        text: "Secure cloud-based storage with 256-bit encryption.",
+        title: "Your Finance Hub",
+        text: "Unify expense reports, budgets, and invoices in one intuitive platform with Ghost Bill.",
       },
     },
   ];
 
   return (
-    <main className="home">
+    <main className="">
       {/* Hero principal */}
         {/* <img
              src={rigoImageUrl}
@@ -79,20 +79,20 @@ export const Home = () => {
       <section className="home-hero">
         {/* <h1 className="hero-title">Hello Rigoberto!!</h1> */}
         <div className="hero-carousel-wrapper">
-        <p className="hero-subtitle">
-          Bienvenido a Ghost Bill, tu aliado para gestionar facturas y presupuestos.
+        <p className="hero-subtitle home">
+          Welcome to Ghost Bill — your trusted partner for managing invoices and budgets.
         </p>
 
 
-        <img
+        {/* <img
           src=""
           className="hero-image"
-          alt="Ghost Bill Illustration"
-        />
+          alt=""
+        /> */}
 
 
         {/* CTA */}
-        <Link to="/signup" className="hero-cta">
+        <Link to="/signup" className="hero-cta home">
           Sign up
         </Link>
 
@@ -117,6 +117,8 @@ export const Home = () => {
       </section>
 
      <CardsFeatures/>
+     <KnowTeam/>
+     <ClientCarousel/>
     </main>
   );
 };
