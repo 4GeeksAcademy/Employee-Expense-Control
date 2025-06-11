@@ -33,42 +33,43 @@ const CardGrid = () => {
             buttonText: "Assign",
             icon: <FaUserTie />
         },
-        // --- Added 5 New Options Below ---
         {
             title: "View Spending Analytics",
             to: "/spendinganalytics",
             buttonText: "Analyze Spending",
-            icon: <FaChartLine /> // New icon for analytics/trends
+            icon: <FaChartLine />
         },
         {
             title: "Review Bill Approvals",
             to: "/billapprovals",
             buttonText: "Review Bills",
-            icon: <FaFileInvoiceDollar /> // New icon for bill review
+            icon: <FaFileInvoiceDollar />
         },
         {
             title: "Access Approval History",
             to: "/approvalhistory",
             buttonText: "View History",
-            icon: <FaHistory /> // New icon for history
+            icon: <FaHistory />
         },
         {
             title: "Manage Department Settings",
             to: "/departmentsettings",
             buttonText: "Adjust Settings",
-            icon: <FaCog /> // New icon for settings
+            icon: <FaCog />
         },
         {
             title: "Add New Employee",
             to: "/addnewemployee",
             buttonText: "Add Employee",
-            icon: <FaUserPlus /> // New icon for adding users
+            icon: <FaUserPlus />
         }
     ];
 
     return (
         <div
+            className="card-grid" // Aplica la clase CSS
             style={{
+                // Estos estilos inline pueden ser reemplazados en gran medida por la clase CSS si lo deseas
                 display: "grid",
                 gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
                 gap: "2rem",

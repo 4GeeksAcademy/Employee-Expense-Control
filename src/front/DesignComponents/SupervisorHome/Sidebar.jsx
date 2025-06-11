@@ -1,7 +1,10 @@
 import { FaUserShield, FaChartPie, FaSignOutAlt, FaMoneyBillWave, FaDollarSign, FaFileInvoiceDollar, FaRegChartBar, FaUsers, FaCog, FaHistory } from "react-icons/fa";
 import { motion } from "framer-motion";
 
-const Sidebar = () => {
+// No es necesario importar SupervisorHome.css aquí si ya está importado en SupervisorOpcions.jsx
+// ya que Sidebar es un hijo de SupervisorOpcions.
+
+const Sidebar = ({ className }) => { // Acepta la prop className
     const sidebarVariants = {
         visible: {
             opacity: 1,
@@ -73,23 +76,24 @@ const Sidebar = () => {
     const menuItems = [
         { icon: <FaUserShield />, text: "Profile" },
         { icon: <FaChartPie />, text: "Overview" },
-        { icon: <FaMoneyBillWave />, text: "Approve Budgets" }, // Added option
-        { icon: <FaFileInvoiceDollar />, text: "Approve Bills" }, // Added option
-        { icon: <FaDollarSign />, text: "Budget Requests" }, // Added option
-        { icon: <FaRegChartBar />, text: "Reporting" }, // Added option
-        { icon: <FaHistory />, text: "Approval History" }, // Added option
-        { icon: <FaUsers />, text: "Manage Users" }, // Added option (if applicable)
-        { icon: <FaCog />, text: "Settings" }, // Added option
+        { icon: <FaMoneyBillWave />, text: "Approve Budgets" },
+        { icon: <FaFileInvoiceDollar />, text: "Approve Bills" },
+        { icon: <FaDollarSign />, text: "Budget Requests" },
+        { icon: <FaRegChartBar />, text: "Reporting" },
+        { icon: <FaHistory />, text: "Approval History" },
+        { icon: <FaUsers />, text: "Manage Users" },
+        { icon: <FaCog />, text: "Settings" },
         { icon: <FaSignOutAlt />, text: "Logout" },
     ];
 
     return (
         <motion.div
+            className={className} // Aplica la className pasada aquí
             style={{
-                width: "250px",
+                // width: "250px", // ELIMINA ESTO - ahora lo controla la media query de CSS
                 backgroundColor: "#1f2937",
                 color: "white",
-                display: "flex",
+                display: "flex", // Mantiene flex para el layout interno
                 flexDirection: "column",
                 padding: "1.5rem",
                 boxShadow: "2px 0 8px rgba(0,0,0,0.1)",
