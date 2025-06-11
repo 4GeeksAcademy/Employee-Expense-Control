@@ -44,8 +44,8 @@ export const Navbar = () => {
       <div className="navbar-actions d-flex align-items-center me-2">
         {isAuthenticated ? (
           <>
-            <button onClick={() => navigate("/")} className="buttonNav me-2">Home</button>
-            <button onClick={handleLogout} className="buttonNav logout" disabled={Loading}>Logout</button>
+            <button onClick={() => navigate("/")} className="me-2 nav-button login navLoginbtn">Home</button>
+            <button onClick={handleLogout} className="logout nav-button login navLoginbtn" disabled={Loading}>Logout</button>
           </>
         ) : (
           <LoginButton />
