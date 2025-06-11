@@ -526,25 +526,31 @@ export const supervisorBudgetFetch = async (dispatch) => {
   try {
     const token = localStorage.getItem("token");
     if (!token) {
-      throw new Error("the token was not obtained")
+      throw new Error("No se obtuvo el token");
     }
-    const response = await authFetch('/supervisor-budgets-bills', { method: "GET", })
+    const response = await authFetch('/supervisor-budgets-bills', { method: "GET" });
     if (!response.ok) {
-      throw new Error(`Error fetching data ${response.status}`)
+      throw new Error(`Error al obtener datos: ${response.status}`);
     }
-    const data = await response.json()
-    if (!data.budgets || !data.department_id) {
-      throw new Error("the data has not been sent correctly")
+    const { data } = await response.json(); 
+
+    if (!data || !data.budgets || !data.supervisor_name) {
+      throw new Error("Los datos necesarios (budgets o supervisor_name) no se han enviado correctamente.");
     }
+
     const action = {
-      type: "SET_BUDGETS",
-      payload: data.budgets
-    }
-    dispatch(action)
+      type: "SET_BUDGETS", 
+      payload: {
+        budgets: data.budgets, 
+        supervisorName: data.supervisor_name 
+      }
+    };
+    dispatch(action);
+
   } catch (error) {
-    console.log(error)
+    console.error("Error en supervisorBudgetFetch:", error);
   }
-}
+};
 
 export const supervisorBillListFetch = async (dispatch) => {
   try {

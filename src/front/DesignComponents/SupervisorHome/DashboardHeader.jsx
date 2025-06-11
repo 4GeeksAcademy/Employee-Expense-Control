@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const DashboardHeader = () => {
+    const { store } = useGlobalReducer()
     return (
         <motion.div
             initial={{ opacity: 0, y: -30 }}
@@ -9,7 +11,7 @@ const DashboardHeader = () => {
             style={{ textAlign: "center", marginBottom: "2rem" }}
         >
             <h1 style={{ fontSize: "2.5rem", fontWeight: "bold", color: "#1f2937" }}>
-                Welcome Supervisor 👋
+                Welcome {store.supervisorName}👋
             </h1>
             <p style={{ fontSize: "1.1rem", color: "#4b5563" }}>
                 Use the panel to manage budgets, assignments and insights.

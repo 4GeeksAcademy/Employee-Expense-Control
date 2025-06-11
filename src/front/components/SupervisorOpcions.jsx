@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
-import CardGrid from "../DesignComponents/CardGrid";
-import DashboardHeader from "../DesignComponents/DashboardHeader";
+import CardGrid from "../DesignComponents/SupervisorHome/CardGrid";
+import DashboardHeader from "../DesignComponents/SupervisorHome/DashboardHeader";
 import useSupervisorOpcions from "../hooks/useSupervisorOpcions"
-import Sidebar from "../DesignComponents/Sidebar";
-import WelcomePanel from "../DesignComponents/WelcomePanel";
-import SectionDivider from "../DesignComponents/SectionDivider";
+import Sidebar from "../DesignComponents/SupervisorHome/Sidebar";
+import WelcomePanel from "../DesignComponents/SupervisorHome/WelcomePanel";
+import SectionDivider from "../DesignComponents/SupervisorHome/SectionDivider";
 const SupervisorOpcions = () => {
     useSupervisorOpcions()
     return (<>

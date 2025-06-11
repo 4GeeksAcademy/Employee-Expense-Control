@@ -347,8 +347,9 @@ def update_bill_state(bill_id):
     bill.date_approved = datetime.now(timezone.utc)
 
     '''Record who submitted the bill (from Budget → Employee)'''
-    budget = Budget.query.get(bill.budget_id) 
-    employee_id = budget.employee_id if budget else None # Attach the original submitter
+    budget = Budget.query.get(bill.budget_id)
+    # Attach the original submitter
+    employee_id = budget.employee_id if budget else None
 
     db.session.commit()
 
@@ -444,7 +445,13 @@ def get_department_budgets_and_bills():
 
     serialized_data = [budget.serialize() for budget in budgets]
 
-    return jsonify({"department_id": department_id, "budgets": serialized_data}), 200
+    return jsonify({
+        "department_id": department_id,
+        "data": {
+            "supervisor_name": supervisor.name,
+            "budgets": serialized_data
+        }
+    }), 200
 
 
 @api.route("/supervisor-get-bills", methods=["GET"])
@@ -514,7 +521,8 @@ def get_total_expense():
         for budget in employee.budgets:
             # Get all bills (approved, pending, rejected)
             all_bills = budget.bills
-            approved_bills = [bill for bill in all_bills if bill.state == StateType.APPROVED]
+            approved_bills = [
+                bill for bill in all_bills if bill.state == StateType.APPROVED]
 
             #  Only approved bills count toward totals
             budget_total = sum(float(bill.amount) for bill in approved_bills)
@@ -529,13 +537,14 @@ def get_total_expense():
                 "description": budget.budget_description,
                 "total": budget_total,  # total of approved bills only
                 "state": budget.state.name,
-                "bills": [bill.serialize() for bill in all_bills]  # show all bills for review
+                # show all bills for review
+                "bills": [bill.serialize() for bill in all_bills]
             })
 
         employees_data.append({
             "employee_id": employee.id,
             "name": employee.name,
-            "total_expenses": employee_total,  #only approved
+            "total_expenses": employee_total,  # only approved
             "budgets": employee_budgets
         })
 
@@ -547,8 +556,6 @@ def get_total_expense():
         "employees": employees_data,
         "total_active_budgets": total_active_budgets
     }
-
-    
 
 
 @api.route("/refresh", methods=["POST"])
@@ -688,6 +695,7 @@ def bill_create():
     db.session.commit()
     return jsonify({"msg": "bill created successfully"}), 201
 
+
 @api.route("/mybills", methods=["GET"])
 @jwt_required()
 def my_bills():
@@ -702,12 +710,12 @@ def my_bills():
             return jsonify({"msg": "Employee not found"}), 404
 
         budgets = Budget.query.filter_by(employee_id=employee_id).all()
-       
+
         # collect all bills from all budgets
         all_bills = []
         for budget in budgets:
-            all_bills.extend(budget.bills) 
-        
+            all_bills.extend(budget.bills)
+
         return jsonify({"bill_list": [bill.serialize() for bill in all_bills]})
 
     except Exception as e:
@@ -767,6 +775,7 @@ def update_bill():
     db.session.commit()
 
     return jsonify({"msg": "Bill updated successfully", "bill": bill.serialize()}), 200
+
 
 @api.route("/logout", methods=['POST'])
 @jwt_required()
