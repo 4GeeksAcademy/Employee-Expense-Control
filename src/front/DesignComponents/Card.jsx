@@ -4,14 +4,15 @@ import { Link } from "react-router-dom";
 const CardOption = ({ title, to, buttonText, icon }) => {
     return (
         <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.97 }}
+            whileHover={{ scale: 1.05, rotate: 1 }}
+            whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300 }}
+            layout
             style={{
-                backgroundColor: "#f9fafb",
+                backgroundColor: "#ffffff",
                 borderRadius: "16px",
                 padding: "1.8rem",
-                boxShadow: "0 6px 12px rgba(0, 0, 0, 0.08)",
+                boxShadow: "0 8px 20px rgba(0,0,0,0.05)",
                 width: "100%",
                 maxWidth: "280px",
                 textAlign: "center",
@@ -22,10 +23,10 @@ const CardOption = ({ title, to, buttonText, icon }) => {
                 {icon}
             </div>
             <h2 style={{
-                fontSize: "1.2rem",
+                fontSize: "1.25rem",
                 fontWeight: "600",
-                marginBottom: "0.75rem",
-                color: "#111827"
+                color: "#1f2937",
+                marginBottom: "1rem"
             }}>
                 {title}
             </h2>
@@ -37,9 +38,8 @@ const CardOption = ({ title, to, buttonText, icon }) => {
                     backgroundColor: "#10b981",
                     color: "white",
                     borderRadius: "8px",
-                    textDecoration: "none",
                     fontWeight: "500",
-                    transition: "background-color 0.3s ease"
+                    textDecoration: "none"
                 }}
             >
                 {buttonText}

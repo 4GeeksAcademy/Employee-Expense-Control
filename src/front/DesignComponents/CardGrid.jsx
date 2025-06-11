@@ -22,13 +22,13 @@ const CardGrid = () => {
             icon: <FaDollarSign />
         },
         {
-            title: "Assign department to employee",
+            title: "Assign to employee",
             to: "/assignDepartmentEmployee",
             buttonText: "Assign",
             icon: <FaUsersCog />
         },
         {
-            title: "Assign department to supervisor",
+            title: "Assign to supervisor",
             to: "/assignDepartmentSupervisor",
             buttonText: "Assign",
             icon: <FaUserTie />
@@ -41,12 +41,11 @@ const CardGrid = () => {
                 display: "grid",
                 gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
                 gap: "2rem",
-                justifyItems: "center",
-                padding: "1rem 0"
+                justifyItems: "center"
             }}
         >
-            {cards.map((card, index) => (
-                <CardOption key={index} {...card} />
+            {cards.map((card, i) => (
+                <CardOption key={i} {...card} />
             ))}
         </div>
     );
