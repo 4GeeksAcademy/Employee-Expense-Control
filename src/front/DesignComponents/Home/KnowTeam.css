@@ -3,7 +3,7 @@
   margin-bottom: 20px;
   padding: 48px 15px;
   background-color: none;
-  height: 600px;
+  height: 650px;
   display: flex;
   justify-content: center;
   align-items: end;
@@ -16,7 +16,7 @@
   flex-direction: column;
   align-items: start;
   font-style: normal;
-  padding: 25px 38px 0px 38px;
+  padding: 15px 38px 0px 38px;
   position: absolute;
   top: 0;
   left: 0;
@@ -24,19 +24,27 @@
   height: 100%;
 }
 
+/* Style the first letter */
+#headTitle::first-letter {
+  font-size: 3.7rem;
+  font-weight: bold;
+  color: #448F73;
+  padding-right: 4px;     
+}
+
 #headTitle {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   font-family: var(--font-family-register);
-  font-size: 2.5rem;              
-  font-weight: 800;               
-  color: #0f172a;                  
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: 0.9px;
+  position: relative;
   background: linear-gradient(180deg, #0d0d0d, #448F73, #404040);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
-  letter-spacing: 0.9px;
-  position: relative;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2); /* adds visual thickness */
 }
 
 
@@ -44,7 +52,7 @@
 #headTitle::after {
   content: '';
   position: absolute;
-  bottom: -3px;
+  bottom: 0px;
   left: 50%;
   transform: translateX(-50%);
   width: 40px;
@@ -56,11 +64,6 @@
 #headTitle:hover::after {
   width: 300px;
 }
-
-/* #headTitle {
-    margin-bottom: 20px;
-    font-family: var( --font-family-register);
-} */
 
 .textParagraf{
     font-weight: 300 !important;
@@ -79,6 +82,7 @@
   font-family: var(--font-family-register);
   text-decoration: none;
   transition: background 0.2s;
+  margin-top: 20px;
   margin-bottom: 15px;
 }
 .meetTeambtn:hover {
