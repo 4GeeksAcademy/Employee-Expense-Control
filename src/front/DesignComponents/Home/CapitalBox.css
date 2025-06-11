@@ -1,0 +1,98 @@
+:root {
+  --triangle-size: 30px;
+}
+
+/* Sección wrapper */
+.capital-boxes-section {
+  padding: 2rem 1rem;
+  background: var(--ghost-gray);
+}
+
+/* Título de sección */
+.capital-boxes-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+  color: var(--ghost-black);
+}
+
+/* Contenedor horizontal sin wrap */
+.capital-boxes-container {
+  display: flex;
+  flex-wrap: nowrap;            /* Una sola fila */
+  gap: 2rem;
+  overflow-x: auto;
+  padding: 1rem 0;
+  padding-left: 3rem; 
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 auto;
+  max-width: 100%;
+}
+.capital-boxes-container::-webkit-scrollbar {
+  display: none;
+}
+.capital-boxes-container > * {
+  scroll-snap-align: start;
+}
+
+/* Individual card */
+.capital-card {
+  position: relative;
+  background: var(--ghost-white);
+  flex: 0 0 270px;              /* Ancho fijo */
+  padding: 3rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  font-family: 'Inter', sans-serif;
+  overflow: visible;
+}
+
+/* Triángulo de acento */
+.capital-card-triangle {
+  position: absolute;
+  top: 0; right: 0;
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 0 var(--triangle-size) var(--triangle-size) 0;
+}
+
+/* Letra grande */
+.capital-card-letter {
+  position: absolute;
+  top: 50%; left: -1rem;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.capital-card-letter span {
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Contenido de texto */
+.capital-card-content h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+  color: var(--ghost-black);
+}
+.capital-card-content p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--ghost-black);
+}
+
+/* Ajustes responsive */
+@media (max-width: 767px) {
+  .capital-card {
+    flex: 0 0 180px;
+    padding: 1rem;
+  }
+  .capital-card-letter {
+    left: -1.5rem;
+  }
+  .capital-card-letter span {
+    font-size: 3rem;
+  }
+}
