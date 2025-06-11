@@ -88,12 +88,12 @@ const Sidebar = ({ className }) => { // Acepta la prop className
 
     return (
         <motion.div
-            className={className} // Aplica la className pasada aquí
+            className={className} 
             style={{
-                // width: "250px", // ELIMINA ESTO - ahora lo controla la media query de CSS
+                
                 backgroundColor: "#1f2937",
                 color: "white",
-                display: "flex", // Mantiene flex para el layout interno
+                display: "flex", 
                 flexDirection: "column",
                 padding: "1.5rem",
                 boxShadow: "2px 0 8px rgba(0,0,0,0.1)",

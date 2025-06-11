@@ -67,9 +67,9 @@ const CardGrid = () => {
 
     return (
         <div
-            className="card-grid" // Aplica la clase CSS
+            className="card-grid" 
             style={{
-                // Estos estilos inline pueden ser reemplazados en gran medida por la clase CSS si lo deseas
+               
                 display: "grid",
                 gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
                 gap: "2rem",

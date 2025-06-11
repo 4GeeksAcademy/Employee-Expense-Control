@@ -25,7 +25,7 @@ const DashboardHeader = () => {
 
     return (
         <motion.div
-            className="dashboard-header text-center mb-16 p-8 rounded-xl shadow-lg" // Agrega la clase personalizada
+            className="dashboard-header text-center mb-16 p-8 rounded-xl shadow-lg"
             style={{
                 background: "#F9FAFB",
                 border: "1px solid #E5E7EB",
