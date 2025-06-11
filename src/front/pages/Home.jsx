@@ -8,6 +8,7 @@ import "../DesignComponents/GlobalComponents/GlobalButton.css"
 import { CardsFeatures } from "../DesignComponents/GlobalComponents/CardFeatures/CardsFeatures.jsx";
 import { KnowTeam } from "../DesignComponents/Home/KnowTeam.jsx";
 import { ClientCarousel } from "../DesignComponents/Home/ClientCarousel.jsx";
+import CapitalBox from "../DesignComponents/Home/CapitalBox.jsx";
 
 
 
@@ -117,6 +118,7 @@ export const Home = () => {
       </section>
 
      <CardsFeatures/>
+     <CapitalBox />
      <KnowTeam/>
      <ClientCarousel/>
     </main>
