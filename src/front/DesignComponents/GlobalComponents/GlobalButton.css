@@ -5,6 +5,7 @@
   color: var(--ghost-white);
   padding: 0.75rem 2rem;
   border-radius: 2rem;
+  border: 2px groove;
   font-size: 1rem;
   font-weight: 500;
   text-decoration: none;

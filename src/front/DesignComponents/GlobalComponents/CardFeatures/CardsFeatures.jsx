@@ -5,7 +5,7 @@ export const CardsFeatures = () => {
   return (
     <>
       {/* Sección de características (cards) */}
-      <section className="home-features">
+      <section className="home-features homeFeatures">
         <article className="feature-card">
           <div className="card-inner">
             <div className="card-front">

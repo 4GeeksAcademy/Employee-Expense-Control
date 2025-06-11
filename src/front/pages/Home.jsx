@@ -3,11 +3,10 @@ import React, { useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { Link } from "react-router-dom"; 
 import "../DesignComponents/Home/home.css";
-
 import ImageCarousel from "../DesignComponents/Home/ImageCarousel";
-
 import "../DesignComponents/GlobalComponents/GlobalButton.css"
 import { CardsFeatures } from "../DesignComponents/GlobalComponents/CardFeatures/CardsFeatures.jsx";
+import { KnowTeam } from "../DesignComponents/Home/KnowTeam.jsx";
 
 
 
@@ -69,7 +68,7 @@ export const Home = () => {
   ];
 
   return (
-    <main className="home">
+    <main className="">
       {/* Hero principal */}
         {/* <img
              src={rigoImageUrl}
@@ -79,20 +78,20 @@ export const Home = () => {
       <section className="home-hero">
         {/* <h1 className="hero-title">Hello Rigoberto!!</h1> */}
         <div className="hero-carousel-wrapper">
-        <p className="hero-subtitle">
+        <p className="hero-subtitle home">
           Bienvenido a Ghost Bill, tu aliado para gestionar facturas y presupuestos.
         </p>
 
 
-        <img
+        {/* <img
           src=""
           className="hero-image"
-          alt="Ghost Bill Illustration"
-        />
+          alt=""
+        /> */}
 
 
         {/* CTA */}
-        <Link to="/signup" className="hero-cta">
+        <Link to="/signup" className="hero-cta home">
           Sign up
         </Link>
 
@@ -117,6 +116,7 @@ export const Home = () => {
       </section>
 
      <CardsFeatures/>
+     <KnowTeam/>
     </main>
   );
 };

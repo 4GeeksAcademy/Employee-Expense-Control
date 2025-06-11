@@ -28,7 +28,7 @@ export const Navbar = () => {
   };
 
   return (
- <nav className="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
+ <nav className="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
   <div className="container-fluid">
 
     {/* 👈 Logo on the left */}
