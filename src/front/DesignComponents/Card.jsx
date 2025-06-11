@@ -1,45 +1,38 @@
+import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 const CardOption = ({ title, to, buttonText }) => {
     return (
         <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             style={{
-                width: "100%",
-                maxWidth: "300px",
-                backgroundColor: "#fff",
+                backgroundColor: "#ffffff",
+                borderRadius: "12px",
                 padding: "1.5rem",
                 boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                borderRadius: "0.5rem"
+                width: "100%",
+                maxWidth: "300px",
+                textAlign: "center"
             }}
         >
-            <h2
-                style={{
-                    fontSize: "1.25rem",
-                    fontWeight: "600",
-                    marginBottom: "1rem",
-                    textAlign: "center"
-                }}
-            >
+            <h2 style={{ fontSize: "1.25rem", fontWeight: "600", marginBottom: "1rem" }}>
                 {title}
             </h2>
-            <Link to={to}>
-                <button
-                    style={{
-                        width: "100%",
-                        padding: "0.75rem",
-                        backgroundColor: "#3b82f6",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "0.375rem"
-                    }}
-                >
-                    {buttonText}
-                </button>
+            <Link
+                to={to}
+                style={{
+                    display: "inline-block",
+                    padding: "0.5rem 1rem",
+                    backgroundColor: "#3b82f6",
+                    color: "white",
+                    borderRadius: "8px",
+                    textDecoration: "none",
+                    fontWeight: "500"
+                }}
+            >
+                {buttonText}
             </Link>
         </motion.div>
     );
