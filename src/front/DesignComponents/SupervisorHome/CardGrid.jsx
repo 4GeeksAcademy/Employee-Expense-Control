@@ -1,5 +1,5 @@
 import CardOption from "./Card";
-import { FaClipboardList, FaCheckCircle, FaDollarSign, FaUserTie, FaUsersCog } from "react-icons/fa";
+import { FaClipboardList, FaCheckCircle, FaDollarSign, FaUserTie, FaUsersCog, FaChartLine, FaHistory, FaFileInvoiceDollar, FaCog, FaUserPlus } from "react-icons/fa";
 
 const CardGrid = () => {
     const cards = [
@@ -32,6 +32,37 @@ const CardGrid = () => {
             to: "/assignDepartmentSupervisor",
             buttonText: "Assign",
             icon: <FaUserTie />
+        },
+        // --- Added 5 New Options Below ---
+        {
+            title: "View Spending Analytics",
+            to: "/spendinganalytics",
+            buttonText: "Analyze Spending",
+            icon: <FaChartLine /> // New icon for analytics/trends
+        },
+        {
+            title: "Review Bill Approvals",
+            to: "/billapprovals",
+            buttonText: "Review Bills",
+            icon: <FaFileInvoiceDollar /> // New icon for bill review
+        },
+        {
+            title: "Access Approval History",
+            to: "/approvalhistory",
+            buttonText: "View History",
+            icon: <FaHistory /> // New icon for history
+        },
+        {
+            title: "Manage Department Settings",
+            to: "/departmentsettings",
+            buttonText: "Adjust Settings",
+            icon: <FaCog /> // New icon for settings
+        },
+        {
+            title: "Add New Employee",
+            to: "/addnewemployee",
+            buttonText: "Add Employee",
+            icon: <FaUserPlus /> // New icon for adding users
         }
     ];
 

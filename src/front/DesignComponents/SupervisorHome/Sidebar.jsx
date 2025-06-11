@@ -1,9 +1,7 @@
-import { FaUserShield, FaChartPie, FaSignOutAlt } from "react-icons/fa";
+import { FaUserShield, FaChartPie, FaSignOutAlt, FaMoneyBillWave, FaDollarSign, FaFileInvoiceDollar, FaRegChartBar, FaUsers, FaCog, FaHistory } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 const Sidebar = () => {
-
-
     const sidebarVariants = {
         visible: {
             opacity: 1,
@@ -22,7 +20,6 @@ const Sidebar = () => {
     };
 
     const itemVariants = {
-
         visible: {
             opacity: 1,
             x: 0,
@@ -36,7 +33,6 @@ const Sidebar = () => {
             opacity: 0,
             x: -20,
         },
-
         hover: {
             scale: 1.05,
             x: 10,
@@ -77,6 +73,13 @@ const Sidebar = () => {
     const menuItems = [
         { icon: <FaUserShield />, text: "Profile" },
         { icon: <FaChartPie />, text: "Overview" },
+        { icon: <FaMoneyBillWave />, text: "Approve Budgets" }, // Added option
+        { icon: <FaFileInvoiceDollar />, text: "Approve Bills" }, // Added option
+        { icon: <FaDollarSign />, text: "Budget Requests" }, // Added option
+        { icon: <FaRegChartBar />, text: "Reporting" }, // Added option
+        { icon: <FaHistory />, text: "Approval History" }, // Added option
+        { icon: <FaUsers />, text: "Manage Users" }, // Added option (if applicable)
+        { icon: <FaCog />, text: "Settings" }, // Added option
         { icon: <FaSignOutAlt />, text: "Logout" },
     ];
 
