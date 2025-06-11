@@ -1,3 +1,5 @@
+import bubble from "/workspaces/Employee-Expense-Control/src/front/assets/img/ClientCarouselImages/greywave.jpg";
+
 import "../CardFeatures/CardFeatures.css"
 
 export const CardsFeatures = () => {
@@ -5,7 +7,12 @@ export const CardsFeatures = () => {
   return (
     <>
       {/* Sección de características (cards) */}
-      <section className="home-features homeFeatures">
+      <section className="home-features homeFeatures"
+       style={{
+                              backgroundImage: `url(${bubble})`,
+                  
+                          }}
+      >
         <article className="feature-card">
           <div className="card-inner">
             <div className="card-front">

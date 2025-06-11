@@ -7,6 +7,7 @@ import ImageCarousel from "../DesignComponents/Home/ImageCarousel";
 import "../DesignComponents/GlobalComponents/GlobalButton.css"
 import { CardsFeatures } from "../DesignComponents/GlobalComponents/CardFeatures/CardsFeatures.jsx";
 import { KnowTeam } from "../DesignComponents/Home/KnowTeam.jsx";
+import { ClientCarousel } from "../DesignComponents/Home/ClientCarousel.jsx";
 
 
 
@@ -117,6 +118,7 @@ export const Home = () => {
 
      <CardsFeatures/>
      <KnowTeam/>
+     <ClientCarousel/>
     </main>
   );
 };
