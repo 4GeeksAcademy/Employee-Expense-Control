@@ -7,9 +7,10 @@ const useSupervisorOpcions = () => {
 
     useEffect(() => {
         supervisorBudgetFetch(dispatch);
+        console.log(store)
     }, [dispatch]);
 
-    return {}
+    return {store}
 }
 
 export default useSupervisorOpcions
