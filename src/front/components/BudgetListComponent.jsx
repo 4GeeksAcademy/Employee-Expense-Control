@@ -39,6 +39,14 @@ const BudgetListComponent = () => {
         setEditingBillId(null);
     };
 
+    if (!budgets || budgets.length === 0) {
+        return (
+            <div className="p-4 text-gray-600">
+                Loading budgets...
+            </div>
+        );
+    }
+    
     return (
         <div className="p-4">
             <Link
@@ -50,6 +58,7 @@ const BudgetListComponent = () => {
 
             <ol className="space-y-6">
                 {budgets.map((budget, index) => {
+                    console.log("message", budget, index)
                     const totalBills = budget.bills.reduce(
                         (acc, bill) => acc + parseFloat(bill.amount || 0),
                         0
