@@ -27,7 +27,7 @@ const ImageCarousel = ({ images }) => {
 
       {/* 2. Slides */}
       <div className="carousel-inner shadow-sm"
-       style={{ objectFit: "cover",
+       style={{
                 marginTop: "-24px",
               }}>
         {images.map((img, idx) => (
@@ -35,6 +35,7 @@ const ImageCarousel = ({ images }) => {
             key={idx}
             className={`carousel-item ${idx === 0 ? "active" : ""}`}
             data-bs-interval={img.interval || 5000}
+             
           >
             <img
               src={img.src}

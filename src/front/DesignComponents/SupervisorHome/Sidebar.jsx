@@ -1,10 +1,30 @@
 import { FaUserShield, FaChartPie, FaSignOutAlt, FaMoneyBillWave, FaDollarSign, FaFileInvoiceDollar, FaRegChartBar, FaUsers, FaCog, FaHistory } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { useNavigate} from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useAuth } from "/workspaces/Employee-Expense-Control/src/front/hooks/AuthContext.jsx";
 
 // No es necesario importar SupervisorHome.css aquí si ya está importado en SupervisorOpcions.jsx
 // ya que Sidebar es un hijo de SupervisorOpcions.
 
 const Sidebar = ({ className }) => { // Acepta la prop className
+
+    const { isAuthenticated, logout } = useAuth();
+  const [Loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    setLoading(true);
+    try {
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("error when closing session:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
     const sidebarVariants = {
         visible: {
             opacity: 1,
@@ -83,7 +103,7 @@ const Sidebar = ({ className }) => { // Acepta la prop className
         { icon: <FaHistory />, text: "Approval History" },
         { icon: <FaUsers />, text: "Manage Users" },
         { icon: <FaCog />, text: "Settings" },
-        { icon: <FaSignOutAlt />, text: "Logout" },
+        { icon: <FaSignOutAlt />, text: "Logout", onClick: handleLogout},
     ];
 
     return (
@@ -124,6 +144,7 @@ const Sidebar = ({ className }) => { // Acepta la prop className
                 {menuItems.map((item, index) => (
                     <motion.span
                         key={index}
+                        onClick={item.onClick} //  This enables the logout function
                         style={{
                             display: "flex",
                             alignItems: "center",
