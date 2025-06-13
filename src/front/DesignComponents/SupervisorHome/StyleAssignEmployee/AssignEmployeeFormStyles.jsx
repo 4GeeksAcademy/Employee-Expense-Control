@@ -70,25 +70,33 @@ const styles = {
   },
   button: {
     padding: "12px 25px",
-    background: "linear-gradient(to right, #4f46e5, #6366f1)",
+    background: "linear-gradient(to right, #404040, #448F73)",
     color: "white",
     fontWeight: "700",
     borderRadius: "8px",
     border: "none",
     cursor: "pointer",
     fontSize: "1.1rem",
-    boxShadow: "0 4px 10px rgba(79, 70, 229, 0.3)",
+    boxShadow: "0 4px 10px rgba(54, 54, 63, 0.3)",
     transition: "all 0.3s ease-in-out",
     "&:hover": {
       transform: "translateY(-2px)",
       boxShadow: "0 6px 15px rgba(79, 70, 229, 0.4)",
     },
+    //#404040
   },
-  backButton: {
+    buttonWrapperBottom: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "40px",
+    marginBottom: "20px",
+    width: "100%",
+  },
+  goHomeButton: {
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: "10px 20px",
+    padding: "12px 24px",
     background: "linear-gradient(to right, #10b981, #059669)",
     color: "white",
     fontWeight: "600",
@@ -97,7 +105,6 @@ const styles = {
     textDecoration: "none",
     border: "none",
     cursor: "pointer",
-    marginTop: "20px",
   },
 };
 

@@ -70,7 +70,7 @@ const styles = {
   },
   button: {
     padding: "12px 25px",
-    background: "linear-gradient(to right, #4f46e5, #6366f1)",
+    background: "linear-gradient(to right, #404040, #448F73)",
     color: "white",
     fontWeight: "700",
     borderRadius: "8px",
