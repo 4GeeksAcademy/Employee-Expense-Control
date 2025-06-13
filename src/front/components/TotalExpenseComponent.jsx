@@ -59,15 +59,15 @@ const TotalExpenseComponent = ({ employeeId }) => {
       cursor: "pointer",
       overflow: 'hidden',
     },
-    // NEW STYLES FOR TITLES (matching BudgetAcceptedPage)
+    
     mainTitleStyle: {
       fontSize: "2.25rem",
       fontWeight: "800",
-      color: "#1a202c", // Very dark gray, almost black
+      color: "#1a202c", 
       letterSpacing: "-0.025em",
     },
     subTitleStyle: {
-      fontSize: "1.75rem", // Slightly smaller than main title but still large
+      fontSize: "1.75rem", 
       fontWeight: "800",
       color: "#1a202c",
       letterSpacing: "-0.025em",
