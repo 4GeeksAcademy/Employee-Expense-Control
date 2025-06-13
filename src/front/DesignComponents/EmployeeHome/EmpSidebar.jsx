@@ -91,7 +91,7 @@ const EmpSidebar = ({ className }) => { // Acepta la prop className
             className={className} 
             style={{
                 
-                backgroundColor: "#1f2937",
+                backgroundColor: "#404040", //#1f2937
                 color: "white",
                 display: "flex", 
                 flexDirection: "column",

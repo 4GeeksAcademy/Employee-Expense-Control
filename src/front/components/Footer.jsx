@@ -5,7 +5,7 @@ import "../DesignComponents/Footer/footer.css";
 
 export function Footer() {
   return (
-    <footer className="footer">
+    <footer className="footer bg-dark">
       {/* Sección superior: logo + enlaces */}
       <div className="footer-top">
         <div className="footer-brand">
