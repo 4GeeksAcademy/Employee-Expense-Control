@@ -1,8 +1,13 @@
 
-/* .homeFeatures {
- background: linear-gradient(to right, #448F73, #d9d9d9, #448F73); 
-
-} */
+ .homeFeatures {
+ display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  background-size: cover;
+  background-position: center;
+}  
 
 
 .feature-card {
@@ -143,3 +148,4 @@
     font-size: 3rem;
   }
 }
+

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-const GoBackButton = ({ to = "/supervisor", children = "Go Home" }) => {
+const GoBackButton = ({ to = "/supervisor", children = " ⬅ Back to Dashboard" }) => {
     return (
         <motion.div
             initial={{ opacity: 0, y: -20 }} // Animación para que aparezca desde arriba

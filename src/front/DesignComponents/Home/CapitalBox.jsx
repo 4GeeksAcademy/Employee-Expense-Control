@@ -3,7 +3,7 @@ import "./CapitalBox.css";
 
 const CapitalBox = () => {
   const cardsData = [
-    { letter: "G", title: "Gestión",      description: "Centraliza la gestión de facturas y presupuestos.",            color: "var(--ghost-green)"    },
+    { letter: "G", title: "Gestión",      description: "At Ghost Bill, we specialize in smart financial technology for modern businesses. Our focus is on simplifying expense management by helping companies seamlessly track, manage, and approve employee-related expenses.",            color: "var(--ghost-green)"    },
     { letter: "H", title: "Hosting",      description: "Aloja tu sitio con máxima disponibilidad.",                      color: "var(--ghost-green)"     },
     { letter: "O", title: "Optimización", description: "Mejora el rendimiento de tu infraestructura.",                   color: "var(--ghost-green)" },
     { letter: "S", title: "Seguridad",    description: "Protege tus datos con cifrado de última generación.",             color: "var(--ghost-green)"    },

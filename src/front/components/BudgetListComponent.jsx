@@ -60,6 +60,7 @@ const BudgetListComponent = () => {
 
             <ol className="space-y-6">
                 {budgets.map((budget, index) => {
+                    console.log("message", budget, index)
                     const totalBills = budget.bills.reduce(
                         (acc, bill) => acc + parseFloat(bill.amount || 0),
                         0

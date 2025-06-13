@@ -20,7 +20,7 @@ export const ClientCarousel = () => {
         <div className="client-carousel-container">
             <Swiper
                 modules={[Autoplay]}
-                slidesPerView={3}
+                slidesPerView={2}
                 spaceBetween={10}
                 loop={true}
                 autoplay={{

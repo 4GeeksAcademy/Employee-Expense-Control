@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 import { useAuth } from "/workspaces/Employee-Expense-Control/src/front/hooks/AuthContext.jsx";
+//import useGlobalReducer from "../../hooks/useGlobalReducer";
 
-
-const DashboardHeader = () => {
-   
+const EmpDashboardHeader = () => {
+    //const { store } = useGlobalReducer();
      const { user } = useAuth();
 
     const containerVariants = {
@@ -40,7 +40,7 @@ const DashboardHeader = () => {
                 className="text-4xl font-extrabold text-gray-800 mb-3 tracking-tight"
                 variants={itemVariants}
             >
-                Welcome, {user.name}     
+                Welcome, {user.name}
                 <motion.span
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -55,10 +55,10 @@ const DashboardHeader = () => {
                 variants={itemVariants}
                 style={{ lineHeight: "1.6" }}
             >
-                Use this panel to manage your budgets, key assignments, and strategic reports.
+                Use this panel to manage your budgets, expenses, key assignments and reports.
             </motion.p>
         </motion.div>
     );
 };
 
-export default DashboardHeader;
+export default EmpDashboardHeader;
