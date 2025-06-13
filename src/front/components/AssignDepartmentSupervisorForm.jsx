@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import useAssignDepartmentEmployee from "../hooks/useAssignDeparmentEmployee";
+import useAssignDepartmentSupervisor from "../hooks/useAssignDepartmentSupervisor";
 import AssignSupervisorCard from "../DesignComponents/SupervisorHome/StyleAssignSupervisor/AssignSupervisorCard";
 import { containerVariants, styles } from "../DesignComponents/SupervisorHome/StyleAssignSupervisor/AssignSupervisorFormStyles"; // Solo los variants y estilos del contenedor
 
@@ -32,34 +32,34 @@ const AssignDepartmentSupervisorForm = () => {
       style={styles.container} // Aplica el estilo del contenedor
     >
       <AssignSupervisorCard
-        idEmployee={idEmployee}
-        setIdEmployee={setIdEmployee}
+        idEmployee={idSupervisor}
+        setIdEmployee={setIdSupervisor}
         idDepartment={idDepartment}
         setIdDepartment={setIdDepartment}
         handleSubmit={handleSubmit}
       />
 
-      <motion.div
-        initial={{ x: -50, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
-        style={{ display: "flex", justifyContent: "center", marginTop: "30px" }}
-      >
-        <MotionLinkButton
-          to="/supervisor"
-          style={styles.backButton}
-          whileHover={{
-            scale: 1.05,
-            boxShadow: "0 8px 12px rgba(16, 185, 129, 0.4)",
-            transition: { duration: 0.2, ease: "easeOut" },
-          }}
-          whileTap={{ scale: 0.95, transition: { duration: 0.1, ease: "easeIn" } }}
-        >
-          ← Back to Home
-        </MotionLinkButton>
-      </motion.div>
-    </motion.div>
-  );
+         <motion.div
+                initial={{ x: -50, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                style={styles.buttonWrapperBottom}
+            >
+                <MotionLinkButton
+                    to="/supervisor"
+                    style={styles.goHomeButton}
+                    whileHover={{
+                        scale: 1.05,
+                        boxShadow: "0 8px 12px rgba(16, 185, 129, 0.4)",
+                        transition: { duration: 0.2, ease: "easeOut" }
+                    }}
+                    whileTap={{ scale: 0.95, transition: { duration: 0.1, ease: "easeIn" } }}
+                >
+                    ← Back to Home
+                </MotionLinkButton>
+            </motion.div>
+        </motion.div>
+    );
 };
 
 export default AssignDepartmentSupervisorForm;

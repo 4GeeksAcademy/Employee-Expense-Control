@@ -84,11 +84,18 @@ const styles = {
       boxShadow: "0 6px 15px rgba(79, 70, 229, 0.4)",
     },
   },
-  backButton: {
+    buttonWrapperBottom: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "40px",
+    marginBottom: "20px",
+    width: "100%",
+  },
+  goHomeButton: {
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: "10px 20px",
+    padding: "12px 24px",
     background: "linear-gradient(to right, #10b981, #059669)",
     color: "white",
     fontWeight: "600",
@@ -97,7 +104,6 @@ const styles = {
     textDecoration: "none",
     border: "none",
     cursor: "pointer",
-    marginTop: "20px",
   },
 };
 
