@@ -1,32 +1,106 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react";
 import useTotalExpense from "../hooks/useTotalExpense";
 import { Link } from "react-router-dom";
-//import { totalExpense } from "../services/apiServicesFetch";
+import { motion } from "framer-motion";
 
+const MotionLinkButton = motion(Link);
 
 const TotalExpenseComponent = ({ employeeId }) => {
-
-
-  const [pendingAction, setPendingAction] = useState(null); // 'accept' or 'reject'
+  const [pendingAction, setPendingAction] = useState(null);
   const [pendingBillId, setPendingBillId] = useState(null);
   const [pendingAmount, setPendingAmount] = useState(null);
 
-  const { dispatch, store, total, openEmployeeIds, setOpenEmployeeIds, billValidation, totalExpense } = useTotalExpense(employeeId)
+  const { dispatch, store, total, openEmployeeIds, setOpenEmployeeIds, billValidation, totalExpense } = useTotalExpense(employeeId);
 
-  console.log(store)
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 100 } },
+  };
+
+  const billItemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: { opacity: 1, x: 0 },
+  };
+
+  const styles = {
+    backButtonWrapper: {
+      marginTop: "40px",
+      marginBottom: "20px",
+      display: "flex",
+      justifyContent: "center",
+    },
+    backButton: {
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "12px 24px",
+      background: "linear-gradient(to right, #10b981, #059669)",
+      color: "white",
+      fontWeight: "600",
+      borderRadius: "8px",
+      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+      textDecoration: "none",
+      border: "none",
+      cursor: "pointer",
+      overflow: 'hidden',
+    },
+    
+    mainTitleStyle: {
+      fontSize: "2.25rem",
+      fontWeight: "800",
+      color: "#1a202c", 
+      letterSpacing: "-0.025em",
+    },
+    subTitleStyle: {
+      fontSize: "1.75rem", 
+      fontWeight: "800",
+      color: "#1a202c",
+      letterSpacing: "-0.025em",
+    }
+  };
+
+  const backButtonVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 120, damping: 10, delay: 0.5 } },
+    hover: {
+      scale: 1.05,
+      boxShadow: "0 6px 12px rgba(16, 185, 129, 0.3)",
+      transition: { duration: 0.2, ease: "easeOut" }
+    },
+    tap: { scale: 0.95, transition: { duration: 0.1, ease: "easeIn" } }
+  };
 
   if (!total || Object.keys(total).length === 0) {
-    return <p className="text-gray-500">No Information Available.</p>;
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+        <p className="text-muted fs-5">Loading information or no data available...</p>
+      </div>
+    );
   }
 
   const handleAccept = async (billId) => {
-    await billValidation(dispatch, billId, "approved")
-    console.log("Aceptar", billId);
+    await billValidation(dispatch, billId, "approved");
+    console.log("Accepting", billId);
   };
 
   const handleReject = async (billId) => {
-    await billValidation(dispatch, billId, "denegated")
-    console.log("Rechazar", billId);
+    await billValidation(dispatch, billId, "denegated");
+    console.log("Rejecting", billId);
   };
 
   const handleModalConfirm = async () => {
@@ -37,147 +111,182 @@ const TotalExpenseComponent = ({ employeeId }) => {
       await handleReject(pendingBillId);
     }
 
-    // Close the Bootstrap modal
     const modal = window.bootstrap.Modal.getInstance(
       document.getElementById("exampleModal")
     );
     if (modal) modal.hide();
 
-    // Reset modal state
     setPendingAction(null);
     setPendingBillId(null);
     setPendingAmount(null);
   };
 
-  // const pendingBills = store.bills.filter((bill) => bill.state === "PENDING");
-
-
-
-  // const filteredBills = openEmployeeIds
-  //     ? pendingBills.filter((bill) => bill.employee_id === openEmployeeIds)
-  //     : pendingBills;
-
   const toggleEmployee = (id) => {
     setOpenEmployeeIds((prev) =>
-      prev.includes(id)
-        ? prev.filter((empId) => empId !== id)
-        : [...prev, id]
+      prev.includes(id) ? prev.filter((empId) => empId !== id) : [...prev, id]
     );
   };
 
   return (
     <>
-       <Link
-            to="/supervisor"
-            className="inline-block mb-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+      <motion.div
+        className="p-4 mx-auto my-4 bg-white rounded shadow-lg"
+        style={{ maxWidth: '700px' }}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.h2 variants={itemVariants} className="text-center mb-4" style={styles.mainTitleStyle}>
+          Departmental Expenses
+        </motion.h2>
+
+        <motion.div
+          className="bg-light border border-success rounded p-4 shadow-sm mb-4"
+          variants={itemVariants}
         >
-            <button type="button" className="btn btn-primary">Go Home</button>
-        </Link>
-      <div className="p-6 max-w-3xl mx-auto">
-        <h2 className="text-2xl font-bold mb-4 text-center">
-          Departmental Expenditures
-        </h2>
-
-        <div className="bg-white border border-gray-300 rounded-lg p-4 shadow mb-6">
-          <p className="text-lg font-semibold">
-            Departament:{" "}
-            <span className="text-blue-600">{total.department.name}</span>
+          <p className="fs-5 fw-semibold text-success">
+            Department: <span className="text-dark fw-bold">{total.department.name}</span>
           </p>
-          <p className="text-lg font-semibold mt-2">
-            Overall Expenditure Summary:{" "}
-            <span className="text-green-600">
-              ${total.department.total_expenses.toFixed(2)}
-            </span>
+          <p className="fs-4 fw-bold mt-2 text-success">
+            General Expense Summary:{" "}
+            <span className="text-dark">${
+              typeof total.department.total_expenses === 'number'
+                ? total.department.total_expenses.toFixed(2)
+                : '0.00'
+            }</span>
           </p>
-        </div>
+        </motion.div>
 
-        <hr className="my-6 border-gray-300" />
+        <hr className="my-4 border-success" />
 
-        <h3 className="text-xl font-semibold mb-3 text-center">
-          Expenditures per Employee
-        </h3>
+        <motion.h3 variants={itemVariants} className="text-center mb-3" style={styles.subTitleStyle}>
+          Expenses by Employee
+        </motion.h3>
 
-        <div className="space-y-4">
+        <motion.div className="d-grid gap-3" variants={containerVariants}>
           {total.employees.map((emp) => (
-            <div
+            <motion.div
               key={emp.employee_id}
-              className="bg-gray-50 border border-gray-200 rounded-md shadow-sm"
+              className="card shadow-sm overflow-hidden border-success"
+              variants={cardVariants}
+              whileHover={{ scale: 1.02, boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.1)" }}
+              transition={{ type: "spring", stiffness: 300 }}
             >
               <button
                 onClick={() => toggleEmployee(emp.employee_id)}
-                className="w-full text-left p-4 font-semibold text-gray-800 hover:bg-gray-100 focus:outline-none"
+                className="btn btn-light w-100 text-start py-3 fw-bold text-dark d-flex justify-content-between align-items-center"
               >
-                {emp.name} (ID: {emp.employee_id})
+                <span>{emp.name} (ID: {emp.employee_id})</span>
+                <motion.span
+                  animate={{ rotate: openEmployeeIds.includes(emp.employee_id) ? 90 : 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="text-success fs-5"
+                >
+                  ▶
+                </motion.span>
               </button>
 
               {openEmployeeIds.includes(emp.employee_id) && (
-                <div className="px-4 pb-4">
-                  <p>
-                    <strong>Total Expenditures:</strong>{" "}
-                    <span className="text-green-700">
-                      ${emp.total_expenses.toFixed(2)}
-                    </span>
+                <motion.div
+                  className="p-4 bg-light border-top border-success"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
+                >
+                  <p className="fw-semibold text-success mb-3">
+                    Total Expenses:{" "}
+                    <span className="text-dark fw-bold">${
+                      typeof emp.total_expenses === 'number'
+                        ? emp.total_expenses.toFixed(2)
+                        : '0.00'
+                    }</span>
                   </p>
-
-                {/* Write a comment tomorrow test*/}
-
-                  { emp.budgets
-                    .flatMap((budget) =>
+                  <div className="mt-3 pt-3 border-top border-success">
+                    <h4 className="fs-5 fw-bold mb-3 text-success">Pending Bills:</h4>
+                    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="d-grid gap-2">
+                      {emp.budgets
+                        .flatMap((budget) =>
+                          budget.bills
+                            .map(
+                              (bill) =>
+                                store.bills.find((bil) => bil.id === bill.id) || bill
+                            )
+                            .filter((bill) => bill && bill.state === "PENDING")
+                        )
+                        .map((bill, index) => (
+                          <motion.div
+                            key={bill.id}
+                            className="d-flex justify-content-between align-items-center bg-white p-3 border rounded shadow-sm"
+                            variants={billItemVariants}
+                            custom={index}
+                          >
+                            <div>
+                              <p className="fw-medium text-dark">{bill.trip_description}</p>
+                              <p className="text-muted mt-1">Amount: <span className="fw-semibold">${bill.amount}</span></p>
+                            </div>
+                            <div className="d-grid gap-2 d-md-flex">
+                              <button
+                                className="btn btn-sm btn-success"
+                                data-bs-toggle="modal"
+                                data-bs-target="#exampleModal"
+                                onClick={() => {
+                                  setPendingAction("approved");
+                                  setPendingBillId(bill.id);
+                                  setPendingAmount(bill.amount);
+                                }}
+                              >
+                                Accept
+                              </button>
+                              <button
+                                className="btn btn-sm btn-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#exampleModal"
+                                onClick={() => {
+                                  setPendingAction("denegated");
+                                  setPendingBillId(bill.id);
+                                }}
+                              >
+                                Reject
+                              </button>
+                            </div>
+                          </motion.div>
+                        ))}
+                    </motion.div>
+                    {emp.budgets.flatMap((budget) =>
                       budget.bills
-                        .map((bill) =>
-                          store.bills.find((bil) => bil.id === bill.id) || bill // get updated bill if available
-                         )
-                        .filter((bill) => bill.state === "PENDING")
-                    )
-                    .map((bill) => (
-                      <div
-                        key={bill.id}
-                        className="mt-2 flex justify-between items-center bg-white p-3 border rounded"
-                      >
-                        <div>
-                          <p className="text-sm font-medium">
-                            {bill.trip_description}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            Amount: ${bill.amount}
-                          </p>
-                        </div>
-                        <div className="space-x-2">
-                          <button
-                            className="btn btn-sm btn-success"
-                            data-bs-toggle="modal"
-                            data-bs-target="#exampleModal"
-                            onClick={() => {
-                              setPendingAction("approved");
-                              setPendingBillId(bill.id);
-                              setPendingAmount(bill.amount)
-                            }}
-                          >
-                            Accept
-                          </button>
-                          <button
-                            className="btn btn-sm btn-danger"
-                            data-bs-toggle="modal"
-                            data-bs-target="#exampleModal"
-                            onClick={() => {
-                              setPendingAction("denegated");
-                              setPendingBillId(bill.id);
-                            }}
-                          >
-                            Reject
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                </div>
+                        .map((bill) => store.bills.find((bil) => bil.id === bill.id) || bill)
+                        .filter((bill) => bill && bill.state === "PENDING")
+                    ).length === 0 && (
+                        <p className="text-muted fst-italic mt-3 fs-6">No pending bills for this employee.</p>
+                      )}
+                  </div>
+                </motion.div>
               )}
-            </div>
+            </motion.div>
           ))}
-        </div>
-      </div>
+        </motion.div>
 
-      {/* Reusable modal used for accept/reject confirmation test */}
-      {/* Modal */}
+        <motion.div
+          style={styles.backButtonWrapper}
+          variants={backButtonVariants}
+          initial="hidden"
+          animate="visible"
+          whileHover="hover"
+          whileTap="tap"
+        >
+          <MotionLinkButton
+            to="/supervisor"
+            style={styles.backButton}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" style={{ marginRight: '8px' }} viewBox="0 0 16 16">
+              <path fillRule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5" />
+            </svg>
+            <span>Back to Home</span>
+          </MotionLinkButton>
+        </motion.div>
+
+      </motion.div>
+
       <div className="modal fade" id="exampleModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div className="modal-dialog">
           <div className="modal-content">
@@ -187,7 +296,7 @@ const TotalExpenseComponent = ({ employeeId }) => {
             </div>
             <div className="modal-body">
               {pendingAction === "approved"
-                ? `Are you sure you want to accept this bill of ${pendingAmount}€?`
+                ? `Are you sure you want to accept this bill for €${pendingAmount}?`
                 : "Are you sure you want to reject this bill?"}
             </div>
             <div className="modal-footer">
@@ -201,14 +310,4 @@ const TotalExpenseComponent = ({ employeeId }) => {
   );
 };
 
-export default TotalExpenseComponent
-
-
-
-
-
-  // {emp.budgets.flatMap(budget =>
-  //                   budget.bills.filter(bill => bill.state === "PENDING" && store.bills)
-  //                 ).map((bill) => (
-
- {/* {pendingBills   .filter((bill) => bill.employee_id === emp.employee_id) /  .map((bill) => ( */}
+export default TotalExpenseComponent;

@@ -141,6 +141,16 @@ export default function storeReducer(store, action = {}) {
         employeeId: action.payload,
       };
 
+    case "SET_USER":
+      return {
+        ...store,
+        user: {
+          id: action.payload.id,
+          name: action.payload.name,
+          rol: action.payload.rol,
+        },
+      };
+
     default:
       throw Error("Unknown action.");
   }
