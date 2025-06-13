@@ -27,6 +27,7 @@ import AssingDepartmentSupervisor from "./pages/AssingDepartmentSupervisor";
 import SupervisorTotalExpense from "./pages/SupervisorTotalExpense";
 import Companiesprofile from "./pages/Companiesprofile";
 import PricingPage from "./pages/PricingPage";
+import UnderConstruction from "./pages/UnderConstruction"
 
 
 
@@ -54,6 +55,8 @@ export const router = createBrowserRouter(
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/companiesprofile" element={<Companiesprofile />} />
       <Route path="/pricingpage" element={<PricingPage />} />
+      <Route path="/underconstruction" element={<UnderConstruction/>} />
+
 
 
       {/* 🔒 RUTAS PROTEGIDAS SOLO EMPLOYEE*/}
