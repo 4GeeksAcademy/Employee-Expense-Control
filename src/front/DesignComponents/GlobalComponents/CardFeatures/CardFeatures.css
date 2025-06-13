@@ -1,0 +1,151 @@
+
+ .homeFeatures {
+ display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  background-size: cover;
+  background-position: center;
+}  
+
+
+.feature-card {
+  width: 350px;
+  height: 400px;
+  perspective: 1000px; /* Needed for 3D flip */
+  margin: 2rem auto;
+  padding: 0px 0px;
+  opacity: 0.9;
+  border-radius: none;
+  background: transparent; 
+  border: none; 
+  box-shadow: none;
+  color: transparent;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  cursor: pointer;
+  background-color: var(--ghost-green);
+}
+
+/* Flip the card horizontally on hover */
+.feature-card:hover .card-inner {
+  transform: rotateY(-180deg); /* Flip the other way */
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  background: rgb(255, 255, 255);
+  padding: 2rem;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* Front side */
+.card-front {
+  z-index: 2;
+}
+
+/* Back side - flipped */
+.card-back {
+  transform: rotateY(180deg);
+  color: #1a1b1a;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--ghost-green);
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: none;
+ background: transparent; 
+
+} 
+
+.feature-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  background: #f0f9ff;
+  width: 88px;
+  height: 85px;
+  line-height: 80px;
+  border-radius: 50%;
+  color: var(--ghost-green);
+  box-shadow: 0 10px 5px rgba(129, 217, 179, 0.3);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cardheadText {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #333333;
+  margin-bottom: 0.5rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.feature-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--ghost-green);
+  margin-bottom: 1rem;
+  letter-spacing: 0.05em;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.3rem;
+
+  /* Subtle underline accent */
+  border-bottom: 2px solid var(--ghost-green);
+  transition: color 0.3s ease;
+}
+
+.feature-title:hover {
+  color: #a8d5ba;
+  text-shadow: 0 0 8px rgba(168, 213, 186, 0.6);
+}
+
+.feature-title::after {
+  display: block;
+  width: 30px;
+  height: 4px;
+  background: var(--ghost-green);
+  margin: 6px auto 0;
+  border-radius: 2px;
+}
+
+.feature-desc {
+  font-size: 1rem;
+  color: #555555;
+  line-height: 1.5;
+  padding: 0 0.5rem;
+}
+
+/* Optional: Responsive */
+@media (max-width: 400px) {
+  .feature-card {
+    max-width: 100%;
+    padding: 1.5rem 1rem;
+  }
+
+  .feature-icon {
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    font-size: 3rem;
+  }
+}
+

@@ -17,6 +17,18 @@ import EnterBill from "./pages/EnterBill";
 import EmployeeHome from "./pages/EmployeeHome";
 import BudgetCreate from "./pages/BudgetCreate";
 import BudgetList from "./pages/BudgetList";
+import IdEmployee from "./pages/IdEmployee";
+import PrivateRoute from "./components/PrivateRoute";
+import SupervisorHome from "./pages/SupervisorHome";
+import SupervisorBudgetPending from "./pages/SupervisorBudgetPending";
+import SupervisorBudgetAccepted from "./pages/SupervisorBudgetsAccepted";
+import AssignDepartmentEmployee from "./pages/AssignDepartmentEmployee";
+import AssingDepartmentSupervisor from "./pages/AssingDepartmentSupervisor";
+import SupervisorTotalExpense from "./pages/SupervisorTotalExpense";
+import Companiesprofile from "./pages/Companiesprofile";
+import PricingPage from "./pages/PricingPage";
+import UnderConstruction from "./pages/UnderConstruction"
+
 
 
 export const router = createBrowserRouter(
@@ -32,17 +44,48 @@ export const router = createBrowserRouter(
     <Route path="/" element={<Layout />} errorElement={<h1>Not found!</h1>} >
       {/* Nested Routes: Defines sub-routes within the BaseHome component. */}
 
+      {/* 🔒 RUTAS PUBLICAS */}
+
       <Route path="/" element={<Home />} />
       <Route path="/single/:theId" element={<Single />} />  {/* Dynamic route for single items */}
       <Route path="/demo" element={<Demo />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/employeehome" element={<EmployeeHome />} />
-      <Route path="/enterbill" element={<EnterBill />} />
-      <Route path="/createbudget" element={<BudgetCreate />} />
-      <Route path="/budgetlist" element={<BudgetList />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/companiesprofile" element={<Companiesprofile />} />
+      <Route path="/pricingpage" element={<PricingPage />} />
+      <Route path="/underconstruction" element={<UnderConstruction/>} />
+
+
+
+      {/* 🔒 RUTAS PROTEGIDAS SOLO EMPLOYEE*/}
+
+      <Route path="/employeehome" element={<PrivateRoute onlyFor="employee"><EmployeeHome /></PrivateRoute>} />
+      <Route path="/enterbill" element={<PrivateRoute onlyFor="employee"><EnterBill /></PrivateRoute>} />
+      <Route path="/mybudgets" element={<PrivateRoute onlyFor="employee"><BudgetList /></PrivateRoute>} />
+      <Route path="/createbudget" element={<PrivateRoute onlyFor="employee"><BudgetCreate /></PrivateRoute>} />
+      <Route path="/employeeid" element={<PrivateRoute onlyFor="employee"><IdEmployee /></PrivateRoute>} />
+
+      {/* 🔒 RUTAS PROTEGIDAS SOLO SUPERVISOR */}
+      <Route path="/supervisor" element={<PrivateRoute onlyFor="supervisor"><SupervisorHome /></PrivateRoute>} />
+      <Route path="/budgetspending" element={<PrivateRoute onlyFor="supervisor"><SupervisorBudgetPending /></PrivateRoute>} />
+      <Route path="/budgetsaccepted" element={<PrivateRoute onlyFor="supervisor"><SupervisorBudgetAccepted /></PrivateRoute>} />
+      <Route path="/assignDepartmentEmployee" element={<PrivateRoute onlyFor="supervisor"><AssignDepartmentEmployee /></PrivateRoute>} />
+      <Route path="/assignDepartmentSupervisor" element={<PrivateRoute onlyFor="supervisor"><AssingDepartmentSupervisor /></PrivateRoute>} />
+      <Route path="/totaldepartment" element={<PrivateRoute onlyFor="supervisor"><SupervisorTotalExpense /></PrivateRoute>} />
+
+
+
+      {/* 🔒 RUTAS COMPARTIDAS */}
+
+
+
+
+      {/* 🔒 RUTA UNAUTHORIZED */}
+      <Route path="/unauthorized" element={<h1>Unauthorized access</h1>} />
+
+
     </Route>
   )
 );

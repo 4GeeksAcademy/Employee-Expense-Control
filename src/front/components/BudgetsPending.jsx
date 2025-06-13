@@ -1,0 +1,222 @@
+import React, { useState, useEffect } from "react";
+import useSupervisorBudget from "../hooks/useSupervisorBudget";
+import { Link } from "react-router-dom";
+import PendingBudgetCard from "../DesignComponents/PendingHome/PendingBudgetCard";
+import BudgetTitlePanel from "../DesignComponents/PendingHome/BudgetTitlePanel";
+import BudgetCardGrid from "../DesignComponents/PendingHome/BudgetCardGrid";
+import { AnimatePresence, motion } from "framer-motion";
+import GoBackButton from "../DesignComponents/GoBackButton/GoBackButton";
+
+const BudgetsPending = () => {
+    const [pendingAction, setPendingAction] = useState(null); // 'accept' or 'reject'
+    const [pendingBudgetId, setPendingBudgetId] = useState(null);
+    const [pendingAmount, setPendingAmount] = useState(null);
+
+    const { store, dispatch, selectedEmployeeId, setSelectedEmployeeId, editedAmount, setEditedAmount, budgetValidation } = useSupervisorBudget();
+
+    const handleAccept = async (budgetId, amount) => {
+        await budgetValidation(dispatch, budgetId, "accepted", amount);
+        console.log("Aceptar", budgetId, amount);
+    };
+
+    const handleReject = async (budgetId) => {
+        await budgetValidation(dispatch, budgetId, "rejected");
+        console.log("Rechazar", budgetId);
+    };
+
+    const handleAmountChange = (budgetId, newAmount) => {
+        setEditedAmount((prev) => ({ ...prev, [budgetId]: newAmount }));
+    };
+
+    // --- NUEVA FUNCIÓN PARA ABRIR EL MODAL ---
+    const handleOpenModal = (action, budgetId, amount = null) => {
+        setPendingAction(action);
+        setPendingBudgetId(budgetId);
+        setPendingAmount(amount);
+    };
+    // --- FIN NUEVA FUNCIÓN ---
+
+
+    const handleModalConfirm = async () => {
+        if (pendingAction === "accept") {
+            await handleAccept(pendingBudgetId, pendingAmount);
+        } else if (pendingAction === "reject") {
+            await handleReject(pendingBudgetId);
+        }
+
+        // --- IMPORTANTE: ELIMINAMOS LA LÓGICA DE BOOTSTRAP AQUÍ ---
+        // Si usamos Framer Motion para el modal, no necesitamos esto.
+        // const modal = window.bootstrap.Modal.getInstance(
+        //     document.getElementById("exampleModal")
+        // );
+        // if (modal) modal.hide();
+        // --- FIN ELIMINACIÓN ---
+
+        // Reset modal state (esto cerrará el modal de Framer Motion)
+        setPendingAction(null);
+        setPendingBudgetId(null);
+        setPendingAmount(null);
+    };
+
+    const pendingBudgets = store.budgets.filter((b) => b.state === "PENDING");
+
+    const filteredBudgets = selectedEmployeeId
+        ? pendingBudgets.filter((b) => b.employee_id === selectedEmployeeId)
+        : pendingBudgets;
+
+    const getEmployeeName = (id) => {
+        const foundBudget = store.budgets.find((b) => b.employee_id === id);
+        if (foundBudget && foundBudget.employee) {
+            const { name, last_name } = foundBudget.employee;
+            return `${name ?? "Sin nombre"} ${last_name ?? "Sin apellido"}`;
+        }
+        return "Unknown";
+    };
+
+    return (
+        <>
+            <div className="p-4">
+                <BudgetTitlePanel
+                    title="Pending Budgets"
+                    description={
+                        filteredBudgets.length === 0
+                            ? "There are no budgets to approve at the moment."
+                            : "Review and manage the pending budget requests below."
+                    }
+                />
+                          {/* NUEVA UBICACIÓN PARA EL BOTÓN*/}
+               <div className="text-center mb-6">
+                <GoBackButton />
+            </div>
+
+                {filteredBudgets.length === 0 ? (
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.7, duration: 0.5 }}
+                        className="text-gray-600 text-center mt-8"
+                    >
+                        No pending budgets found.
+                    </motion.p>
+                ) : (
+                    <BudgetCardGrid>
+                        {filteredBudgets.map((budget) => (
+                            <PendingBudgetCard
+                                key={budget.id}
+                                budget={budget}
+                                editedAmount={editedAmount[budget.id]}
+                                onAmountChange={handleAmountChange}
+                                onSelectEmployee={setSelectedEmployeeId}
+                                // --- AHORA USAMOS handleOpenModal AQUÍ ---
+                                onAcceptClick={(id) => handleOpenModal("accept", id, editedAmount[id] || budget.amount)}
+                                onRejectClick={(id) => handleOpenModal("reject", id)}
+                                // --- FIN CAMBIO ---
+                                employeeName={getEmployeeName(budget.employee_id)}
+                            />
+                        ))}
+                    </BudgetCardGrid>
+                )}
+
+                {selectedEmployeeId && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.8, duration: 0.5 }}
+                        className="mt-6 text-center"
+                    >
+                        <button
+                            onClick={() => setSelectedEmployeeId(null)}
+                            className="text-sm text-gray-500 underline hover:text-gray-700 transition"
+                        >
+                            Ver todos los budgets
+                        </button>
+                    </motion.div>
+                )}
+            </div>
+
+            {/* Modal de confirmación con Framer Motion */}
+            <AnimatePresence>
+                {pendingAction && ( // El modal se muestra si pendingAction no es null
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        style={{
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            width: "100vw",
+                            height: "100vh",
+                            backgroundColor: "rgba(0,0,0,0.4)",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            zIndex: 9999 // Asegura que el modal esté por encima de todo
+                        }}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            style={{
+                                background: "white",
+                                borderRadius: "12px",
+                                padding: "2rem",
+                                maxWidth: "400px",
+                                width: "100%",
+                                boxShadow: "0 10px 30px rgba(0,0,0,0.2)"
+                            }}
+                        >
+                            <h3 style={{ fontSize: "1.25rem", marginBottom: "1rem", color: "#212121" }}>
+                                Confirm Budget Action
+                            </h3>
+                            <p style={{ marginBottom: "1.5rem", color: "#4A5568" }}>
+                                {pendingAction === "accept"
+                                    ? `Are you sure you want to accept this budget of ${pendingAmount}€?`
+                                    : "Are you sure you want to reject this budget?"}
+                            </p>
+                            <div style={{ display: "flex", justifyContent: "flex-end", gap: "1rem" }}>
+                                <button
+                                    onClick={() => {
+                                        setPendingAction(null); // Esto cierra el modal de Framer Motion
+                                        setPendingBudgetId(null);
+                                        setPendingAmount(null);
+                                    }}
+                                    style={{
+                                        padding: "0.5rem 1rem",
+                                        border: "1px solid #ccc",
+                                        borderRadius: "8px",
+                                        background: "white",
+                                        cursor: "pointer",
+                                        color: "#333",
+                                        transition: "background-color 0.2s ease, border-color 0.2s ease"
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleModalConfirm}
+                                    style={{
+                                        padding: "0.5rem 1rem",
+                                        // Colores dinámicos para el botón de confirmar
+                                        backgroundColor: pendingAction === "accept" ? "#4CAF50" : "#DC3545",
+                                        color: "white",
+                                        border: "none",
+                                        borderRadius: "8px",
+                                        cursor: "pointer",
+                                        transition: "background-color 0.2s ease"
+                                    }}
+                                >
+                                    Confirm
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </>
+    );
+};
+
+export default BudgetsPending;

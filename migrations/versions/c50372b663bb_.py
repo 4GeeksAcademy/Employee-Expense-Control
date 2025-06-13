@@ -1,14 +1,8 @@
 """empty message
 
-<<<<<<<< HEAD:migrations/versions/79a9e9af4e11_.py
-Revision ID: 79a9e9af4e11
+Revision ID: c50372b663bb
 Revises: 
-Create Date: 2025-05-16 18:37:28.908255
-========
-Revision ID: 709fda6a1c0b
-Revises: 
-Create Date: 2025-05-15 20:37:43.666705
->>>>>>>> 49f57bf07b13f7358e0609be8db4b16b86701c41:migrations/versions/709fda6a1c0b_.py
+Create Date: 2025-05-29 20:11:03.454280
 
 """
 from alembic import op
@@ -16,11 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-<<<<<<<< HEAD:migrations/versions/79a9e9af4e11_.py
-revision = '79a9e9af4e11'
-========
-revision = '709fda6a1c0b'
->>>>>>>> 49f57bf07b13f7358e0609be8db4b16b86701c41:migrations/versions/709fda6a1c0b_.py
+revision = 'c50372b663bb'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -49,20 +39,27 @@ def upgrade():
     op.create_table('budgets',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('budget_description', sa.String(length=250), nullable=False),
+    sa.Column('amount', sa.Numeric(precision=10, scale=2), nullable=False),
+    sa.Column('available', sa.Numeric(precision=10, scale=2), nullable=False),
+    sa.Column('state', sa.Enum('ACCEPTED', 'REJECTED', 'PENDING', name='statebudget'), nullable=False),
+    sa.Column('condition', sa.Text(), nullable=True),
     sa.Column('employee_id', sa.Integer(), nullable=False),
-    sa.Column('department_id', sa.Integer(), nullable=False),
+    sa.Column('evaluator_id', sa.Integer(), nullable=True),
+    sa.Column('date_approved', sa.DateTime(), nullable=True),
+    sa.Column('department_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['department_id'], ['departments.id'], ),
     sa.ForeignKeyConstraint(['employee_id'], ['employees.id'], ),
+    sa.ForeignKeyConstraint(['evaluator_id'], ['employees.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('bills',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('trip_description', sa.String(length=250), nullable=False),
     sa.Column('trip_address', sa.String(length=250), nullable=False),
-    sa.Column('state', sa.Enum('APPROVED', 'DENEGATED', 'PENDING', name='state_type'), nullable=False),
+    sa.Column('state', sa.Enum('APPROVED', 'DENEGATED', 'PENDING', name='statetype'), nullable=False),
     sa.Column('amount', sa.Numeric(precision=10, scale=2), nullable=False),
-    sa.Column('evaluator_id', sa.Integer(), nullable=False),
     sa.Column('date_approved', sa.DateTime(), nullable=True),
+    sa.Column('evaluator_id', sa.Integer(), nullable=False),
     sa.Column('budget_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['budget_id'], ['budgets.id'], ),
     sa.ForeignKeyConstraint(['evaluator_id'], ['employees.id'], ),

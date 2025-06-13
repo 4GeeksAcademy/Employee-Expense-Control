@@ -1,0 +1,124 @@
+.headTeam {
+  width: 100vw;
+  /* margin-bottom: 20px; */
+  padding: 48px 15px;
+  background-color: none;
+  height: 650px;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  background-color: var(--ghost-green);
+  position: relative;
+}
+
+.headText {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  font-style: normal;
+  padding: 15px 38px 0px 38px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+}
+
+/* Style the first letter */
+#headTitle::first-letter {
+  font-size: 3.7rem;
+  font-weight: bold;
+  color: #448F73;
+  padding-right: 4px;     
+}
+
+#headTitle {
+  margin-bottom: 18px;
+  font-family: var(--font-family-register);
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: 0.9px;
+  position: relative;
+  background: linear-gradient(180deg, #0d0d0d, #448F73, #404040);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2); /* adds visual thickness */
+}
+
+
+/* Optional: subtle underline effect on hover */
+#headTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 3px;
+  background-color: var( --ghost-black);
+  transition: width 0.3s ease;
+}
+
+#headTitle:hover::after {
+  width: 300px;
+}
+
+.textParagraf{
+    font-weight: 300 !important;
+    color: var( --ghost-dark_gray);
+}
+
+.meetTeambtn {
+  display: inline-block;
+  background: var(--link-color);
+  color: var(--ghost-white);
+  padding: 0.6rem 1.9rem;
+  border-radius: 2rem;
+  border: 2px groove;
+  font-size: 1.2rem;
+  font-weight: 500;
+  font-family: var(--font-family-register);
+  text-decoration: none;
+  transition: background 0.2s;
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+.meetTeambtn:hover {
+  background: var(--ghost-dark_gray);
+}
+.meetTeambtn:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease; /* smooth quick shrink */
+}
+
+.teamFoto {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+}
+
+
+@media screen and (max-width: 968px) {
+  .headText,
+  .teamFoto {
+    width: 100%;
+    position: static; /* stack on small screens */
+    height: auto; 
+  }
+
+  .headText {
+    padding: 0px 38px 0px 38px;
+  }
+
+  .headTeam {
+    flex-direction: column;
+    height: auto;
+  }
+}

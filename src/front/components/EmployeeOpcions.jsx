@@ -1,38 +1,92 @@
-import { FilePlus, FileText } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+
+import { FileText, FilePlus, Folder } from "lucide-react";
 import { Link } from 'react-router-dom';
+import useEmployeeOpcions from "../hooks/useEmployeeOpcions";
+import { useAuth } from "/workspaces/Employee-Expense-Control/src/front/hooks/AuthContext.jsx";
+
+import EmpDashboardHeader from "../DesignComponents/EmployeeHome/EmpDashboardHeader";
+import EmpSectionDivider from "../DesignComponents/EmployeeHome/EmpSectionDivider";
+import EmpSidebar from "../DesignComponents/EmployeeHome/EmpSidebar";
+import EmpWelcomePanel from "../DesignComponents/EmployeeHome/EmpWelcomePanel";
+import EmpCardGrid from "../DesignComponents/EmployeeHome/EmpCardGrid";
+
 
 const EmployeeOpcions = () => {
-    return (
-        <>
-            <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 flex flex-col items-center justify-center p-6">
-                <div className="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-2xl text-center border border-gray-200">
-                    <h1 className="text-4xl font-extrabold text-gray-800 mb-2">Hello Employee!</h1>
-                    <p className="text-gray-600 text-lg mb-10">
-                        If you don't have a budget yet, create it after entering the bills.
-                    </p>
+  useEmployeeOpcions();
 
-                    <div className="flex flex-col space-y-8">
-                        <Link to={"/createbudget"}>
-                            <button
-                                className="flex items-center justify-center gap-3 bg-blue-600 text-black text-lg font-semibold py-4 px-8 rounded-2xl shadow-lg hover:bg-blue-700 transition duration-300 w-full"
-                            >
-                                <FileText size={28} />
-                                Create New Budget
-                            </button>
-                        </Link>
-                        <Link to={"/enterbill"}>
-                            <button
-                                className="flex items-center justify-center gap-3 bg-green-600 text-black text-lg font-semibold py-4 px-8 rounded-2xl shadow-lg hover:bg-green-700 transition duration-300 w-full"
-                            >
-                                <FilePlus size={28} />
-                                Enter New Bill
-                            </button>
-                        </Link>
-                    </div>
-                </div>
-            </div>
-        </>
-    )
-}
+  const [showLargeScreenElements, setShowLargeScreenElements] = useState(window.innerWidth >= 768);
+  const {user} = useAuth();
 
-export default EmployeeOpcions
+  useEffect(() => {
+    const handleResize = () => {
+      setShowLargeScreenElements(window.innerWidth >= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  const options = [
+    {
+      label: "Create New Budget",
+      icon: <FileText size={28} />,
+      to: "/createbudget",
+      bgColor: "bg-blue-600",
+      hoverColor: "hover:bg-blue-700"
+    },
+    {
+      label: "Enter New Bill",
+      icon: <FilePlus size={28} />,
+      to: "/enterbill",
+      bgColor: "bg-green-600",
+      hoverColor: "hover:bg-green-700"
+    },
+    {
+      label: "My Budgets",
+      icon: <Folder size={28} />,
+      to: "/mybudgets",
+      bgColor: "bg-purple-600",
+      hoverColor: "hover:bg-purple-700"
+    },
+    {
+      label: "Get My ID",
+      icon: <span role="img" aria-label="search">🔍</span>,
+      to: "/employeeid",
+      bgColor: "bg-yellow-500",
+      hoverColor: "hover:bg-yellow-600"
+    }
+  ];
+
+  return (
+    <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#f9fafb" }}>
+      {showLargeScreenElements && <EmpSidebar />}
+
+      <main style={{ flexGrow: 1, padding: "2rem" }}>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
+          <EmpDashboardHeader />
+          {showLargeScreenElements && <EmpWelcomePanel />}
+          <EmpSectionDivider />
+
+          <div className="text-center mb-10">
+            <h1 className="text-4xl font-extrabold text-gray-800 mb-2">Hello {user.name}!</h1>
+            <p className="text-gray-600 text-lg">
+              If you don't have a budget yet, create it and then enter your bills.
+            </p>
+          </div>
+
+          <EmpCardGrid/>
+        </motion.div>
+      </main>
+    </div>
+  );
+};
+
+export default EmployeeOpcions;

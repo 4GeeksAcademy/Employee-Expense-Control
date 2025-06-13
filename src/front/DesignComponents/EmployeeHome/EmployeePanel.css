@@ -1,0 +1,13 @@
+.no-top-space {
+  padding: 0px !important;
+}
+
+.go-back-btn:hover {
+  background: var(--ghost-dark_gray) !important;
+}
+
+.custom-holder::placeholder {
+  font-style: italic;
+  color: #94a3b8;
+  font-size: 15px;
+}

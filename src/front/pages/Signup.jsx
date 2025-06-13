@@ -1,12 +1,16 @@
-import React, { useState } from "react"; //useState is imported from react
+import React, { useState, useEffect } from "react"; //useState is imported from react
 import { useNavigate } from "react-router-dom"; //useParam, useLocation, Link, useNavigate de react-dom
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import { Link } from "react-router-dom";
 import { createSignup } from "../services/apiServicesFetch";
-import "../Styles/signup.css"
+import "../DesignComponents/SignUp/signup.css";
+import AnimatedBackground from "../DesignComponents/GlobalComponents/AnimatedBackground";
 
 
 
 const SignUp = () => {
+
+
     const navigate = useNavigate()
     const { store, dispatch } = useGlobalReducer()
     const [signupData, setSignupData] = useState({
@@ -73,7 +77,9 @@ const SignUp = () => {
     };
     //onChange={(e) => setFormData(prevData => ({...prevData, email:e.target.value}))}
     return (
+        
         <div className="signMain">
+            <AnimatedBackground/>
             <form onSubmit={handleFormInput} className="signForm">
                 <div className="signHeading"><h2>Create an account</h2></div>
                 <div className="container">
@@ -92,6 +98,7 @@ const SignUp = () => {
                         />
                     </div>
                     <div className="mb-3">
+                        
                         <label htmlFor="formGroupExampleInput6" className="Signform-label required-label">
                             LASTNAME
                         </label>
@@ -147,12 +154,12 @@ const SignUp = () => {
                             placeholder="Confirm password..."
                         />
                     </div>
-                    <div className="mb-3 form-check form-switch">
+                    <div className="mb-3 form-check form-switch ">
                         <label className="form-check-label checkSuperv" htmlFor="isSupervisorCheck">
                             Is Supervisor ?
                             <input
                                 type="checkbox"
-                                className="form-check-input"
+                                className="form-check-input supervok"
                                 id="isSupervisorCheck"
                                 name="is_supervisor"
                                 checked={signupData.is_supervisor}
@@ -163,7 +170,11 @@ const SignUp = () => {
                     {/* Show error message from the setError update*/}
                     {error && <div className="alert alert-danger errorAlert">{error}</div>}
                     {msg && <div className="alert alert-success successAlert">{msg}</div>}
-                    <div className="mb-3 d-grid gap-2 contBtn"><button className="btnSign btn btn-primary" type="submit">Continue</button></div>
+                    <div className="mb-3 d-grid gap-2 contBtn"><button className="btnSign btn" type="submit">Continue</button></div>
+                     <div className="form-text emailHelp">
+                    Already have an account? <Link className="linkColor" to="/login">Login</Link>
+                        </div>
+                
                 </div>
             </form>
         </div>
