@@ -1,7 +1,11 @@
-import useBudgetAccepted from "../hooks/useBudgetAccepted";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import useBudgetAccepted from "../hooks/useBudgetAccepted";
+import EmployeeBudgetList from "../DesignComponents/SupervisorHome/BudgetListAcepted/EmployeeBudgetList";
 
-const BudgetAccepted = () => {
+const MotionLinkButton = motion(Link);
+
+const BudgetAcceptedPage = () => {
     const { store, expandedEmployeeId, setExpandedEmployeeId } = useBudgetAccepted();
 
     const approvedBudgets = store.budgets.filter(
@@ -19,132 +23,110 @@ const BudgetAccepted = () => {
         return acc;
     }, {});
 
-    const employees = Object.values(budgetsByEmployee);
+    const employeesWithBudgets = Object.values(budgetsByEmployee);
 
     const toggleExpand = (employeeId) => {
         setExpandedEmployeeId((prev) => (prev === employeeId ? null : employeeId));
     };
 
     return (
-        <div>
-            <Link
-                to="/supervisor"
-                className="inline-block mb-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            style={styles.container}
+        >
+            <motion.h1
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+                style={styles.mainTitle}
             >
-                <button type="button" class="btn btn-primary">Go Home</button>
-            </Link>
-            <h2>Approved Budgets per Employee</h2>
-            {employees.length === 0 ? (
-                <p>No Approved Budgets.</p>
+                Approved Budgets by Employee
+            </motion.h1>
+
+            {employeesWithBudgets.length === 0 ? (
+                <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.6, duration: 0.5 }}
+                    style={styles.noBudgetsText}
+                >
+                    No approved budgets at this time.
+                </motion.p>
             ) : (
-                <ul style={{ listStyle: "none", padding: 0 }}>
-                    {employees.map(({ employee, budgets }) => {
-                        const totalBudgetAmountForEmployee = budgets.reduce(
-                            (acc, budget) => acc + parseFloat(budget.amount || 0),
-                            0
-                        );
-
-                        const totalBillsForEmployee = budgets.reduce(
-                            (acc, budget) =>
-                                acc +
-                                budget.bills.reduce(
-                                    (sum, bill) => sum + parseFloat(bill.amount || 0),
-                                    0
-                                ),
-                            0
-                        );
-
-                        const totalAvailableForEmployee =
-                            totalBudgetAmountForEmployee - totalBillsForEmployee;
-
-                        return (
-                            <li key={employee.id} style={{ marginBottom: 16 }}>
-                                <button
-                                    onClick={() => toggleExpand(employee.id)}
-                                    style={{
-                                        cursor: "pointer",
-                                        fontWeight: "bold",
-                                        fontSize: "1.1rem",
-                                        background: "none",
-                                        border: "none",
-                                        color: "#007bff",
-                                        textDecoration: "underline",
-                                    }}
-                                    aria-expanded={expandedEmployeeId === employee.id}
-                                >
-                                    {employee.name} {employee.last_name}
-                                </button>
-
-                                {expandedEmployeeId === employee.id && (
-                                    <div style={{ marginLeft: 20, marginTop: 8 }}>
-                                        {budgets.map((budget) => {
-                                            const totalBillsAmount = budget.bills.reduce(
-                                                (acc, bill) => acc + parseFloat(bill.amount || 0),
-                                                0
-                                            );
-                                            return (
-                                                <div
-                                                    key={budget.id}
-                                                    style={{
-                                                        border: "1px solid #ddd",
-                                                        borderRadius: 4,
-                                                        padding: 12,
-                                                        marginBottom: 10,
-                                                    }}
-                                                >
-                                                    <p>
-                                                        <strong>Description:</strong> {budget.budget_description}
-                                                    </p>
-                                                    <p>
-                                                        <strong>Amount:</strong> ${budget.amount.toFixed(2)}
-                                                    </p>
-                                                    <p><strong>Total Invoices:</strong> ${totalBillsForEmployee.toFixed(2)}</p>
-                                                    <p>
-                                                        <strong>Available Balance:</strong> ${totalAvailableForEmployee.toFixed(2)}
-                                                    </p>
-
-                                                    {budget.bills.length > 0 ? (
-                                                        <>
-                                                            <strong>Associated Invoices:</strong>
-                                                            <ul>
-                                                                {budget.bills.map((bill) => (
-                                                                    <li key={bill.id}>
-                                                                        {bill.trip_description || `Factura #${bill.id}`} - Invoice Staus:{" "}
-                                                                        <span
-                                                                            style={{
-                                                                                color:
-                                                                                    bill.state === "APPROVED"
-                                                                                        ? "green"
-                                                                                        : bill.state === "PENDING"
-                                                                                            ? "orange"
-                                                                                            : "red",
-                                                                                fontWeight: "bold",
-                                                                            }}
-                                                                        >
-                                                                            {bill.state}
-                                                                        </span>
-                                                                        <p>
-                                                                            <strong>Amount:</strong> ${parseFloat(bill.amount).toFixed(2)}
-                                                                        </p>
-                                                                    </li>
-                                                                ))}
-                                                            </ul>
-                                                        </>
-                                                    ) : (
-                                                        <p>No Associated Invoices.</p>
-                                                    )}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                )}
-                            </li>
-                        );
-                    })}
-                </ul>
+                <EmployeeBudgetList
+                    employees={employeesWithBudgets}
+                    expandedEmployeeId={expandedEmployeeId}
+                    toggleExpand={toggleExpand}
+                />
             )}
-        </div>
+
+            <motion.div
+                initial={{ x: -50, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                style={styles.buttonWrapperBottom}
+            >
+                <MotionLinkButton
+                    to="/supervisor"
+                    style={styles.goHomeButton}
+                    whileHover={{
+                        scale: 1.05,
+                        boxShadow: "0 8px 12px rgba(16, 185, 129, 0.4)",
+                        transition: { duration: 0.2, ease: "easeOut" }
+                    }}
+                    whileTap={{ scale: 0.95, transition: { duration: 0.1, ease: "easeIn" } }}
+                >
+                    ← Back to Home
+                </MotionLinkButton>
+            </motion.div>
+        </motion.div>
     );
 };
 
-export default BudgetAccepted;
+const styles = {
+    container: {
+        maxWidth: "1200px",
+        margin: "0 auto",
+        padding: "24px",
+        backgroundColor: "#f9fafb",
+        minHeight: "100vh",
+    },
+    mainTitle: {
+        fontSize: "2.25rem",
+        fontWeight: "800",
+        color: "#1a202c",
+        marginBottom: "40px",
+        textAlign: "center",
+        letterSpacing: "-0.025em",
+    },
+    noBudgetsText: {
+        textAlign: "center",
+        color: "#4a5568",
+        fontSize: "1.125rem",
+    },
+    buttonWrapperBottom: {
+        display: "flex",
+        justifyContent: "center",
+        marginTop: "40px",
+        marginBottom: "20px",
+        width: "100%",
+    },
+    goHomeButton: {
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "12px 24px",
+        background: "linear-gradient(to right, #10b981, #059669)",
+        color: "white",
+        fontWeight: "600",
+        borderRadius: "8px",
+        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+        textDecoration: "none",
+        border: "none",
+        cursor: "pointer",
+    },
+};
+
+export default BudgetAcceptedPage;
