@@ -219,7 +219,7 @@ const BudgetForm = () => {
                             type="submit"
                             className="btn w-100 mb-2"
                             style={{
-                                background: "#9E7515",
+                                background: "linear-gradient(to right, #404040, #9E7515)",
                                 color: "#fff",
                                 fontSize: "1.2rem",
                                 padding: "0.75rem",
