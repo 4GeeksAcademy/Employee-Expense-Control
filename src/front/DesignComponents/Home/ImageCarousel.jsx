@@ -28,7 +28,7 @@ const ImageCarousel = ({ images }) => {
       {/* 2. Slides */}
       <div className="carousel-inner shadow-sm"
        style={{ objectFit: "cover",
-                marginTop: "-25px",
+                marginTop: "-24px",
               }}>
         {images.map((img, idx) => (
           <div
