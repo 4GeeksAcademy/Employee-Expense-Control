@@ -1,4 +1,4 @@
-import construction from "/workspaces/Employee-Expense-Control/src/front/assets/img/zona-de-advertencia.jpg";
+  import construction from "/workspaces/Employee-Expense-Control/src/front/assets/img/zona-de-advertencia.jpg";
 
 const UnderConstructionComponent = () => {
     return (
