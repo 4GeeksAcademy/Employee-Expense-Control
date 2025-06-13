@@ -1,6 +1,6 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import BudgetDetails from "./BudgetDetails"; // Importamos el nuevo componente
+import BudgetDetails from "./BudgetDetails";
 
 const itemVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -41,7 +41,7 @@ const EmployeeBudgetItem = ({ employee, budgets, isExpanded, toggleExpand }) => 
     return (
         <motion.li
             variants={itemVariants}
-            layout 
+            layout
             style={styles.listItem}
         >
             <motion.button
@@ -74,23 +74,23 @@ const EmployeeBudgetItem = ({ employee, budgets, isExpanded, toggleExpand }) => 
                     >
                         <div style={styles.summaryGrid}>
                             <p>
-                                Total Presupuestado:{" "}
+                                Total Budgeted:{" "}
                                 <span style={styles.totalBudget}>
                                     ${totalBudgetAmountForEmployee.toFixed(2)}
                                 </span>
                             </p>
                             <p>
-                                Total Facturado:{" "}
+                                Total Billed:{" "}
                                 <span style={styles.totalBilled}>
                                     ${totalBillsForEmployee.toFixed(2)}
                                 </span>
                             </p>
                             <p>
-                                Saldo Disponible:{" "}
+                                Available Balance:{" "}
                                 <span
                                     style={{
                                         ...styles.availableBalance,
-                                        color: totalAvailableForEmployee >= 0 ? "#16a34a" : "#dc2626", 
+                                        color: totalAvailableForEmployee >= 0 ? "#16a34a" : "#dc2626",
                                     }}
                                 >
                                     ${totalAvailableForEmployee.toFixed(2)}
@@ -98,7 +98,7 @@ const EmployeeBudgetItem = ({ employee, budgets, isExpanded, toggleExpand }) => 
                             </p>
                         </div>
 
-                        <h3 style={styles.budgetDetailsTitle}>Detalle de Presupuestos:</h3>
+                        <h3 style={styles.budgetDetailsTitle}>Budget Details:</h3>
                         <div style={styles.budgetList}>
                             {budgets.map((budget) => (
                                 <BudgetDetails key={budget.id} budget={budget} />
@@ -114,11 +114,11 @@ const EmployeeBudgetItem = ({ employee, budgets, isExpanded, toggleExpand }) => 
 const styles = {
     listItem: {
         backgroundColor: "white",
-        borderRadius: "12px", 
-        boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)", 
+        borderRadius: "12px",
+        boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
         overflow: "hidden",
         transition: "box-shadow 0.3s ease-in-out",
-        marginBottom: "16px", 
+        marginBottom: "16px",
     },
     employeeButton: {
         width: "100%",
@@ -128,59 +128,59 @@ const styles = {
         padding: "24px",
         textAlign: "left",
         cursor: "pointer",
-        backgroundColor: "#f3f4f6", 
+        backgroundColor: "#f3f4f6",
         border: "none",
         borderRadius: "12px",
         transition: "background-color 0.2s ease-in-out",
         outline: "none",
     },
     employeeName: {
-        fontSize: "1.5rem", 
-        fontWeight: "700", 
-        color: "#2d3748", 
+        fontSize: "1.5rem",
+        fontWeight: "700",
+        color: "#2d3748",
     },
     expandIcon: {
-        color: "#4f46e5", 
-        fontSize: "1.125rem", 
-        fontWeight: "600", 
+        color: "#4f46e5",
+        fontSize: "1.125rem",
+        fontWeight: "600",
     },
     expandedContent: {
         padding: "24px",
-        borderTop: "1px solid #e2e8f0", 
+        borderTop: "1px solid #e2e8f0",
         backgroundColor: "white",
-        marginLeft: "20px", 
+        marginLeft: "20px",
     },
     summaryGrid: {
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-        gap: "16px", 
+        gap: "16px",
         marginBottom: "24px",
-        color: "#4a5568", 
-        fontWeight: "500", 
+        color: "#4a5568",
+        fontWeight: "500",
     },
     totalBudget: {
-        fontWeight: "700", 
-        color: "#4f46e5", 
+        fontWeight: "700",
+        color: "#4f46e5",
     },
     totalBilled: {
-        fontWeight: "700", 
-        color: "#ef4444", 
+        fontWeight: "700",
+        color: "#ef4444",
     },
     availableBalance: {
-        fontWeight: "700", 
+        fontWeight: "700",
     },
     budgetDetailsTitle: {
-        fontSize: "1.25rem", 
-        fontWeight: "600", 
-        color: "#2d3748", 
+        fontSize: "1.25rem",
+        fontWeight: "600",
+        color: "#2d3748",
         marginBottom: "16px",
         paddingBottom: "8px",
-        borderBottom: "1px solid #e2e8f0", 
+        borderBottom: "1px solid #e2e8f0",
     },
     budgetList: {
         display: "flex",
         flexDirection: "column",
-        gap: "16px", 
+        gap: "16px",
     },
 };
 

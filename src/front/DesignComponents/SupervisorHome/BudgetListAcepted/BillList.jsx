@@ -6,7 +6,7 @@ const billContainerVariants = {
     visible: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.08, 
+            staggerChildren: 0.08,
         },
     },
 };
@@ -20,7 +20,7 @@ const billItemVariants = {
 const BillList = ({ bills }) => {
     return (
         <>
-            <h4 style={styles.billListTitle}>Facturas Asociadas:</h4>
+            <h4 style={styles.billListTitle}>Associated Bills:</h4>
             <motion.ul
                 variants={billContainerVariants}
                 initial="hidden"
@@ -32,23 +32,23 @@ const BillList = ({ bills }) => {
                         <motion.li
                             key={bill.id}
                             variants={billItemVariants}
-                            layout 
+                            layout
                             style={styles.billListItem}
                         >
                             <p style={styles.billDescription}>
-                                {bill.trip_description || `Factura #${bill.id}`}
+                                {bill.trip_description || `Bill #${bill.id}`}
                             </p>
                             <p style={styles.billState}>
-                                Estado:{" "}
+                                Status:{" "}
                                 <motion.span
                                     style={{
                                         ...styles.billStateText,
                                         color:
                                             bill.state === "APPROVED"
-                                                ? "#16a34a" 
+                                                ? "#16a34a"
                                                 : bill.state === "PENDING"
-                                                    ? "#f59e0b" 
-                                                    : "#dc2626", 
+                                                    ? "#f59e0b"
+                                                    : "#dc2626",
                                     }}
                                     initial={{ scale: 0.8, opacity: 0 }}
                                     animate={{ scale: 1, opacity: 1 }}
@@ -58,7 +58,7 @@ const BillList = ({ bills }) => {
                                 </motion.span>
                             </p>
                             <p style={styles.billAmount}>
-                                Monto:{" "}
+                                Amount:{" "}
                                 <span style={styles.billAmountValue}>
                                     ${parseFloat(bill.amount).toFixed(2)}
                                 </span>
@@ -73,9 +73,9 @@ const BillList = ({ bills }) => {
 
 const styles = {
     billListTitle: {
-        fontSize: "1rem", 
-        fontWeight: "600", 
-        color: "#2d3748", 
+        fontSize: "1rem",
+        fontWeight: "600",
+        color: "#2d3748",
         marginTop: "16px",
         marginBottom: "8px",
     },
@@ -85,29 +85,29 @@ const styles = {
         margin: 0,
         display: "flex",
         flexDirection: "column",
-        gap: "8px", 
-        color: "#4a5568", 
+        gap: "8px",
+        color: "#4a5568",
     },
     billListItem: {
-        borderBottom: "1px solid #f3f4f6", 
+        borderBottom: "1px solid #f3f4f6",
         paddingBottom: "8px",
-        marginBottom: "8px", 
+        marginBottom: "8px",
     },
     billDescription: {
-        fontWeight: "500", 
+        fontWeight: "500",
     },
     billState: {
-        fontSize: "0.875rem", 
+        fontSize: "0.875rem",
     },
     billStateText: {
-        fontWeight: "700", 
+        fontWeight: "700",
     },
     billAmount: {
-        fontSize: "0.875rem", 
+        fontSize: "0.875rem",
     },
     billAmountValue: {
-        fontWeight: "700", 
-        color: "#2d3748", 
+        fontWeight: "700",
+        color: "#2d3748",
     },
 };
 

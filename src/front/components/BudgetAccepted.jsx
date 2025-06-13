@@ -3,10 +3,13 @@ import { motion } from "framer-motion";
 import useBudgetAccepted from "../hooks/useBudgetAccepted";
 import EmployeeBudgetList from "../DesignComponents/SupervisorHome/BudgetListAcepted/EmployeeBudgetList";
 
+// Define el componente `MotionLinkButton` fuera del componente principal
+// para evitar que se re-renderice innecesariamente y cause problemas de referencia.
+const MotionLinkButton = motion(Link);
+
 const BudgetAcceptedPage = () => {
     const { store, expandedEmployeeId, setExpandedEmployeeId } = useBudgetAccepted();
 
-    // Filtramos y agrupamos los presupuestos aceptados
     const approvedBudgets = store.budgets.filter(
         (budget) => budget.state === "ACCEPTED"
     );
@@ -35,23 +38,13 @@ const BudgetAcceptedPage = () => {
             transition={{ duration: 0.8 }}
             style={styles.container}
         >
-            <motion.div
-                initial={{ x: -50, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-            >
-                <Link to="/supervisor" style={styles.goHomeButton}>
-                    ← Volver al Inicio
-                </Link>
-            </motion.div>
-
             <motion.h1
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
                 style={styles.mainTitle}
             >
-                Presupuestos Aprobados por Empleado
+                Approved Budgets by Employee
             </motion.h1>
 
             {employeesWithBudgets.length === 0 ? (
@@ -61,7 +54,7 @@ const BudgetAcceptedPage = () => {
                     transition={{ delay: 0.6, duration: 0.5 }}
                     style={styles.noBudgetsText}
                 >
-                    No hay presupuestos aprobados en este momento.
+                    No approved budgets at this time.
                 </motion.p>
             ) : (
                 <EmployeeBudgetList
@@ -70,6 +63,27 @@ const BudgetAcceptedPage = () => {
                     toggleExpand={toggleExpand}
                 />
             )}
+
+            <motion.div
+                initial={{ x: -50, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                style={styles.buttonWrapperBottom}
+            >
+                {/* Usamos el nuevo componente MotionLinkButton */}
+                <MotionLinkButton
+                    to="/supervisor"
+                    style={styles.goHomeButton}
+                    whileHover={{
+                        scale: 1.05,
+                        boxShadow: "0 8px 12px rgba(16, 185, 129, 0.4)",
+                        transition: { duration: 0.2, ease: "easeOut" }
+                    }}
+                    whileTap={{ scale: 0.95, transition: { duration: 0.1, ease: "easeIn" } }}
+                >
+                    ← Back to Home
+                </MotionLinkButton>
+            </motion.div>
         </motion.div>
     );
 };
@@ -79,33 +93,42 @@ const styles = {
         maxWidth: "1200px",
         margin: "0 auto",
         padding: "24px",
-        backgroundColor: "#f9fafb", // gray-50
+        backgroundColor: "#f9fafb",
         minHeight: "100vh",
     },
+    mainTitle: {
+        fontSize: "2.25rem",
+        fontWeight: "800",
+        color: "#1a202c",
+        marginBottom: "40px",
+        textAlign: "center",
+        letterSpacing: "-0.025em",
+    },
+    noBudgetsText: {
+        textAlign: "center",
+        color: "#4a5568",
+        fontSize: "1.125rem",
+    },
+    buttonWrapperBottom: {
+        display: "flex",
+        justifyContent: "center",
+        marginTop: "40px",
+        marginBottom: "20px",
+        width: "100%",
+    },
     goHomeButton: {
-        display: "inline-block",
-        marginBottom: "32px",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
         padding: "12px 24px",
-        background: "linear-gradient(to right, #4f46e5, #3b82f6)", // from-indigo-500 to-blue-600
+        background: "linear-gradient(to right, #10b981, #059669)",
         color: "white",
         fontWeight: "600",
         borderRadius: "8px",
         boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
         textDecoration: "none",
-        transition: "all 0.3s ease-in-out",
-    },
-    mainTitle: {
-        fontSize: "2.25rem", // 4xl
-        fontWeight: "800", // extrabold
-        color: "#1a202c", // gray-900
-        marginBottom: "40px",
-        textAlign: "center",
-        letterSpacing: "-0.025em", // tracking-tight
-    },
-    noBudgetsText: {
-        textAlign: "center",
-        color: "#4a5568", // gray-600
-        fontSize: "1.125rem", // lg
+        border: "none",
+        cursor: "pointer",
     },
 };
 
