@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { FileText, FilePlus, Folder } from "lucide-react";
 import { Link } from 'react-router-dom';
 import useEmployeeOpcions from "../hooks/useEmployeeOpcions";
+import { useAuth } from "/workspaces/Employee-Expense-Control/src/front/hooks/AuthContext.jsx";
 
 import EmpDashboardHeader from "../DesignComponents/EmployeeHome/EmpDashboardHeader";
 import EmpSectionDivider from "../DesignComponents/EmployeeHome/EmpSectionDivider";
@@ -16,6 +17,7 @@ const EmployeeOpcions = () => {
   useEmployeeOpcions();
 
   const [showLargeScreenElements, setShowLargeScreenElements] = useState(window.innerWidth >= 768);
+  const {user} = useAuth();
 
   useEffect(() => {
     const handleResize = () => {
@@ -74,9 +76,9 @@ const EmployeeOpcions = () => {
           <EmpSectionDivider />
 
           <div className="text-center mb-10">
-            <h1 className="text-4xl font-extrabold text-gray-800 mb-2">Hello Employee!</h1>
+            <h1 className="text-4xl font-extrabold text-gray-800 mb-2">Hello {user.name}!</h1>
             <p className="text-gray-600 text-lg">
-              If you don't have a budget yet, create it after entering the bills.
+              If you don't have a budget yet, create it and then enter your bills.
             </p>
           </div>
 

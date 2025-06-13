@@ -145,7 +145,7 @@ const EmpSidebar = ({ className }) => { // Acepta la prop className
                 {menuItems.map((item, index) => (
                     <motion.span
                         key={index}
-                         onClick={item.onClick} // ✅ This enables the logout function
+                         onClick={item.onClick} //  This enables the logout function
                         style={{
                             display: "flex",
                             alignItems: "center",

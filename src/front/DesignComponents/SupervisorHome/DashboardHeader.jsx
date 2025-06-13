@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
-import useGlobalReducer from "../../hooks/useGlobalReducer";
+import { useAuth } from "/workspaces/Employee-Expense-Control/src/front/hooks/AuthContext.jsx";
+//import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const DashboardHeader = () => {
-    const { store } = useGlobalReducer();
+    //const { store } = useGlobalReducer();
+     const { user } = useAuth();
 
     const containerVariants = {
         hidden: { opacity: 0, y: -20 },
@@ -38,7 +40,8 @@ const DashboardHeader = () => {
                 className="text-4xl font-extrabold text-gray-800 mb-3 tracking-tight"
                 variants={itemVariants}
             >
-                Welcome, {store.supervisorName}
+                Welcome, {user.name}     
+                {/* {store.supervisorName}   */}
                 <motion.span
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}

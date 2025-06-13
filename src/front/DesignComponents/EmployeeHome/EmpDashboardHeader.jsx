@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
-import useGlobalReducer from "../../hooks/useGlobalReducer";
+import { useAuth } from "/workspaces/Employee-Expense-Control/src/front/hooks/AuthContext.jsx";
+//import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const EmpDashboardHeader = () => {
-    const { store } = useGlobalReducer();
+    //const { store } = useGlobalReducer();
+     const { user } = useAuth();
 
     const containerVariants = {
         hidden: { opacity: 0, y: -20 },
@@ -38,7 +40,7 @@ const EmpDashboardHeader = () => {
                 className="text-4xl font-extrabold text-gray-800 mb-3 tracking-tight"
                 variants={itemVariants}
             >
-                Welcome, {store.employeeName}
+                Welcome, {user.name}
                 <motion.span
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
