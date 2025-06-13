@@ -2,9 +2,9 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 const EmpCardOption = ({ title, to, buttonText, icon }) => {
-  const greenStart = "#10b981";
+  const greenStart = "#9E7515";
   const greenEnd = "#059669";
-  const mainGreen = "#059669";
+  const mainGreen = "#9E7515";
 
   return (
     <motion.div
@@ -25,7 +25,7 @@ const EmpCardOption = ({ title, to, buttonText, icon }) => {
         minHeight: "320px", // FIX: consistent height
         maxWidth: "300px",
         textAlign: "center",
-        border: "1px solid #e0e0e0",
+        border: "1px solid #9E7515", // #e0e0e0
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between", // ensures vertical spacing is consistent
