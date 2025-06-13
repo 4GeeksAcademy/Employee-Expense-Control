@@ -165,15 +165,15 @@ export const budgetFetch = async (description, amount) => {
       body: rawData,
     });
     const data = await response.json();
-    
+
     //NUEVO CAMPO AÑADIDO PARA DEVOLVER OBJETO CON LAS SIGUIENTES PROPIEDADES A BUDGET FORM 
     return {
       ok: response.ok,
       status: response.status,
       message: data.msg || "Budget created successfully"
     };
-    }
-    catch (error) {
+  }
+  catch (error) {
     console.error("Error en budgetFetch:", error);
     return {
       ok: false,
@@ -191,7 +191,6 @@ export const budgetListFetch = async (dispatch) => {
       throw new Error("Token not founded");
     }
 
-    //USAR authFetch en las rutas que requieran token
     const response = await authFetch('/mybudgets', {
       method: "GET",
     });
@@ -199,21 +198,28 @@ export const budgetListFetch = async (dispatch) => {
       throw new Error(`Error fetching data ${response.status}`);
     }
     const data = await response.json();
+
+
     if (!data || !data.budget_list) {
-      throw new Error("Error obtaining the data");
+      throw new Error("Error obtaining the data: budget_list missing.");
     }
+
     const action = {
       type: "SET_BUDGETS",
-      payload: data.budget_list,
+      payload: {
+        budgets: data.budget_list,
+        supervisorName: data.supervisor_name || null,
+      },
     };
 
     dispatch(action);
     return data;
   } catch (error) {
     console.error(error);
+
   }
 };
-// payload: data.budget_list,
+
 
 
 export const billListFetch = async (dispatch) => {
@@ -532,17 +538,17 @@ export const supervisorBudgetFetch = async (dispatch) => {
     if (!response.ok) {
       throw new Error(`Error al obtener datos: ${response.status}`);
     }
-    const { data } = await response.json(); 
+    const { data } = await response.json();
 
     if (!data || !data.budgets || !data.supervisor_name) {
       throw new Error("Los datos necesarios (budgets o supervisor_name) no se han enviado correctamente.");
     }
 
     const action = {
-      type: "SET_BUDGETS", 
+      type: "SET_BUDGETS",
       payload: {
-        budgets: data.budgets, 
-        supervisorName: data.supervisor_name 
+        budgets: data.budgets,
+        supervisorName: data.supervisor_name
       }
     };
     dispatch(action);
@@ -568,10 +574,10 @@ export const supervisorBillListFetch = async (dispatch) => {
   }
 }
 
-export const totalExpense = async (dispatch,employeeId = null) => {
+export const totalExpense = async (dispatch, employeeId = null) => {
   try {
     let url = "/supervisor-total-expense"
-    if(employeeId){
+    if (employeeId) {
       url += `?employee_id=${employeeId}`
     }
 
@@ -668,13 +674,13 @@ export const billValidation = async (dispatch, bill_id, state) => {
     const data = await response.json();
 
     dispatch({
-  type: "UPDATE_BILL_STATE",
-  payload: {
-    billId: bill_id,
-    newState: state.toUpperCase(), 
-  },
-});
- console.log(data)
+      type: "UPDATE_BILL_STATE",
+      payload: {
+        billId: bill_id,
+        newState: state.toUpperCase(),
+      },
+    });
+    console.log(data)
 
   } catch (error) {
     console.error(error)

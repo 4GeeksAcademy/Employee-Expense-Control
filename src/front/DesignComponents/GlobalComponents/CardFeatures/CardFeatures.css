@@ -1,7 +1,13 @@
 
-.homeFeatures {
- background-size: 1500px; 
-} 
+ .homeFeatures {
+ display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  background-size: cover;
+  background-position: center;
+}  
 
 
 .feature-card {
@@ -142,3 +148,4 @@
     font-size: 3rem;
   }
 }
+
