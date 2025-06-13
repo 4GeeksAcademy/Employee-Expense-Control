@@ -35,31 +35,31 @@ const CardGrid = () => {
         },
         {
             title: "View Spending Analytics",
-            to: "/spendinganalytics",
+            to: "/underconstruction",
             buttonText: "Analyze Spending",
             icon: <FaChartLine />
         },
         {
             title: "Review Bill Approvals",
-            to: "/billapprovals",
+            to: "/underconstruction",
             buttonText: "Review Bills",
             icon: <FaFileInvoiceDollar />
         },
         {
             title: "Access Approval History",
-            to: "/approvalhistory",
+            to: "/underconstruction",
             buttonText: "View History",
             icon: <FaHistory />
         },
         {
             title: "Manage Department Settings",
-            to: "/departmentsettings",
+            to: "/underconstruction",
             buttonText: "Adjust Settings",
             icon: <FaCog />
         },
         {
             title: "Add New Employee",
-            to: "/addnewemployee",
+            to: "/underconstruction",
             buttonText: "Add Employee",
             icon: <FaUserPlus />
         }
@@ -67,9 +67,9 @@ const CardGrid = () => {
 
     return (
         <div
-            className="card-grid" 
+            className="card-grid"
             style={{
-               
+
                 display: "grid",
                 gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
                 gap: "2rem",
