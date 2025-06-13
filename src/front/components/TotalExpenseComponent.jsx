@@ -43,7 +43,6 @@ const TotalExpenseComponent = ({ employeeId }) => {
       marginBottom: "20px",
       display: "flex",
       justifyContent: "center",
-      width: "100%",
     },
     backButton: {
       display: "inline-flex",
@@ -58,7 +57,21 @@ const TotalExpenseComponent = ({ employeeId }) => {
       textDecoration: "none",
       border: "none",
       cursor: "pointer",
+      overflow: 'hidden',
     },
+    // NEW STYLES FOR TITLES (matching BudgetAcceptedPage)
+    mainTitleStyle: {
+      fontSize: "2.25rem",
+      fontWeight: "800",
+      color: "#1a202c", // Very dark gray, almost black
+      letterSpacing: "-0.025em",
+    },
+    subTitleStyle: {
+      fontSize: "1.75rem", // Slightly smaller than main title but still large
+      fontWeight: "800",
+      color: "#1a202c",
+      letterSpacing: "-0.025em",
+    }
   };
 
   const backButtonVariants = {
@@ -66,7 +79,7 @@ const TotalExpenseComponent = ({ employeeId }) => {
     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 120, damping: 10, delay: 0.5 } },
     hover: {
       scale: 1.05,
-      boxShadow: "0 8px 12px rgba(16, 185, 129, 0.4)",
+      boxShadow: "0 6px 12px rgba(16, 185, 129, 0.3)",
       transition: { duration: 0.2, ease: "easeOut" }
     },
     tap: { scale: 0.95, transition: { duration: 0.1, ease: "easeIn" } }
@@ -123,7 +136,7 @@ const TotalExpenseComponent = ({ employeeId }) => {
         initial="hidden"
         animate="visible"
       >
-        <motion.h2 variants={itemVariants} className="text-center mb-4 text-black">
+        <motion.h2 variants={itemVariants} className="text-center mb-4" style={styles.mainTitleStyle}>
           Departmental Expenses
         </motion.h2>
 
@@ -146,7 +159,7 @@ const TotalExpenseComponent = ({ employeeId }) => {
 
         <hr className="my-4 border-success" />
 
-        <motion.h3 variants={itemVariants} className="text-center mb-3 text-black">
+        <motion.h3 variants={itemVariants} className="text-center mb-3" style={styles.subTitleStyle}>
           Expenses by Employee
         </motion.h3>
 
