@@ -87,6 +87,7 @@ export const fetchLogin = async (email, password) => {
     const refreshToken = data.refresh_token;
     localStorage.setItem("token", token);
     localStorage.setItem("refreshToken", refreshToken);
+    
     return data;
   } catch (error) {
     console.error(error);
