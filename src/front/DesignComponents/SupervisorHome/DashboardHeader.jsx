@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 import { useAuth } from "/workspaces/Employee-Expense-Control/src/front/hooks/AuthContext.jsx";
-//import useGlobalReducer from "../../hooks/useGlobalReducer";
+
 
 const DashboardHeader = () => {
-    //const { store } = useGlobalReducer();
+   
      const { user } = useAuth();
 
     const containerVariants = {
@@ -41,7 +41,6 @@ const DashboardHeader = () => {
                 variants={itemVariants}
             >
                 Welcome, {user.name}     
-                {/* {store.supervisorName}   */}
                 <motion.span
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}

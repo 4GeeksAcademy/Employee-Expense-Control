@@ -8,7 +8,7 @@ const colors = {
     boxShadowLight: "rgba(0,0,0,0.1)",
 };
 
-const BudgetTitlePanel = ({ title, description }) => {
+const BudgetTitlePanel = ({ title, description, style = {} }) => {
     return (
         <motion.div
             layout // Permite animaciones de layout si el panel se mueve o cambia de tamaño
@@ -22,7 +22,8 @@ const BudgetTitlePanel = ({ title, description }) => {
                 color: colors.panelTextColor,
                 marginBottom: "2rem",
                 boxShadow: `0 4px 12px ${colors.boxShadowLight}`,
-                textAlign: "center" // Centramos el texto
+                textAlign: "center", // Centramos el texto
+                ...style, //  Merge external styles here to override
             }}
         >
             <motion.h2
