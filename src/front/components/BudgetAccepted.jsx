@@ -3,8 +3,6 @@ import { motion } from "framer-motion";
 import useBudgetAccepted from "../hooks/useBudgetAccepted";
 import EmployeeBudgetList from "../DesignComponents/SupervisorHome/BudgetListAcepted/EmployeeBudgetList";
 
-// Define el componente `MotionLinkButton` fuera del componente principal
-// para evitar que se re-renderice innecesariamente y cause problemas de referencia.
 const MotionLinkButton = motion(Link);
 
 const BudgetAcceptedPage = () => {
@@ -70,7 +68,6 @@ const BudgetAcceptedPage = () => {
                 transition={{ delay: 0.2, duration: 0.5 }}
                 style={styles.buttonWrapperBottom}
             >
-                {/* Usamos el nuevo componente MotionLinkButton */}
                 <MotionLinkButton
                     to="/supervisor"
                     style={styles.goHomeButton}
