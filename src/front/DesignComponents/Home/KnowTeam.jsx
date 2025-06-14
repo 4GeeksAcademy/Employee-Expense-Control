@@ -1,4 +1,4 @@
-import Teamfoto from "src/front/assets/img/teamfoto.jpg";
+ import Teamfoto from "../../assets/img/teamfoto.jpg";
 import "./KnowTeam.css";
 //import "../DesignComponents/Login/Loginbutton.css";
 
