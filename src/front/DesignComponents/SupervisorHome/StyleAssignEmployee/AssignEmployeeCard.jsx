@@ -99,7 +99,7 @@ const AssignEmployeeCard = ({
           }}
           whileTap={{ scale: 0.95, transition: { duration: 0.1, ease: "easeIn" } }}
         >
-          ⬅ Back to Dashboard
+          ← Back to Home
         </MotionLinkButton>
       </motion.div>
     </motion.div>
@@ -107,77 +107,3 @@ const AssignEmployeeCard = ({
 };
 
 export default AssignEmployeeCard;
-
-// import React from "react";
-// import { motion } from "framer-motion";
-// import {
-//   cardVariants,
-//   titleVariants,
-//   inputVariants,
-//   buttonVariants,
-//   styles,
-// } from "./AssignEmployeeFormStyles"; // Importa los estilos y variants
-
-// const AssignEmployeeCard = ({
-//   idEmployee,
-//   setIdEmployee,
-//   idDepartment,
-//   setIdDepartment,
-//   handleSubmit,
-// }) => {
-//   return (
-//     <motion.div
-//       className="card shadow-lg p-4"
-//       variants={cardVariants}
-//       initial="hidden"
-//       animate="visible"
-//       style={styles.card}
-//     >
-//       <motion.h2 variants={titleVariants} style={styles.title}>
-//         Assign Department to Employee
-//       </motion.h2>
-//       <form onSubmit={handleSubmit}>
-//         <motion.div className="mb-3" variants={inputVariants}>
-//           <label htmlFor="idEmployee" style={styles.label}>
-//             Employee ID
-//           </label>
-//           <input
-//             type="number"
-//             style={styles.input}
-//             id="idEmployee"
-//             value={idEmployee}
-//             onChange={(e) => setIdEmployee(e.target.value)}
-//             required
-//           />
-//         </motion.div>
-
-//         <motion.div className="mb-3" variants={inputVariants}>
-//           <label htmlFor="idDepartment" style={styles.label}>
-//             Department ID
-//           </label>
-//           <input
-//             type="number"
-//             style={styles.input}
-//             id="idDepartment"
-//             value={idDepartment}
-//             onChange={(e) => setIdDepartment(e.target.value)}
-//             required
-//           />
-//         </motion.div>
-
-//         <motion.button
-//           type="submit"
-//           style={styles.button}
-//           variants={buttonVariants}
-//           whileHover={{ scale: 1.02 }}
-//           whileTap={{ scale: 0.98 }}
-//         >
-//           Assign
-//         </motion.button>
-//       </form>
-//     </motion.div>
-//   );
-// };
-
-// export default AssignEmployeeCard;
-
