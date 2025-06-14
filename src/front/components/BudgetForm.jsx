@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
-import BudgetTitlePanel from "/workspaces/Employee-Expense-Control/src/front/DesignComponents/PendingHome/BudgetTitlePanel.jsx";
+import BudgetTitlePanel from "../../DesignComponents/PendingHome/BudgetTitlePanel.jsx";
 import "/workspaces/Employee-Expense-Control/src/front/DesignComponents/EmployeeHome/EmployeePanel.css"
 
 const BudgetForm = () => {
