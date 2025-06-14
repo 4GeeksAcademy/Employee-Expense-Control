@@ -1,6 +1,8 @@
 import useBudgetList from "../hooks/useBudgetList";
-import { editBill, deleteBill } from "../services/apiServicesFetch";
+import { editBill, deleteBill, deleteBudget } from "../services/apiServicesFetch";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 
 const BudgetListComponent = () => {
     const {
@@ -19,6 +21,10 @@ const BudgetListComponent = () => {
             ...prev,
             [index]: !prev[index],
         }));
+    };
+
+    const handleDeleteBudget = (budgetId) => {
+        deleteBudget(budgetId, dispatch)
     };
 
     const handleDeleteBill = (billId, budgetId) => {
@@ -85,9 +91,13 @@ const BudgetListComponent = () => {
                                     <button className="px-4 py-1.5 text-sm bg-blue-500 text-black rounded-lg hover:bg-blue-600 transition">
                                         Edit
                                     </button>
-                                    <button className="px-4 py-1.5 text-sm bg-red-500 text-black rounded-lg hover:bg-red-600 transition">
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() => handleDeleteBudget(budget.id)}
+                                        className="px-4 py-1.5 text-sm bg-red-500 text-black rounded-lg hover:bg-red-600 transition">
                                         Delete
-                                    </button>
+                                    </motion.button>
                                 </div>
                             </div>
 

@@ -462,6 +462,39 @@ export const deleteBill = async (billId, budgetId, dispatch) => {
   }
 };
 
+
+export const deleteBudget = async (budgetId, dispatch) => {
+  try {
+    
+    if (!budgetId) {
+      throw new Error("the ids have not been passed");
+    }
+    const rawData = JSON.stringify({ budget_id: budgetId });
+  const response = await authFetch('/deletebudget', {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: rawData,
+    });
+    if (!response.ok) {
+      throw new Error(`Error fetching data ${response.status}`);
+    }
+    const data = await response.json();
+    if (!data) {
+      throw new Error("Error fetching data");
+    }
+   
+    const action = {
+      type: "DELETE_BUDGET",
+      payload: {budgetId},  //payload: { budgetId: budgetId }
+    };
+     dispatch(action);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const sendResetEmail = async (email) => {
   const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/forgot-password`, {
 
