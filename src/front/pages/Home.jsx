@@ -80,18 +80,18 @@ export const Home = () => {
       <section className="home-hero">
         {/* <h1 className="hero-title">Hello Rigoberto!!</h1> */}
         <div className="hero-carousel-wrapper">
-          <div>
+      
           <p className="hero-subtitle home">
             Welcome to Ghost Bill — your trusted partner for managing invoices and budgets.
           </p>
-          </div>
+        
          
           {/* CTA */}
-          <div>
+      
           <Link to="/signup" className=" signup-text-home home hero-cta">
             Sign up
           </Link>
-          </div>
+      
      
 
           {/* Carrusel Bootstrap */}

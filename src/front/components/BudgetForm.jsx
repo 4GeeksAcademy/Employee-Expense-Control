@@ -37,10 +37,12 @@ const BudgetForm = () => {
 
         try {
             const res = await budgetFetch(description, amount);
-
+            console.log(res)
             if (res.ok === false || res.error) {
                 setError(true);
                 setMessage(res.message || "Error creating budget.");
+                setShowMessage(true);
+                setTimeout(() => setShowMessage(false), 5000);
                 return;
             }
 

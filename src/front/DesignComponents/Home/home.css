@@ -4,8 +4,8 @@
   /* background: var(--ghost-white); */
 }
 
-/* .signup-text-home {
-   display: inline-block;
+.hero-cta {
+  display: inline-block;
   background: var(--ghost-green);
   color: var(--ghost-white);
   padding: 0.75rem 2rem;
@@ -15,11 +15,18 @@
   font-weight: 500;
   text-decoration: none;
   transition: background 0.2s;
- 
+  margin-bottom: 1.5rem;
 }
-.signup-text-home:hover {
+.hero-cta:hover {
   background: var(--ghost-dark_gray);
-} */
+}
+
+.hero-carousel-wrapper .hero-cta {
+  position: absolute !important;
+  left: 80px !important;
+  top: 250px !important;
+}
+
  
 /* Hero */
 .home-hero {

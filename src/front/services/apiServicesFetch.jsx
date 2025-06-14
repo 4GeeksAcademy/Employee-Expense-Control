@@ -141,7 +141,6 @@ export const fetchUserProfile = async () => {
 
 
 export const budgetFetch = async (description, amount) => {
-
   try {
     if (
       !description ||
