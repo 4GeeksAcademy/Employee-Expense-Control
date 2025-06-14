@@ -1,4 +1,4 @@
-import greywaves from "/workspaces/Employee-Expense-Control/src/front/assets/img/ClientCarouselImages/greywaves.png";
+import greywaves from "../../assets/img/ClientCarouselImages/greywaves.png";
 
 import "../CardFeatures/CardFeatures.css"
 
