@@ -6,12 +6,14 @@
 .capital-boxes-section {
   padding: 2rem 1rem;
   background: var(--ghost-gray);
+  
 }
 
 /* Título de sección */
 .capital-boxes-title {
   text-align: center;
   margin-bottom: 1.5rem;
+  font-weight: 800;
   font-size: 1.75rem;
   color: var(--ghost-black);
 }
@@ -43,7 +45,7 @@
   flex: 0 0 270px;              /* Ancho fijo */
   padding: 3rem;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
   font-family: 'Inter', sans-serif;
   overflow: visible;
 }
@@ -63,11 +65,21 @@
   top: 50%; left: -1rem;
   transform: translateY(-50%);
   pointer-events: none;
+ 
 }
 .capital-card-letter span {
   font-size: 4rem;
   font-weight: 700;
   line-height: 1;
+   /* font-size: 8rem; */
+}
+
+.box-head-text {
+  color: var( --ghost-green) !important;
+  font-size: 30px !important;
+}
+.box-head-paragragh {
+  letter-spacing: 2px;
 }
 
 /* Contenido de texto */
@@ -96,3 +108,5 @@
     font-size: 3rem;
   }
 }
+
+

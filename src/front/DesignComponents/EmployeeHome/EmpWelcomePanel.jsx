@@ -22,7 +22,7 @@ const EmpWelcomePanel = () => {
         >
             <div style={{ position: "relative", zIndex: 1 }}>
                 <h2 style={{ fontSize: "1.5rem", fontWeight: "600" }}>
-                    You're doing great!
+                    Everything you need is here!
                 </h2>
                 <p style={{ marginTop: "0.5rem", fontSize: "1rem" }}>
                     Check budgets, invoices and assignments below, and keep your expenses organized.

@@ -207,6 +207,18 @@ def login_user():
                     "user": {"id": user.id, "name": user.name, "rol": user.is_supervisor,
                              }}), 201
 
+@api.route("/logout", methods=['POST'])
+@jwt_required()
+def logout():
+    jti = get_jwt()["jti"]
+    revoked_tokens.add(jti)
+    return jsonify({"msg": "User logged out"})
+
+
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(jwt_header, jwt_payload):
+    jti = jwt_payload["jti"]
+    return jti in revoked_tokens
 
 @api.route("/me", methods=["GET"])
 @jwt_required()
@@ -745,6 +757,28 @@ def detete_bill():
     db.session.commit()
     return jsonify({"msg": "bill successfully deleted"}), 200
 
+@api.route("/deletebudget", methods=["DELETE"])
+@jwt_required()
+def delete_budget():
+    user_id = get_jwt_identity()
+    user = Employee.query.get(user_id)
+    if user is None:
+        return jsonify({"msg": "Invalid credentials"}), 401
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({"msg": "Invalid object"}), 400
+    fields_required = ["budget_id"]
+    for field in fields_required:
+        if field not in body:
+            return jsonify({"msg": "Invalid credentials"}), 400
+    budget_id = body["budget_id"]
+    budget = Budget.query.filter_by(id=budget_id).first()
+    if budget is None:
+        return jsonify({"msg": "Not found"}), 404
+    db.session.delete(budget)
+    db.session.commit()
+    return jsonify({"msg": "budget successfully deleted"}), 200
+
 
 @api.route("/updatebill", methods=["PUT"])
 @jwt_required()
@@ -777,15 +811,4 @@ def update_bill():
     return jsonify({"msg": "Bill updated successfully", "bill": bill.serialize()}), 200
 
 
-@api.route("/logout", methods=['POST'])
-@jwt_required()
-def logout():
-    jti = get_jwt()["jti"]
-    revoked_tokens.add(jti)
-    return jsonify({"msg": "User logged out"})
 
-
-@jwt.token_in_blocklist_loader
-def check_if_token_revoked(jwt_header, jwt_payload):
-    jti = jwt_payload["jti"]
-    return jti in revoked_tokens

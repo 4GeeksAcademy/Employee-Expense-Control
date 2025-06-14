@@ -118,7 +118,6 @@ const EmpSidebar = ({ className }) => { // Acepta la prop className
                 flexDirection: "column",
                 padding: "1.5rem",
                 boxShadow: "2px 0 8px rgba(0,0,0,0.1)",
-                borderRadius: "0.75rem",
             }}
             variants={sidebarVariants}
             initial="hidden"

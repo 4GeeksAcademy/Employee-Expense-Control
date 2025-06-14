@@ -55,7 +55,7 @@ const EmpDashboardHeader = () => {
                 variants={itemVariants}
                 style={{ lineHeight: "1.6" }}
             >
-                Use this panel to manage your budgets, expenses, key assignments and reports.
+                Your panel is ready to help you organize budgets, track expenses, and access key reports with ease.
             </motion.p>
         </motion.div>
     );

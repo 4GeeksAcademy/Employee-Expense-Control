@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 //import rigoImageUrl from "../assets/img/rigo-baby.jpg";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import { Link } from "react-router-dom"; 
+import { Link } from "react-router-dom";
 import "../DesignComponents/Home/home.css";
 import ImageCarousel from "../DesignComponents/Home/ImageCarousel";
 import "../DesignComponents/GlobalComponents/GlobalButton.css"
@@ -31,7 +31,7 @@ export const Home = () => {
         `Could not fetch the message from the backend.
          Please check if the backend is running and the backend port is public.`
       );
-    } 
+    }
   };
 
   useEffect(() => {
@@ -72,7 +72,7 @@ export const Home = () => {
   return (
     <main className="">
       {/* Hero principal */}
-        {/* <img
+      {/* <img
              src={rigoImageUrl}
              className="hero-image"
              alt="Ghost Bill Illustration"
@@ -80,28 +80,25 @@ export const Home = () => {
       <section className="home-hero">
         {/* <h1 className="hero-title">Hello Rigoberto!!</h1> */}
         <div className="hero-carousel-wrapper">
-        <p className="hero-subtitle home">
-          Welcome to Ghost Bill — your trusted partner for managing invoices and budgets.
-        </p>
+      
+          <p className="hero-subtitle home">
+            Welcome to Ghost Bill — your trusted partner for managing invoices and budgets.
+          </p>
+        
+         
+          {/* CTA */}
+      
+          <Link to="/signup" className=" signup-text-home home hero-cta">
+            Sign up
+          </Link>
+      
+     
 
-
-        {/* <img
-          src=""
-          className="hero-image"
-          alt=""
-        /> */}
-
-
-        {/* CTA */}
-        <Link to="/signup" className="hero-cta home">
-          Sign up
-        </Link>
-
-        {/* Carrusel Bootstrap */}
-        {/* ─────────────────────────────────────────────────────────────── */}
-        <div className="mt-4">
-          <ImageCarousel images={slides} />
-        </div>
+          {/* Carrusel Bootstrap */}
+          {/* ─────────────────────────────────────────────────────────────── */}
+          <div className="mt-4">
+            <ImageCarousel images={slides} />
+          </div>
         </div>
         {/* ─────────────────────────────────────────────────────────────── */}
 
@@ -117,10 +114,10 @@ export const Home = () => {
         </div> */}
       </section>
 
-     <CardsFeatures/>
-     <CapitalBox />
-     <KnowTeam/>
-     <ClientCarousel/>
+      <CapitalBox />
+      <CardsFeatures />
+      <KnowTeam />
+      <ClientCarousel />
     </main>
   );
 };

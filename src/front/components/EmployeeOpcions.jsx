@@ -77,8 +77,8 @@ const EmployeeOpcions = () => {
 
           <div className="text-center mb-10">
             <h1 className="text-4xl font-extrabold text-gray-800 mb-2">Hello {user.name}!</h1>
-            <p className="text-gray-600 text-lg">
-              If you don't have a budget yet, create it and then enter your bills.
+            <p className="text-gray-600 text-lg hello-employee">
+              If you don't have a budget yet, create one and then enter your bills.
             </p>
           </div>
 

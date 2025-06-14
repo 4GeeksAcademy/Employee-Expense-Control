@@ -17,6 +17,7 @@ const BudgetForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+
         if (!description.trim() || !amount) {
             setError(true);
             setShowMessage(true); // show alert
@@ -36,10 +37,12 @@ const BudgetForm = () => {
 
         try {
             const res = await budgetFetch(description, amount);
-
+            console.log(res)
             if (res.ok === false || res.error) {
                 setError(true);
                 setMessage(res.message || "Error creating budget.");
+                setShowMessage(true);
+                setTimeout(() => setShowMessage(false), 5000);
                 return;
             }
 
@@ -215,11 +218,13 @@ const BudgetForm = () => {
                             />
                         </div>
 
-                        <button
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                             type="submit"
                             className="btn w-100 mb-2"
                             style={{
-                                background: "linear-gradient(to right, #404040, #9E7515)",
+                                background: "linear-gradient(to right, #8c8c8c, #9E7515, #8c8c8c)",
                                 color: "#fff",
                                 fontSize: "1.2rem",
                                 padding: "0.75rem",
@@ -230,7 +235,7 @@ const BudgetForm = () => {
                             }}
                         >
                             Submit Budget
-                        </button>
+                        </motion.button>
 
                     </form>
                 </motion.div>

@@ -4,6 +4,30 @@
   /* background: var(--ghost-white); */
 }
 
+.hero-cta {
+  display: inline-block;
+  background: var(--ghost-green);
+  color: var(--ghost-white);
+  padding: 0.75rem 2rem;
+  border-radius: 2rem;
+  border: 2px groove;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s;
+  margin-bottom: 1.5rem;
+}
+.hero-cta:hover {
+  background: var(--ghost-dark_gray);
+}
+
+.hero-carousel-wrapper .hero-cta {
+  position: absolute !important;
+  left: 80px !important;
+  top: 250px !important;
+}
+
+ 
 /* Hero */
 .home-hero {
   text-align: center;
@@ -22,7 +46,10 @@
   font-size: clamp(1rem, 3vw, 1.25rem);
   margin-bottom: 1.5rem;
   color: var(--ghost-dark_gray);
-  white-space: nowrap;
+  width: 250px;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .hero-image {
