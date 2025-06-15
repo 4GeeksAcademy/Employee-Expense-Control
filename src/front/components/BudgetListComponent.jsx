@@ -1,10 +1,11 @@
 import useBudgetList from "../hooks/useBudgetList";
 import { editBill, deleteBill, deleteBudget } from "../services/apiServicesFetch";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { AnimatePresence } from "framer-motion";
+import { Link, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 
 const BudgetListComponent = () => {
+    const navigate = useNavigate();
     const {
         budgets,
         dispatch,
@@ -16,19 +17,14 @@ const BudgetListComponent = () => {
         setEditedBill
     } = useBudgetList();
 
+    const [modalAction, setModalAction] = useState(null);
+    const [modalPayload, setModalPayload] = useState(null);
+
     const toggleBills = (index) => {
         setExpandedBudgets(prev => ({
             ...prev,
             [index]: !prev[index],
         }));
-    };
-
-    const handleDeleteBudget = (budgetId) => {
-        deleteBudget(budgetId, dispatch)
-    };
-
-    const handleDeleteBill = (billId, budgetId) => {
-        deleteBill(billId, budgetId, dispatch);
     };
 
     const handleEditClick = (bill) => {
@@ -40,165 +36,164 @@ const BudgetListComponent = () => {
         });
     };
 
-    const handleEditSubmit = (billId) => {
-        editBill(billId, editedBill, dispatch);
-        setEditingBillId(null);
-    };
-
-    // ✅ Validación: si budgets no es un array, mostramos mensaje de carga
     if (!Array.isArray(budgets)) {
         return (
-            <div className="p-4">
-                <p className="text-gray-600">Loading budgets...</p>
+            <div className="p-5 text-center text-gray-500 text-lg">
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1 }}
+                >
+                    Loading budgets...
+                </motion.div>
             </div>
         );
     }
 
     return (
-        <div className="p-4">
-            <Link
-                to="/employeehome"
-                className="inline-block mb-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+        <div className="container py-5">
+            <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate("/employeehome")}
+                className="btn mb-4 align-self-start go-back-btn"
+                style={{
+                    borderRadius: "2rem",
+                    fontWeight: "600",
+                    padding: "0.75rem 1.5rem",
+                    border: "2px groove grey",
+                    background: "var(--ghost-green)",
+                    color: "var(--ghost-white)",
+                }}
             >
-                <button type="button" className="btn btn-primary">Go Home</button>
-            </Link>
-            {console.log(budgets)}
+                ⬅ Back to Dashboard
+            </motion.button>
 
-            <ol className="space-y-6">
+            <AnimatePresence>
                 {budgets.map((budget, index) => {
-                    console.log("message", budget, index)
-                    const totalBills = budget.bills.reduce(
-                        (acc, bill) => acc + parseFloat(bill.amount || 0),
-                        0
-                    );
+                    const totalBills = budget.bills.reduce((acc, bill) => acc + parseFloat(bill.amount || 0), 0);
 
                     return (
-                        <li
+                        <motion.li
                             key={index}
-                            className="bg-white shadow-lg rounded-2xl border border-gray-200 overflow-hidden"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.5 }}
+                            className="list-unstyled mb-4 p-4 bg-white shadow rounded-3 border border-warning-subtle"
                         >
-                            <div className="flex justify-between items-center px-6 py-4 bg-gray-50 hover:bg-gray-100 transition-colors">
-                                <span className="text-lg font-semibold text-gray-800">
-                                    {budget.budget_description}
-                                </span>
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={() => toggleBills(index)}
-                                        className="px-4 py-1.5 text-sm bg-emerald-500 text-black rounded-lg hover:bg-emerald-600 transition"
-                                    >
-                                        {expandedBudgets[index] ? "Hide bills" : "See bills"}
-                                    </button>
-                                    <button className="px-4 py-1.5 text-sm bg-blue-500 text-black rounded-lg hover:bg-blue-600 transition">
-                                        Edit
-                                    </button>
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                <h5 className="fw-bold text-dark m-0">{budget.budget_description}</h5>
+                                <div className="d-flex gap-2">
                                     <motion.button
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
-                                        onClick={() => handleDeleteBudget(budget.id)}
-                                        className="px-4 py-1.5 text-sm bg-red-500 text-black rounded-lg hover:bg-red-600 transition">
+                                        className="btn btn-success"
+                                        onClick={() => toggleBills(index)}
+                                    >
+                                        {expandedBudgets[index] ? "Hide Bills" : "See Bills"}
+                                    </motion.button>
+
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="btn btn-danger"
+                                        onClick={() => {
+                                            setModalAction("deleteBudget");
+                                            setModalPayload({ budgetId: budget.id });
+                                        }}
+                                    >
                                         Delete
                                     </motion.button>
                                 </div>
                             </div>
 
-                            <div className="px-6 pb-6">
-                                <p className="text-sm text-gray-500 mt-3">
-                                    <span className="font-semibold text-gray-700">Status:</span>{" "}
-                                    {budget.state}
-                                </p>
-                                <p className="text-sm text-gray-500 mt-3">
-                                    <span className="font-semibold text-gray-700">Budget amount:</span>{" "}
-                                    ${parseFloat(budget.amount).toFixed(2)}
-                                </p>
+                            <div className="text-secondary small mb-2">State: {budget.state}</div>
+                            <div className="fw-semibold text-amount">Amount: ${parseFloat(budget.amount).toFixed(2)}</div>
+                            <div className="fw-semibold text-success">Total Bills: ${totalBills.toFixed(2)}</div>
+                            <div className="fw-semibold text-dark">Available: ${(budget.amount - totalBills).toFixed(2)}</div>
 
-                                <p className="text-sm font-medium text-gray-800 mb-4">
-                                    Total Bills: <span className="text-green-600 font-bold">${totalBills.toFixed(2)}</span>
-                                </p>
-
-                                <p className="text-sm text-gray-500 mt-3">
-                                    <span className="font-semibold text-gray-700">available:</span>{" "}
-                                    ${(budget.amount - totalBills).toFixed(2)}
-                                </p>
-
+                            <AnimatePresence>
                                 {expandedBudgets[index] && (
-                                    <ul className="space-y-4 text-sm">
+                                    <motion.ul
+                                        className="mt-4 ps-0"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.5 }}
+                                    >
                                         {budget.bills.map((bill, billIndex) => (
-                                            <li key={billIndex} className="ml-2 p-4 bg-gray-50 rounded-xl shadow-sm">
+                                            <li
+                                                key={billIndex}
+                                                className="mb-3 p-3 border rounded bg-light"
+                                            >
                                                 {editingBillId === bill.id ? (
-                                                    <div className="space-y-2">
-                                                        <div>
-                                                            <label className="block font-medium text-gray-700">Description</label>
+                                                    <div className="row g-2">
+                                                        <div className="col-md-4">
                                                             <input
                                                                 type="text"
+                                                                className="form-control"
                                                                 value={editedBill.trip_description}
-                                                                onChange={(e) =>
-                                                                    setEditedBill((prev) => ({
-                                                                        ...prev,
-                                                                        trip_description: e.target.value,
-                                                                    }))
-                                                                }
-                                                                className="w-full px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
+                                                                onChange={(e) => setEditedBill(prev => ({ ...prev, trip_description: e.target.value }))}
+                                                                placeholder="Description"
                                                             />
                                                         </div>
-                                                        <div>
-                                                            <label className="block font-medium text-gray-700">Amount</label>
+                                                        <div className="col-md-3">
                                                             <input
                                                                 type="number"
+                                                                className="form-control"
                                                                 value={editedBill.amount}
-                                                                onChange={(e) =>
-                                                                    setEditedBill((prev) => ({
-                                                                        ...prev,
-                                                                        amount: e.target.value,
-                                                                    }))
-                                                                }
-                                                                className="w-full px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
+                                                                onChange={(e) => setEditedBill(prev => ({ ...prev, amount: e.target.value }))}
+                                                                placeholder="Amount"
                                                             />
                                                         </div>
-                                                        <div>
-                                                            <label className="block font-medium text-gray-700">Address</label>
+                                                        <div className="col-md-5">
                                                             <input
                                                                 type="text"
+                                                                className="form-control"
                                                                 value={editedBill.trip_address}
-                                                                onChange={(e) =>
-                                                                    setEditedBill((prev) => ({
-                                                                        ...prev,
-                                                                        trip_address: e.target.value,
-                                                                    }))
-                                                                }
-                                                                className="w-full px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
+                                                                onChange={(e) => setEditedBill(prev => ({ ...prev, trip_address: e.target.value }))}
+                                                                placeholder="Address"
                                                             />
                                                         </div>
-
-                                                        <div className="flex gap-2 mt-3">
+                                                        <div className="col-12 mt-2 d-flex gap-2">
                                                             <button
-                                                                onClick={() => handleEditSubmit(bill.id)}
-                                                                className="px-4 py-1.5 bg-blue-500 text-black text-sm rounded-md hover:bg-blue-600 transition"
+                                                                onClick={() => {
+                                                                    setModalAction("editBill");
+                                                                    setModalPayload({ billId: bill.id });
+                                                                }}
+                                                                className="btn btn-sm btn-primary"
                                                             >
                                                                 Save
                                                             </button>
                                                             <button
                                                                 onClick={() => setEditingBillId(null)}
-                                                                className="px-4 py-1.5 bg-gray-400 text-black text-sm rounded-md hover:bg-gray-500 transition"
+                                                                className="btn btn-sm btn-secondary"
                                                             >
                                                                 Cancel
                                                             </button>
                                                         </div>
                                                     </div>
                                                 ) : (
-                                                    <div className="space-y-1 text-gray-700">
-                                                        <p><span className="font-medium">Description:</span> {bill.trip_description}</p>
-                                                        <p><span className="font-medium">Amount:</span> ${bill.amount}</p>
-                                                        <p><span className="font-medium">State:</span> {bill.state}</p>
-                                                        <div className="mt-2 flex gap-2">
+                                                    <div className="d-flex justify-content-between align-items-center">
+                                                        <div className="text-muted small">
+                                                            <div><strong>Description:</strong> {bill.trip_description}</div>
+                                                            <div><strong>Amount:</strong> ${bill.amount}</div>
+                                                            <div><strong>State:</strong> {bill.state}</div>
+                                                        </div>
+                                                        <div className="d-flex gap-2">
                                                             <button
                                                                 onClick={() => handleEditClick(bill)}
-                                                                className="px-3 py-1 text-sm bg-yellow-400 text-black rounded hover:bg-yellow-500 transition"
+                                                                className="btn btn-sm btn-warning"
                                                             >
                                                                 Edit
                                                             </button>
                                                             <button
-                                                                onClick={() => handleDeleteBill(bill.id, bill.budget_id)}
-                                                                className="px-3 py-1 text-sm bg-red-400 text-black rounded hover:bg-red-500 transition"
+                                                                onClick={() => {
+                                                                    setModalAction("deleteBill");
+                                                                    setModalPayload({ billId: bill.id, budgetId: bill.budget_id });
+                                                                }}
+                                                                className="btn btn-sm btn-danger"
                                                             >
                                                                 Delete
                                                             </button>
@@ -207,13 +202,87 @@ const BudgetListComponent = () => {
                                                 )}
                                             </li>
                                         ))}
-                                    </ul>
+                                    </motion.ul>
                                 )}
-                            </div>
-                        </li>
+                            </AnimatePresence>
+                        </motion.li>
                     );
                 })}
-            </ol>
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {modalAction && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        style={{
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            width: "100vw",
+                            height: "100vh",
+                            backgroundColor: "rgba(0,0,0,0.4)",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "flex-start",
+                            zIndex: 9999,
+                        }}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            style={{
+                                background: "white",
+                                borderRadius: "12px",
+                                padding: "2rem",
+                                maxWidth: "400px",
+                                width: "100%",
+                                boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+                            }}
+                        >
+                            <h3 className="mb-3">Confirm Action</h3>
+                            <p className="mb-4">
+                                {modalAction === "deleteBill"
+                                    ? "Are you sure you want to delete this bill?"
+                                    : modalAction === "deleteBudget"
+                                    ? "Are you sure you want to delete this budget?"
+                                    : "Are you sure you want to save these changes?"}
+                            </p>
+                            <div className="d-flex justify-content-end gap-2">
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={() => {
+                                        setModalAction(null);
+                                        setModalPayload(null);
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    className="btn btn-success confirm-btn"
+                                    onClick={async () => {
+                                        if (modalAction === "deleteBill") {
+                                            await deleteBill(modalPayload.billId, modalPayload.budgetId, dispatch);
+                                        } else if (modalAction === "deleteBudget") {
+                                            await deleteBudget(modalPayload.budgetId, dispatch);
+                                        } else if (modalAction === "editBill") {
+                                            await editBill(modalPayload.billId, editedBill, dispatch);
+                                        }
+                                        setModalAction(null);
+                                        setModalPayload(null);
+                                        setEditingBillId(null);
+                                    }}
+                                >
+                                    Confirm
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

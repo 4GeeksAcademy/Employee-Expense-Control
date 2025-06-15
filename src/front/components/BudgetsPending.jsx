@@ -16,12 +16,10 @@ const BudgetsPending = () => {
 
     const handleAccept = async (budgetId, amount) => {
         await budgetValidation(dispatch, budgetId, "accepted", amount);
-        console.log("Aceptar", budgetId, amount);
     };
 
     const handleReject = async (budgetId) => {
         await budgetValidation(dispatch, budgetId, "rejected");
-        console.log("Rechazar", budgetId);
     };
 
     const handleAmountChange = (budgetId, newAmount) => {
