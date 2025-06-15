@@ -2,7 +2,7 @@ import { FaUserShield, FaChartPie, FaSignOutAlt, FaMoneyBillWave, FaDollarSign, 
 import { motion } from "framer-motion";
 import { useNavigate} from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useAuth } from "/workspaces/Employee-Expense-Control/src/front/hooks/AuthContext.jsx";
+import { useAuth } from "../../hooks/AuthContext";
 
 // No es necesario importar SupervisorHome.css aquí si ya está importado en SupervisorOpcions.jsx
 // ya que Sidebar es un hijo de SupervisorOpcions.
