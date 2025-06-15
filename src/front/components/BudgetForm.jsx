@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
 import BudgetTitlePanel from "../../DesignComponents/PendingHome/BudgetTitlePanel.jsx";
-import "/workspaces/Employee-Expense-Control/src/front/DesignComponents/EmployeeHome/EmployeePanel.css"
+import "../../DesignComponents/EmployeeHome/EmployeePanel.css"
 
 const BudgetForm = () => {
     const { navigate: formNavigate, description, setDescription, amount, setAmount } = useBudgetForm();

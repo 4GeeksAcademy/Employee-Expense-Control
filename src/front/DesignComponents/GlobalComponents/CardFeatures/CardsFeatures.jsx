@@ -1,4 +1,4 @@
-import greywaves from "../../assets/img/ClientCarouselImages/greywaves.png";
+import greywaves from "../../assets/img/greywaves.png";
 
 import "../CardFeatures/CardFeatures.css"
 
