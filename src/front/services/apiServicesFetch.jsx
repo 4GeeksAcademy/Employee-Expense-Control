@@ -303,9 +303,9 @@ export const fetchImageBill = async (image, description, location, amount) => {
     });
 
     if (!billResponse.ok) {
-      return { ok: false, message: `Failed to create bill (${billResponse.status})` };
+      return { ok: false, message: "Unable to create bill. Your budget must be accepted first."};
     }
-
+    // return { ok: false, message: `Failed to create bill (${billResponse.status})` };
     const data = await billResponse.json();
     return { ok: true, message: data?.msg || "Bill created successfully." };
   } catch (error) {

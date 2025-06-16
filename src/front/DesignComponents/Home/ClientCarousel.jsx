@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
+<<<<<<< HEAD
 import Visa from "../../assets/img/ClientCarouselImages/visa.png";
 import Puma from "../../assets/img/ClientCarouselImages/puma.png";
 import Paypal from "../../assets/img/ClientCarouselImages/paypal.png";
@@ -10,6 +11,15 @@ import Bitcoin from "../../assets/img/ClientCarouselImages/bitcoin.png";
 import Northface from "../../assets/img/ClientCarouselImages/northface.png";
 import Starbucks from "../../assets/img/ClientCarouselImages/starbucks.png";
 import Mcdonalds from "../../assets/img/ClientCarouselImages/Mcdonalds.png";
+=======
+import Visa from "../../../assets/img/ClientCarouselImages/visa.png";
+import Puma from "../../../assets/img/ClientCarouselImages/puma.png";
+import Paypal from "../../../assets/img/ClientCarouselImages/paypal.png";
+import Bitcoin from "../../../assets/img/ClientCarouselImages/bitcoin.png";
+import Northface from "../../../assets/img/ClientCarouselImages/northface.png";
+import Starbucks from "../../../assets/img/ClientCarouselImages/starbucks.png";
+import Mcdonalds from "../../../assets/img/ClientCarouselImages/Mcdonalds.png";
+>>>>>>> 44c1bdc6af747345e6919a49c2bfbe6328c5118c
 
 import "./ClientCarousel.css";
 

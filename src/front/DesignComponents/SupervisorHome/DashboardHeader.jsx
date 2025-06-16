@@ -1,5 +1,9 @@
 import { motion } from "framer-motion";
+<<<<<<< HEAD
 import { useAuth } from "../../hooks/AuthContext";
+=======
+import { useAuth } from "../../hooks/AuthContext.jsx";
+>>>>>>> 44c1bdc6af747345e6919a49c2bfbe6328c5118c
 
 
 const DashboardHeader = () => {

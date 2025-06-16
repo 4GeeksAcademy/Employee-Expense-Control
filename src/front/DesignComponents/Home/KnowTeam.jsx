@@ -1,4 +1,8 @@
+<<<<<<< HEAD
  import Teamfoto from "../../assets/img/teamfoto.jpg";
+=======
+import Teamfoto from "../../assets/img/teamfoto.jpg";
+>>>>>>> 44c1bdc6af747345e6919a49c2bfbe6328c5118c
 import "./KnowTeam.css";
 //import "../DesignComponents/Login/Loginbutton.css";
 

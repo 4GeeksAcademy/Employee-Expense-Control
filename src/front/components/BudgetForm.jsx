@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
-import BudgetTitlePanel from "../DesignComponents/PendingHome/BudgetTitlePanel";
+import BudgetTitlePanel from "../DesignComponents/PendingHome/BudgetTitlePanel.jsx";
 import "../DesignComponents/EmployeeHome/EmployeePanel.css"
 
 const BudgetForm = () => {
@@ -66,9 +66,9 @@ const BudgetForm = () => {
     };
 
     return (
-        <div className="container py-5 no-top-space">
+        <div className="container py-5 no-top-space-budgetForm">
             <BudgetTitlePanel
-                title="Create New Budget 💰"
+                title="💰 Create New Budget"
                 description="Fill in the details below to start a new budget record."
                 style={{
                     background: "linear-gradient(135deg,#9E7515, #059669)",
@@ -76,7 +76,7 @@ const BudgetForm = () => {
                 }}
             />
 
-            <div className="d-flex justify-content-center align-items-center flex-column">
+            <div className="d-flex justify-content-center align-items-center flex-column budget-form-btn">
                 {/* Back Button */}
                 <motion.button
                     whileHover={{ scale: 1.05 }}
