@@ -27,6 +27,18 @@ const BillForm = () => {
     return () => URL.revokeObjectURL(url);
   }, [image]);
 
+  //suceess and error message appearance control
+
+  useEffect(() => {
+    if (message) {
+      const timeout = setTimeout(() => {
+        setMessage("");
+      }, 5000); // 5 seconds
+
+      return () => clearTimeout(timeout); // cleanup
+    }
+  }, [message]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
@@ -43,7 +55,16 @@ const BillForm = () => {
     } else {
       setError(false);
       setMessage(result.message);
-      setTimeout(() => navigate("/employeehome"), 1500);
+
+      //reset form for more bill submission if needed instead of redirecting to dashboard
+      setTimeout(() => {
+        setDescription("");
+        setLocation("");
+        setAmount("");
+        setImage(null);
+        setPreview("");
+        setMessage(""); // optional: clear success message
+      }, 1500);
     }
 
     setLoading(false);
