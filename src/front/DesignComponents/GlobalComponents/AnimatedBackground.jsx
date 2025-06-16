@@ -14,8 +14,8 @@ const AnimatedBackground = () => {
     p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(canvasParentRef);
     p5.noStroke();
     p5.frameRate(80);
-
-    const logoImg = p5.loadImage("/src/front/assets/img/ghost.png", (img) => {
+ghost.png
+    const logoImg = p5.loadImage("https://res.cloudinary.com/dzcl2whin/image/upload/v1750099848/ghost_g2nv7j.png", (img) => {
       setLogo(img);
     });
 
