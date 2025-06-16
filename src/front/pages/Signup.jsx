@@ -1,29 +1,29 @@
-import React, { useState, useEffect } from "react"; //useState is imported from react
-import { useNavigate } from "react-router-dom"; //useParam, useLocation, Link, useNavigate de react-dom
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { Link } from "react-router-dom";
 import { createSignup } from "../services/apiServicesFetch";
 import "../DesignComponents/SignUp/signup.css";
 import AnimatedBackground from "../DesignComponents/GlobalComponents/AnimatedBackground";
-
-
+import { useAuth } from "../hooks/AuthContext";
 
 const SignUp = () => {
+    const navigate = useNavigate();
+    const { dispatch } = useGlobalReducer();
+    const { login, user, loading } = useAuth();
 
-
-    const navigate = useNavigate()
-    const { store, dispatch } = useGlobalReducer()
     const [signupData, setSignupData] = useState({
         name: "",
         last_name: "",
         email: "",
         password: "",
         confirmPassword: "",
-        is_supervisor: false
+        is_supervisor: false,
     });
 
-    const [error, setError] = useState("")
-    const [msg, setMsg] = useState("")
+    const [error, setError] = useState("");
+    const [msg, setMsg] = useState("");
+    const [justLoggedIn, setJustLoggedIn] = useState(false);
 
     const handleChange = (e) => {
         const { name, type, value, checked } = e.target;
@@ -33,130 +33,151 @@ const SignUp = () => {
         }));
     };
 
-
     const handleFormInput = async (e) => {
         e.preventDefault();
-
-        setError(""); // Clear previous errors before submitting
+        setError("");
         setMsg("");
 
         const { email, password, confirmPassword } = signupData;
-        // Check for empty fields
+
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             setError("Please enter a valid email address.");
             return;
         }
         if (!email || !password || !confirmPassword) {
-            setError("Please fill in all the fields.");
+            setError("Please fill out all fields.");
             return;
         }
-
         if (password.length < 8) {
             setError("Password must be at least 8 characters.");
             return;
         }
         if (password !== confirmPassword) {
             setError("Passwords do not match.");
-            return; //to stop the function
+            return;
         }
 
-        // Now send to backend (optional: remove confirmPassword from the payload)
-        const { confirmPassword: confirmPword, ...dataToSend } = signupData;
+        const { confirmPassword: _, ...dataToSend } = signupData;
 
-        const response = await createSignup(dispatch, dataToSend);
-        // Check if the response indicates success
-        if (response.success) {
-            setMsg(response.message);
-            setTimeout(() => {
-                navigate("/login"); // Navigate after successful signup
-            }, 3000);
-        } else {
-            setError(response.message || "Something went wrong during signup.");
+        try {
+            const response = await createSignup(dispatch, dataToSend);
+
+            if (response.success) {
+                await login(email, password); // auto login
+                setJustLoggedIn(true); // marca que ya estamos logueados
+                setMsg("Signup successful! Redirecting...");
+            } else {
+                setError(response.message || "An error occurred during registration.");
+            }
+        } catch (err) {
+            setError("Error during signup or login.");
+            console.error(err);
         }
     };
-    //onChange={(e) => setFormData(prevData => ({...prevData, email:e.target.value}))}
+
+    useEffect(() => {
+        if (justLoggedIn && user && !loading) {
+            // Aquí usamos user.rol para decidir ruta
+            if (user.rol) {
+                navigate("/supervisor");
+            } else {
+                navigate("/employeehome");
+            }
+        }
+    }, [justLoggedIn, user, loading, navigate]);
+
     return (
-        
         <div className="signMain">
-            <AnimatedBackground/>
+            <AnimatedBackground />
             <form onSubmit={handleFormInput} className="signForm">
-                <div className="signHeading"><h2>Create an account</h2></div>
+                <div className="signHeading">
+                    <h2>Create Account</h2>
+                </div>
                 <div className="container">
                     <div className="mb-3">
-                        <label htmlFor="formGroupExampleInput5" className="Signform-label required-label">
-                            NAME
+                        <label htmlFor="nameInput" className="Signform-label required-label">
+                            Name
                         </label>
                         <input
                             value={signupData.name}
                             name="name"
                             onChange={handleChange}
                             type="text"
-                            required className="form-control custom-placeholder"
-                            id="formGroupExampleInput5"
-                            placeholder="Enter name..."
+                            required
+                            className="form-control custom-placeholder"
+                            id="nameInput"
+                            placeholder="Name..."
                         />
                     </div>
+
                     <div className="mb-3">
-                        
-                        <label htmlFor="formGroupExampleInput6" className="Signform-label required-label">
-                            LASTNAME
+                        <label htmlFor="lastNameInput" className="Signform-label required-label">
+                            Last Name
                         </label>
                         <input
                             value={signupData.last_name}
                             name="last_name"
                             onChange={handleChange}
                             type="text"
-                            required className="form-control custom-placeholder"
-                            id="formGroupExampleInput6"
-                            placeholder="Enter Lastname..."
+                            required
+                            className="form-control custom-placeholder"
+                            id="lastNameInput"
+                            placeholder="Last name..."
                         />
                     </div>
+
                     <div className="mb-3">
-                        <label htmlFor="formGroupExampleInput" className="Signform-label required-label">
-                            EMAIL
+                        <label htmlFor="emailInput" className="Signform-label required-label">
+                            Email
                         </label>
                         <input
                             value={signupData.email}
                             name="email"
                             onChange={handleChange}
-                            type="text"
-                            required className="form-control custom-placeholder"
-                            id="formGroupExampleInput"
-                            placeholder="Enter email..."
+                            type="email"
+                            required
+                            className="form-control custom-placeholder"
+                            id="emailInput"
+                            placeholder="example@email.com"
                         />
                     </div>
+
                     <div className="mb-3">
-                        <label htmlFor="formGroupExampleInput2" className="Signform-label required-label">
-                            PASSWORD
+                        <label htmlFor="passwordInput" className="Signform-label required-label">
+                            Password
                         </label>
                         <input
                             value={signupData.password}
                             name="password"
                             onChange={handleChange}
                             type="password"
-                            required className="form-control custom-placeholder"
-                            id="formGroupExampleInput2"
-                            placeholder="Enter password..."
+                            required
+                            className="form-control custom-placeholder"
+                            id="passwordInput"
+                            placeholder="Password..."
                         />
                     </div>
+
                     <div className="mb-3">
-                        <label htmlFor="formGroupExampleInput3" className="Signform-label required-label">
-                            CONFIRM PASSWORD
+                        <label htmlFor="confirmPasswordInput" className="Signform-label required-label">
+                            Confirm Password
                         </label>
                         <input
                             value={signupData.confirmPassword}
                             name="confirmPassword"
                             onChange={handleChange}
                             type="password"
-                            required className="form-control custom-placeholder"
-                            id="formGroupExampleInput3"
+                            required
+                            className="form-control custom-placeholder"
+                            id="confirmPasswordInput"
                             placeholder="Confirm password..."
                         />
                     </div>
-                    <div className="mb-3 form-check form-switch ">
+
+                    <div className="mb-3 form-check form-switch">
                         <label className="form-check-label checkSuperv" htmlFor="isSupervisorCheck">
-                            Is Supervisor ?
+                            Supervisor?
                             <input
                                 type="checkbox"
                                 className="form-check-input supervok"
@@ -167,14 +188,19 @@ const SignUp = () => {
                             />
                         </label>
                     </div>
-                    {/* Show error message from the setError update*/}
+
                     {error && <div className="alert alert-danger errorAlert">{error}</div>}
                     {msg && <div className="alert alert-success successAlert">{msg}</div>}
-                    <div className="mb-3 d-grid gap-2 contBtn"><button className="btnSign btn" type="submit">Continue</button></div>
-                     <div className="form-text emailHelp">
-                    Already have an account? <Link className="linkColor" to="/login">Login</Link>
-                        </div>
-                
+
+                    <div className="mb-3 d-grid gap-2 contBtn">
+                        <button className="btnSign btn" type="submit" disabled={loading}>
+                            Sign Up
+                        </button>
+                    </div>
+
+                    <div className="form-text emailHelp">
+                        Already have an account? <Link className="linkColor" to="/login">Log in</Link>
+                    </div>
                 </div>
             </form>
         </div>

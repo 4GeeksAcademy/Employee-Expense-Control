@@ -25,7 +25,7 @@ export const AuthProvider = ({children}) => {
 
       const userData = await response.json();
       setUser(userData);
-      console.log("User cargado:", userData);
+      console.log("User loaded:", userData);
       setAuthenticated(true);
       return userData
     } catch (error) {

@@ -20,10 +20,8 @@ export const createSignup = async (dispatch, info) => {
       },
       body: JSON.stringify(info),
     });
-    console.log(response);
     if (response.status === 201) {
       const data = await response.json();
-      console.log(data);
       dispatch({ type: "signup", payload: data.employee });
       return { success: true, message: "Signup successful! Please login." };
     } else if (response.status === 400) {
@@ -70,7 +68,6 @@ export const fetchLogin = async (email, password) => {
       headers: { "content-type": "application/json" },
       body: rawData,
     });
-    console.log(rawData);
     if (!response.ok) {
       throw new Error(`Error fetching data code:${response.status}`);
     }
@@ -87,7 +84,7 @@ export const fetchLogin = async (email, password) => {
     const refreshToken = data.refresh_token;
     localStorage.setItem("token", token);
     localStorage.setItem("refreshToken", refreshToken);
-    
+
     return data;
   } catch (error) {
     console.error(error);
@@ -412,7 +409,6 @@ export const editBill = async (billId, editedBill, dispatch) => {
     if (!data) {
       throw new Error("no data returned");
     }
-    console.log(data);
     const action = {
       type: "EDIT_BILL",
       payload: data.bill,
@@ -651,7 +647,6 @@ export const assignDepartmentEmployee = async (employeeId, departmentId) => {
       throw new Error(`Error fetching data ${response.status}`)
     }
     const data = await response.json()
-    console.log(data)
   } catch (error) {
     console.error(error)
   }
@@ -672,12 +667,53 @@ export const assignDepartmentSupervisor = async (supervisorId, departmentId) => 
       throw new Error(`Error fetching data ${response.status}`)
     }
     const data = await response.json()
-    console.log(data)
 
   } catch (error) {
     console.error(error)
   }
 }
+
+export const fetchAndSetEmployees = async (dispatch) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Token not found");
+
+    const res = await authFetch("/employees", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!res.ok) throw new Error(`Error fetching employees: ${res.status}`);
+    const data = await res.json();
+    dispatch({ type: "SET_EMPLOYEES", payload: data });
+  } catch (err) {
+    console.error("Error:", err);
+  }
+};
+
+export const fetchAndSetDepartments = async (dispatch) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Token not found");
+
+    const res = await authFetch("/departments", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!res.ok) throw new Error(`Error fetching departments: ${res.status}`);
+    const data = await res.json();
+    dispatch({ type: "SET_DEPARTMENTS", payload: data });
+  } catch (err) {
+    console.error("Error:", err);
+  }
+};
+
+export const fetchAndSetSupervisors = async (dispatch) => {
+  const res = await authFetch("/supervisors");
+  const data = await res.json();
+  dispatch({ type: "SET_SUPERVISORS", payload: data });
+};
 
 export const budgetValidation = async (dispatch, budget_id, state, amount = null) => {
   try {
@@ -691,7 +727,6 @@ export const budgetValidation = async (dispatch, budget_id, state, amount = null
     }
     const data = await response.json()
     dispatch({ type: "UPDATE_BUDGET_STATE", payload: { budgetId: budget_id, newState: state.toUpperCase(), newAmount: amount } })
-    console.log(data)
   } catch (error) {
     console.error(error)
   }
@@ -713,7 +748,6 @@ export const billValidation = async (dispatch, bill_id, state) => {
         newState: state.toUpperCase(),
       },
     });
-    console.log(data)
 
   } catch (error) {
     console.error(error)
