@@ -26,18 +26,23 @@ const ImageCarousel = ({ images }) => {
       </div>
 
       {/* 2. Slides */}
-      <div className="carousel-inner rounded shadow-sm">
+      <div className="carousel-inner shadow-sm"
+       style={{
+                marginTop: "-24px",
+              }}>
         {images.map((img, idx) => (
           <div
             key={idx}
             className={`carousel-item ${idx === 0 ? "active" : ""}`}
             data-bs-interval={img.interval || 5000}
+             
           >
             <img
               src={img.src}
               className="d-block img-fluid mx-auto"
               alt={img.alt || `Slide ${idx + 1}`}
-              style={{ objectFit: "cover" }}
+              style={{ objectFit: "cover",
+              }}
             />
             {img.caption && (
               <div className="carousel-caption d-none d-md-block">

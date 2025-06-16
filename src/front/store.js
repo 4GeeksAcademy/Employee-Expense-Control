@@ -88,6 +88,14 @@ export default function storeReducer(store, action = {}) {
         }),
       };
 
+    case "DELETE_BUDGET": {
+      const { budgetId } = action.payload;
+      return {
+        ...store,
+        budgets: store.budgets.filter((budget) => budget.id !== budgetId),
+      };
+    }
+
     case "SET_BUDGETS": // Usamos el mismo case
       return {
         ...store,
