@@ -1,7 +1,7 @@
 import useBillForm from "../hooks/useBillForm";
 import { fetchImageBill } from "../services/apiServicesFetch";
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const BillForm = () => {
   const {
@@ -50,7 +50,7 @@ const BillForm = () => {
   };
 
   return (
-    <div className="container py-5">
+    <div className="py-5 px-4 main-billForm">
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -68,96 +68,217 @@ const BillForm = () => {
         ⬅ Back to Dashboard
       </motion.button>
 
-      <motion.form
-        className="p-4 shadow rounded bg-light"
-        style={{ maxWidth: '600px', margin: '0 auto' }}
-        onSubmit={handleSubmit}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <motion.div
+        whileHover={{ scale: 1.01 }}
+        transition={{ type: "spring", stiffness: 200, damping: 20 }}
+        style={{
+          backgroundColor: "#ffffff",
+          borderRadius: "20px",
+          padding: "2rem",
+          boxShadow: "0 6px 15px rgba(0,0,0,0.05)",
+          width: "100%",
+          maxWidth: "600px",
+          border: "1px solid #9E7515",
+          margin: "0 auto"
+        }}
       >
-        <h2 className="mb-4 text-center text-primary fw-bold">Trip Bill Form</h2>
+        <motion.h2
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="mb-4 text-center"
+          style={{
+            fontSize: "2rem",
+            fontWeight: "700",
+            background: "linear-gradient(90deg, #9E7515, #059669)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            letterSpacing: "0.5px",
+            textShadow: "1px 1px 2px rgba(0,0,0,0.05)",
+          }}
+        >
+          🧾 Submit Trip Bill
+        </motion.h2>
 
-        <div className="mb-3">
-          <label htmlFor="description" className="form-label fw-bold">Trip Description</label>
-          <input
-            type="text"
-            className="form-control"
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="e.g. Business meeting in Madrid"
-          />
-        </div>
+        <AnimatePresence>
+          {message && (
+            <motion.div
+              key="alert"
+              initial={{ opacity: 0, y: -30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{ duration: 0.7, ease: "easeInOut" }}
+              className={`alert ${error ? "alert-danger" : "alert-success"}`}
+              style={{
+                borderRadius: "12px",
+                fontSize: "1rem",
+                fontWeight: "500",
+                marginBottom: "1rem",
+              }}
+              role="alert"
+            >
+              {message}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        <div className="mb-3">
-          <label htmlFor="address" className="form-label fw-bold">Trip Address</label>
-          <input
-            type="text"
-            className="form-control"
-            id="address"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            placeholder="Madrid, Spain"
-          />
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label
+              htmlFor="description"
+              className="form-label"
+              style={{
+                fontSize: "1.05rem",
+                fontWeight: "500",
+                color: "#9E7515",
+                letterSpacing: "0.3px",
+                marginBottom: "0.4rem",
+                display: "block",
+              }}
+            >
+              Trip Description
+            </label>
+            <input
+              type="text"
+              id="description"
+              className="form-control shadow-sm border-0 custom-holder"
+              placeholder="e.g. Business meeting in Madrid"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              style={{
+                fontSize: "1.1rem",
+                padding: "0.75rem",
+                borderRadius: "12px",
+                backgroundColor: "#f1f5f9",
+              }}
+            />
+          </div>
 
-        <div className="mb-3">
-          <label htmlFor="amount" className="form-label fw-bold">Amount</label>
-          <div className="input-group">
-            <span className="input-group-text">$</span>
+          <div className="mb-4">
+            <label
+              htmlFor="location"
+              className="form-label"
+              style={{
+                fontSize: "1.05rem",
+                fontWeight: "500",
+                color: "#9E7515",
+                letterSpacing: "0.3px",
+                marginBottom: "0.4rem",
+                display: "block",
+              }}
+            >
+              Trip Address
+            </label>
+            <input
+              type="text"
+              id="location"
+              className="form-control shadow-sm border-0 custom-holder"
+              placeholder="Madrid, Spain"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              style={{
+                fontSize: "1.1rem",
+                padding: "0.75rem",
+                borderRadius: "12px",
+                backgroundColor: "#f1f5f9",
+              }}
+            />
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="amount"
+              className="form-label"
+              style={{
+                fontSize: "1.05rem",
+                fontWeight: "500",
+                color: "#9E7515",
+                letterSpacing: "0.3px",
+                marginBottom: "0.4rem",
+                display: "block",
+              }}
+            >
+              Amount
+            </label>
             <input
               type="number"
-              className="form-control"
               id="amount"
+              className="form-control shadow-sm border-0 custom-holder"
+              placeholder="0.00"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               min="0"
               step="0.01"
-              placeholder="0.00"
+              style={{
+                fontSize: "1.1rem",
+                padding: "0.75rem",
+                borderRadius: "12px",
+                backgroundColor: "#f1f5f9",
+              }}
             />
           </div>
-        </div>
 
-        <div className="mb-4">
-          <label htmlFor="formFile" className="form-label fw-bold">Upload Bill</label>
-          <input
-            className="form-control"
-            type="file"
-            id="formFile"
-            onChange={(e) => setImage(e.target.files[0])}
-            accept="image/*"
-          />
-          {preview && (
-            <div className="mt-3 text-center">
-              <img
-                src={preview}
-                alt="Bill preview"
-                className="img-thumbnail shadow"
-                style={{ maxHeight: "200px" }}
-              />
-            </div>
-          )}
-        </div>
+          <div className="mb-4">
+            <label
+              htmlFor="formFile"
+              className="form-label"
+              style={{
+                fontSize: "1.05rem",
+                fontWeight: "500",
+                color: "#9E7515",
+                letterSpacing: "0.3px",
+                marginBottom: "0.4rem",
+                display: "block",
+              }}
+            >
+              Upload Bill
+            </label>
+            <input
+              type="file"
+              id="formFile"
+              className="form-control shadow-sm border-0 custom-holder"
+              accept="image/*"
+              onChange={(e) => setImage(e.target.files[0])}
+              style={{
+                fontSize: "1.1rem",
+                padding: "0.5rem 0.75rem",
+                borderRadius: "12px",
+                backgroundColor: "#f1f5f9",
+              }}
+            />
+            {preview && (
+              <div className="mt-3 text-center">
+                <img
+                  src={preview}
+                  alt="Bill preview"
+                  className="img-thumbnail shadow"
+                  style={{ maxHeight: "200px", borderRadius: "12px" }}
+                />
+              </div>
+            )}
+          </div>
 
-        <div className="d-grid">
-          <button type="submit" className="btn btn-primary btn-lg" disabled={loading}>
-            {loading ? "Processing..." : "Submit"}
-          </button>
-        </div>
-
-        {message && (
-          <motion.div
-            className={`alert mt-4 ${error ? "alert-danger" : "alert-success"}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            role="alert"
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            type="submit"
+            disabled={loading}
+            className="btn w-100 mb-2"
+            style={{
+              background: "linear-gradient(to right, #8c8c8c, #9E7515, #8c8c8c)",
+              color: "#fff",
+              fontSize: "1.2rem",
+              padding: "0.75rem",
+              borderRadius: "12px",
+              boxShadow: "0 4px 10px rgba(158, 117, 21, 0.3)",
+              fontWeight: "600",
+              border: "none",
+            }}
           >
-            {message}
-          </motion.div>
-        )}
-      </motion.form>
+            {loading ? "Processing..." : "Submit Bill"}
+          </motion.button>
+        </form>
+      </motion.div>
     </div>
   );
 };

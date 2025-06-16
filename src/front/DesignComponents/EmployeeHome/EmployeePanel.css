@@ -28,3 +28,8 @@
 .budget-form-btn {
   margin-top: 1.7rem;
 }
+
+.main-billForm {
+  padding-top: 24px !important;
+  min-height: 100vh;
+}

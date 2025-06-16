@@ -20,7 +20,7 @@ const BudgetTitlePanel = ({ title, description, style = {} }) => {
                 padding: "1.5rem",
                 borderRadius: "16px",
                 color: colors.panelTextColor,
-               
+                // marginBottom: "2rem",
                 boxShadow: `0 4px 12px ${colors.boxShadowLight}`,
                 textAlign: "center", // Centramos el texto
                 ...style, //  Merge external styles here to override
