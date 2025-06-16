@@ -20,10 +20,8 @@ export const createSignup = async (dispatch, info) => {
       },
       body: JSON.stringify(info),
     });
-    console.log(response);
     if (response.status === 201) {
       const data = await response.json();
-      console.log(data);
       dispatch({ type: "signup", payload: data.employee });
       return { success: true, message: "Signup successful! Please login." };
     } else if (response.status === 400) {
@@ -70,7 +68,6 @@ export const fetchLogin = async (email, password) => {
       headers: { "content-type": "application/json" },
       body: rawData,
     });
-    console.log(rawData);
     if (!response.ok) {
       throw new Error(`Error fetching data code:${response.status}`);
     }
@@ -412,7 +409,6 @@ export const editBill = async (billId, editedBill, dispatch) => {
     if (!data) {
       throw new Error("no data returned");
     }
-    console.log(data);
     const action = {
       type: "EDIT_BILL",
       payload: data.bill,
@@ -651,7 +647,6 @@ export const assignDepartmentEmployee = async (employeeId, departmentId) => {
       throw new Error(`Error fetching data ${response.status}`)
     }
     const data = await response.json()
-    console.log(data)
   } catch (error) {
     console.error(error)
   }
@@ -672,7 +667,6 @@ export const assignDepartmentSupervisor = async (supervisorId, departmentId) => 
       throw new Error(`Error fetching data ${response.status}`)
     }
     const data = await response.json()
-    console.log(data)
 
   } catch (error) {
     console.error(error)
@@ -733,7 +727,6 @@ export const budgetValidation = async (dispatch, budget_id, state, amount = null
     }
     const data = await response.json()
     dispatch({ type: "UPDATE_BUDGET_STATE", payload: { budgetId: budget_id, newState: state.toUpperCase(), newAmount: amount } })
-    console.log(data)
   } catch (error) {
     console.error(error)
   }
@@ -755,7 +748,6 @@ export const billValidation = async (dispatch, bill_id, state) => {
         newState: state.toUpperCase(),
       },
     });
-    console.log(data)
 
   } catch (error) {
     console.error(error)

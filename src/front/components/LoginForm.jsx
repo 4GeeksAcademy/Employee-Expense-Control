@@ -15,7 +15,6 @@ const LoginForm = () => {
         e.preventDefault();
         try {
             const userData = await login(email, password);
-            console.log("Datos de usuario:",userData)
             rolNavigate(userData);
         } catch (error) {
             console.error(error);

@@ -7,7 +7,6 @@ const useLoginForm = ({ initialEmail = "", initialPassword = "" } = {}) => {
     const [password, setPassword] = useState(initialPassword)
 
     const rolNavigate = (userData) => {
-        console.log("Datos recibidos en rolNavigate:", userData);
         if (!userData.rol === undefined) { // Verifica si existe el rol
             console.error("Rol no definido en userData");
             return;
