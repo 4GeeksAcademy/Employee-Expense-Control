@@ -1,7 +1,7 @@
 import { FaUserShield, FaChartPie, FaSignOutAlt, FaMoneyBillWave, FaDollarSign, FaFileInvoiceDollar, FaRegChartBar, FaUsers, FaCog, FaHistory } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useNavigate} from "react-router-dom";
-import { useAuth } from "/workspaces/Employee-Expense-Control/src/front/hooks/AuthContext.jsx";
+import { useAuth } from "../../hooks/AuthContext";
 import { useState, useEffect } from "react";
 
 // No es necesario importar SupervisorHome.css aquí si ya está importado en SupervisorOpcions.jsx
