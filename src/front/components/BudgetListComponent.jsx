@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
+
 const BudgetListComponent = () => {
     const navigate = useNavigate();
     const {
@@ -51,7 +52,8 @@ const BudgetListComponent = () => {
     }
 
     return (
-        <div className="container py-5">
+        <div className="py-5 px-4 ">
+    
             <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -162,7 +164,7 @@ const BudgetListComponent = () => {
                                                                     setModalAction("editBill");
                                                                     setModalPayload({ billId: bill.id });
                                                                 }}
-                                                                className="btn btn-sm btn-primary"
+                                                                className="btn btn-sm confirm-btn"
                                                             >
                                                                 Save
                                                             </button>
@@ -248,8 +250,8 @@ const BudgetListComponent = () => {
                                 {modalAction === "deleteBill"
                                     ? "Are you sure you want to delete this bill?"
                                     : modalAction === "deleteBudget"
-                                    ? "Are you sure you want to delete this budget?"
-                                    : "Are you sure you want to save these changes?"}
+                                        ? "Are you sure you want to delete this budget?"
+                                        : "Are you sure you want to save these changes?"}
                             </p>
                             <div className="d-flex justify-content-end gap-2">
                                 <button

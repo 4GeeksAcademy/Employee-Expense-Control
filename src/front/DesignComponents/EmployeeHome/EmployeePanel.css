@@ -1,4 +1,4 @@
-.no-top-space {
+.no-top-space-budgetForm {
   padding: 0px !important;
 }
 
@@ -23,4 +23,8 @@
 
 .confirm-btn {
   background-color: var(--ghost-green);
+}
+
+.budget-form-btn {
+  margin-top: 1.7rem;
 }
