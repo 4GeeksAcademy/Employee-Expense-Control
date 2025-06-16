@@ -1,14 +1,11 @@
 import { FaUserShield, FaChartPie, FaSignOutAlt, FaMoneyBillWave, FaDollarSign, FaFileInvoiceDollar, FaRegChartBar, FaUsers, FaCog, FaHistory } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useAuth } from "../../hooks/AuthContext";
-import { useNavigate} from "react-router-dom";
-
-
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ className }) => {
     const { logout } = useAuth();
     const navigate = useNavigate();
-
 
     const sidebarVariants = {
         visible: {
@@ -88,7 +85,7 @@ const Sidebar = ({ className }) => {
         { icon: <FaHistory />, text: "Approval History" },
         { icon: <FaUsers />, text: "Manage Users" },
         { icon: <FaCog />, text: "Settings" },
-        { icon: <FaSignOutAlt />, text: "Logout", onClick: handleLogout},
+        { icon: <FaSignOutAlt />, text: "Logout" }, // ✅ ya no tiene onClick
     ];
 
     return (
@@ -129,7 +126,6 @@ const Sidebar = ({ className }) => {
                     const isLogout = item.text === "Logout";
 
                     return (
-
                         <motion.span
                             key={index}
                             style={{
