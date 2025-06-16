@@ -15,10 +15,15 @@ const AnimatedBackground = () => {
     p5.noStroke();
     p5.frameRate(80);
 
-    const logoImg = p5.loadImage("/src/front/assets/img/ghost.png", (img) => {
-      setLogo(img);
-    });
+    // ✅ Load logo from Cloudinary
+    p5.loadImage(
+      "https://res.cloudinary.com/dzcl2whin/image/upload/v1750099848/ghost_g2nv7j.png",
+      (img) => {
+        setLogo(img);
+      }
+    );
 
+    // Generate points
     points.current = [];
     for (let i = 0; i < pointCount; i++) {
       let x = p5.random(-p5.width, p5.width);
@@ -30,45 +35,42 @@ const AnimatedBackground = () => {
   };
 
   const draw = (p5) => {
-  p5.background(13, 13, 13);
+    p5.background(13, 13, 13);
 
-  const mouseOffsetX = (p5.mouseX - p5.width / 2) * 0.001;
-  const mouseOffsetY = (p5.mouseY - p5.height / 2) * 0.001;
+    const mouseOffsetX = (p5.mouseX - p5.width / 2) * 0.001;
+    const mouseOffsetY = (p5.mouseY - p5.height / 2) * 0.001;
 
-  for (let i = 0; i < points.current.length; i++) {
-    const pt = points.current[i];
-    let moveX = pt.baseX + pt.z * mouseOffsetX * 40;
-    let moveY = pt.baseY + pt.z * mouseOffsetY * 40;
+    for (let i = 0; i < points.current.length; i++) {
+      const pt = points.current[i];
+      let moveX = pt.baseX + pt.z * mouseOffsetX * 40;
+      let moveY = pt.baseY + pt.z * mouseOffsetY * 40;
 
-    p5.fill(...pt.color);
-    p5.circle(moveX, moveY, 2);
-  }
-
-     // Draw logo and track bounds
-  if (logo) {
-    const logoW = p5.windowWidth * 0.05;
-    const logoH = logoW;
-    const margin = 20;
-
-    logoBounds.current = { x: margin, y: margin, w: logoW, h: logoH };
-
-    p5.image(logo, margin, margin, logoW, logoH);
-
-    // ✅ Detect hover and change cursor
-    if (
-      p5.mouseX >= margin &&
-      p5.mouseX <= margin + logoW &&
-      p5.mouseY >= margin &&
-      p5.mouseY <= margin + logoH
-    ) {
-      p5.cursor("pointer");
-    } else {
-      p5.cursor("default");
+      p5.fill(...pt.color);
+      p5.circle(moveX, moveY, 2);
     }
-  }
-};
 
-  
+    // ✅ Draw logo and detect hover
+    if (logo) {
+      const logoW = p5.windowWidth * 0.05;
+      const logoH = logoW;
+      const margin = 20;
+
+      logoBounds.current = { x: margin, y: margin, w: logoW, h: logoH };
+      p5.image(logo, margin, margin, logoW, logoH);
+
+      // Change cursor if hovering over logo
+      if (
+        p5.mouseX >= margin &&
+        p5.mouseX <= margin + logoW &&
+        p5.mouseY >= margin &&
+        p5.mouseY <= margin + logoH
+      ) {
+        p5.cursor("pointer");
+      } else {
+        p5.cursor("default");
+      }
+    }
+  };
 
   const mousePressed = (p5) => {
     const { x, y, w, h } = logoBounds.current;
@@ -78,7 +80,7 @@ const AnimatedBackground = () => {
       p5.mouseY >= y &&
       p5.mouseY <= y + h
     ) {
-      navigate("/"); // or whatever route you want
+      navigate("/"); // Change this to your desired route
     }
   };
 
@@ -101,7 +103,7 @@ const AnimatedBackground = () => {
         width: "100vw",
         height: "100vh",
         zIndex: 0,
-        pointerEvents: "auto", // important to allow mouse click
+        pointerEvents: "auto", // Allow mouse interaction
       }}
     />
   );

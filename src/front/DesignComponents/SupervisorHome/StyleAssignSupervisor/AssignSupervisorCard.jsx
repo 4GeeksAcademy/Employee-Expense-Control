@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import useGlobalReducer from "/workspaces/Employee-Expense-Control/src/front/hooks/useGlobalReducer.jsx";
+import useGlobalReducer from "../../../hooks/useGlobalReducer.jsx";
 import {
   fetchAndSetSupervisors,
   fetchAndSetDepartments,

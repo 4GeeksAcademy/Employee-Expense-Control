@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { useNavigate, NavLink, Link} from "react-router-dom";
 import LoginButton from "./LoginButton";
 import { useAuth } from "../hooks/AuthContext";
-import ghostLogo from "../assets/img/ghost.png";
+//import ghostLogo from "../assets/img/ghost.png";
+
 import "../DesignComponents/Navbar/navbar.css";
 //import { Companiesprofile } from "./pages/Companiesprofile";
 //import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -34,7 +35,7 @@ export const Navbar = () => {
     {/* 👈 Logo on the left */}
     <div className="navbar-brand d-flex align-items-center">
       <Link to="/" className="d-flex align-items-center">
-        <img src={ghostLogo} alt="Ghost Bill" className="navbar-logo" />
+        <img src="https://res.cloudinary.com/dzcl2whin/image/upload/v1750099848/ghost_g2nv7j.png" alt="Ghost Bill" className="navbar-logo" />
       </Link>
       <span className="brand-text ms-2">Ghost Bill</span>
     </div>
