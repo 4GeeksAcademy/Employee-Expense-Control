@@ -1,10 +1,12 @@
 import { FaUserShield, FaChartPie, FaSignOutAlt, FaMoneyBillWave, FaDollarSign, FaFileInvoiceDollar, FaRegChartBar, FaUsers, FaCog, FaHistory } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { useAuth } from "../../hooks/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-// No es necesario importar SupervisorHome.css aquí si ya está importado en SupervisorOpcions.jsx
-// ya que Sidebar es un hijo de SupervisorOpcions.
+const Sidebar = ({ className }) => {
+    const { logout } = useAuth();
+    const navigate = useNavigate();
 
-const Sidebar = ({ className }) => { // Acepta la prop className
     const sidebarVariants = {
         visible: {
             opacity: 1,
@@ -65,12 +67,12 @@ const Sidebar = ({ className }) => { // Acepta la prop className
             transition: {
                 type: "spring",
                 stiffness: 300,
-                damping: 10
-            }
+                damping: 10,
+            },
         },
         tap: {
-            scale: 0.9
-        }
+            scale: 0.9,
+        },
     };
 
     const menuItems = [
@@ -88,12 +90,11 @@ const Sidebar = ({ className }) => { // Acepta la prop className
 
     return (
         <motion.div
-            className={className} 
+            className={className}
             style={{
-                
                 backgroundColor: "#1f2937",
                 color: "white",
-                display: "flex", 
+                display: "flex",
                 flexDirection: "column",
                 padding: "1.5rem",
                 boxShadow: "2px 0 8px rgba(0,0,0,0.1)",
@@ -121,32 +122,42 @@ const Sidebar = ({ className }) => { // Acepta la prop className
                     gap: "1rem",
                 }}
             >
-                {menuItems.map((item, index) => (
-                    <motion.span
-                        key={index}
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.75rem",
-                            padding: "0.75rem 1rem",
-                            borderRadius: "0.5rem",
-                            cursor: "pointer",
-                            transition: "background-color 0.2s ease-in-out",
-                        }}
-                        variants={itemVariants}
-                        whileHover="hover"
-                        whileTap="tap"
-                    >
+                {menuItems.map((item, index) => {
+                    const isLogout = item.text === "Logout";
+
+                    return (
                         <motion.span
-                            variants={iconVariants}
+                            key={index}
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.75rem",
+                                padding: "0.75rem 1rem",
+                                borderRadius: "0.5rem",
+                                cursor: "pointer",
+                                transition: "background-color 0.2s ease-in-out",
+                            }}
+                            variants={itemVariants}
                             whileHover="hover"
                             whileTap="tap"
+                            onClick={() => {
+                                if (isLogout) {
+                                    logout();
+                                    navigate("/login");
+                                }
+                            }}
                         >
-                            {item.icon}
+                            <motion.span
+                                variants={iconVariants}
+                                whileHover="hover"
+                                whileTap="tap"
+                            >
+                                {item.icon}
+                            </motion.span>
+                            {item.text}
                         </motion.span>
-                        {item.text}
-                    </motion.span>
-                ))}
+                    );
+                })}
             </nav>
         </motion.div>
     );
