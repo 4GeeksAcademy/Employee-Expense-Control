@@ -296,7 +296,7 @@ def assign_supervisor_department():
 @api.route("/employees", methods=["GET"])
 @jwt_required()
 def get_employees():
-    employees = Employee.query.all()
+    employees = Employee.query.filter_by(is_supervisor=False).all()
     result = [{"id": emp.id, "name": emp.name} for emp in employees]
     return jsonify(result), 200
 
