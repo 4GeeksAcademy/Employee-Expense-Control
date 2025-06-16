@@ -41,7 +41,7 @@ export const Home = () => {
   // AQUI LAS SLIDES
   const slides = [
     {
-      src: "/src/front/assets/img/1.jpg",
+      src: "https://res.cloudinary.com/dzcl2whin/image/upload/v1750100682/1_ik8prx.jpg",
       alt: "Slide 1",
       interval: 6000,
       caption: {
@@ -50,7 +50,7 @@ export const Home = () => {
       },
     },
     {
-      src: "/src/front/assets/img/2.jpg",
+      src: "https://res.cloudinary.com/dzcl2whin/image/upload/v1750100694/3_g1gq93.jpg",
       alt: "Slide 2",
       interval: 5000,
       caption: {
@@ -59,7 +59,7 @@ export const Home = () => {
       },
     },
     {
-      src: "/src/front/assets/img/3.jpg",
+      src: "https://res.cloudinary.com/dzcl2whin/image/upload/v1750100706/2_mtbswf.jpg",
       alt: "Slide 3",
       interval: 7000,
       caption: {
