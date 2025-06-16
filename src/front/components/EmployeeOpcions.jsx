@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { FileText, FilePlus, Folder } from "lucide-react";
 import { Link } from 'react-router-dom';
 import useEmployeeOpcions from "../hooks/useEmployeeOpcions";
-import { useAuth } from "/workspaces/Employee-Expense-Control/src/front/hooks/AuthContext.jsx";
+import { useAuth } from "../hooks/AuthContext.jsx";
 
 import EmpDashboardHeader from "../DesignComponents/EmployeeHome/EmpDashboardHeader";
 import EmpSectionDivider from "../DesignComponents/EmployeeHome/EmpSectionDivider";
