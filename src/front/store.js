@@ -5,6 +5,8 @@ export const initialStore = () => {
     bills: [],
     supervisorName: null,
     total: [],
+    employees: [],
+    departments: [],
     todos: [
       {
         id: 1,
@@ -33,6 +35,18 @@ export default function storeReducer(store, action = {}) {
       return {
         ...store,
         bills: action.payload,
+      };
+
+    case "SET_EMPLOYEES":
+      return {
+        ...store,
+        employees: action.payload,
+      };
+
+    case "SET_DEPARTMENTS":
+      return {
+        ...store,
+        departments: action.payload,
       };
 
     case "EDIT_BILL":

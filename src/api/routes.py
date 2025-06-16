@@ -292,6 +292,21 @@ def assign_supervisor_department():
 
     return jsonify({"msg": "Supervisor assigned to department successfully"}), 200
 
+@api.route("/employees", methods=["GET"])
+@jwt_required()
+def get_employees():
+    employees = Employee.query.all()
+    result = [{"id": emp.id, "name": emp.name} for emp in employees]
+    return jsonify(result), 200
+
+@api.route("/departments", methods=["GET"])
+@jwt_required()
+def get_departments():
+    departments = Department.query.all()
+    result = [{"id": dept.id, "name": dept.name} for dept in departments]
+    return jsonify(result), 200
+
+
 
 @api.route("/supervisor-area", methods=["GET"])
 @jwt_required()

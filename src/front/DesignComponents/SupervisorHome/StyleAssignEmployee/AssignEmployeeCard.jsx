@@ -1,6 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import useGlobalReducer from "/workspaces/Employee-Expense-Control/src/front/hooks/useGlobalReducer.jsx"
+import {
+  fetchAndSetEmployees,
+  fetchAndSetDepartments,
+} from "../../../services/apiServicesFetch"
+
+
 
 import {
   containerVariants,
@@ -8,8 +15,8 @@ import {
   titleVariants,
   inputVariants,
   buttonVariants,
-  styles, // Asegúrate de que styles incluye buttonWrapperBottom y goHomeButton
-} from "./AssignEmployeeFormStyles"; // Asumo que este es tu archivo de constantes de estilos
+  styles,
+} from "./AssignEmployeeFormStyles";
 
 const MotionLinkButton = motion(Link);
 
@@ -20,16 +27,21 @@ const AssignEmployeeCard = ({
   setIdDepartment,
   handleSubmit,
 }) => {
+  const { store, dispatch } = useGlobalReducer();
+
+  useEffect(() => {
+    fetchAndSetEmployees(dispatch);
+    fetchAndSetDepartments(dispatch);
+  }, [dispatch]);
+
   return (
-    // Este es el contenedor principal que centra todo
     <motion.div
-      className="container d-flex flex-column justify-content-center align-items-center min-vh-100" // AGREGADO: flex-column para apilar elementos verticalmente
+      className="container d-flex flex-column justify-content-center align-items-center min-vh-100"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
       style={styles.container}
     >
-      {/* La tarjeta del formulario */}
       <motion.div
         className="card shadow-lg p-4"
         variants={cardVariants}
@@ -40,36 +52,51 @@ const AssignEmployeeCard = ({
         <motion.h2 variants={titleVariants} style={styles.title}>
           Assign Department to Employee
         </motion.h2>
+
         <form onSubmit={handleSubmit}>
-          {/* ... tus campos de formulario ... */}
+          {/* Employee Select */}
           <motion.div className="mb-3" variants={inputVariants}>
             <label htmlFor="idEmployee" style={styles.label}>
-              Employee ID
+              Select Employee
             </label>
-            <input
-              type="number"
-              style={styles.input}
+            <select
               id="idEmployee"
+              style={styles.input}
               value={idEmployee}
               onChange={(e) => setIdEmployee(e.target.value)}
               required
-            />
+            >
+              <option value="">-- Select Employee --</option>
+              {store.employees?.map((emp) => (
+                <option key={emp.id} value={emp.id}>
+                  {emp.name} (ID: {emp.id})
+                </option>
+              ))}
+            </select>
           </motion.div>
 
+          {/* Department Select */}
           <motion.div className="mb-3" variants={inputVariants}>
             <label htmlFor="idDepartment" style={styles.label}>
-              Department ID
+              Select Department
             </label>
-            <input
-              type="number"
-              style={styles.input}
+            <select
               id="idDepartment"
+              style={styles.input}
               value={idDepartment}
               onChange={(e) => setIdDepartment(e.target.value)}
               required
-            />
+            >
+              <option value="">-- Select Department --</option>
+              {store.departments?.map((dept) => (
+                <option key={dept.id} value={dept.id}>
+                  {dept.name} (ID: {dept.id})
+                </option>
+              ))}
+            </select>
           </motion.div>
 
+          {/* Submit Button */}
           <motion.button
             type="submit"
             style={styles.button}
@@ -82,7 +109,7 @@ const AssignEmployeeCard = ({
         </form>
       </motion.div>
 
-      {/* El botón de regreso, ahora dentro de AssignEmployeeCard */}
+      {/* Back Home Button */}
       <motion.div
         initial={{ x: -50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
@@ -95,7 +122,7 @@ const AssignEmployeeCard = ({
           whileHover={{
             scale: 1.05,
             boxShadow: "0 8px 12px rgba(16, 185, 129, 0.4)",
-            transition: { duration: 0.2, ease: "easeOut" }
+            transition: { duration: 0.2, ease: "easeOut" },
           }}
           whileTap={{ scale: 0.95, transition: { duration: 0.1, ease: "easeIn" } }}
         >
