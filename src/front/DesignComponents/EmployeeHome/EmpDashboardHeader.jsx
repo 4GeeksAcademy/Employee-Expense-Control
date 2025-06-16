@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useAuth } from "/workspaces/Employee-Expense-Control/src/front/hooks/AuthContext.jsx";
+import { useAuth } from "../../hooks/AuthContext";
 //import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const EmpDashboardHeader = () => {
