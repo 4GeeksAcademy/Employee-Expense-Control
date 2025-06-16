@@ -1,4 +1,4 @@
-.no-top-space {
+.no-top-space-budgetForm {
   padding: 0px !important;
 }
 
@@ -15,4 +15,25 @@
 .hello-employee {
   font-style: italic;
   padding-bottom: 10px;
+}
+
+.text-amount {
+  color: var(--link-color);
+}
+
+.confirm-btn {
+  background-color: var(--ghost-green);
+}
+
+.budget-form-btn {
+  margin-top: 1.7rem;
+}
+
+.main-billForm {
+  padding-top: 24px !important;
+  min-height: 100vh;
+}
+
+.main-idComponent {
+  padding-top: 35px !important;
 }

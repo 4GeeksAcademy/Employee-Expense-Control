@@ -730,7 +730,7 @@ def bill_create():
                     trip_address=trip_address, state="PENDING", amount=amount, evaluator_id=supervisor.id, date_approved=None, budget_id=budget.id)
     db.session.add(new_bill)
     db.session.commit()
-    return jsonify({"msg": "bill created successfully"}), 201
+    return jsonify({"msg": "Bill created successfully"}), 201
 
 
 @api.route("/mybills", methods=["GET"])
