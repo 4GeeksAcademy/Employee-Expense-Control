@@ -683,6 +683,12 @@ export const fetchAndSetDepartments = async (dispatch) => {
   }
 };
 
+export const fetchAndSetSupervisors = async (dispatch) => {
+  const res = await authFetch("/supervisors");
+  const data = await res.json();
+  dispatch({ type: "SET_SUPERVISORS", payload: data });
+};
+
 export const budgetValidation = async (dispatch, budget_id, state, amount = null) => {
   try {
     const body = amount !== null

@@ -7,6 +7,7 @@ export const initialStore = () => {
     total: [],
     employees: [],
     departments: [],
+    supervisors: [],
     todos: [
       {
         id: 1,
@@ -47,6 +48,11 @@ export default function storeReducer(store, action = {}) {
       return {
         ...store,
         departments: action.payload,
+      };
+    case "SET_SUPERVISORS":
+      return {
+        ...store,
+        supervisors: action.payload,
       };
 
     case "EDIT_BILL":
