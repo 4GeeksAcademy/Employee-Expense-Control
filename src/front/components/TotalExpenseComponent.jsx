@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import useTotalExpense from "../hooks/useTotalExpense";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const MotionLinkButton = motion(Link);
 
@@ -9,16 +9,23 @@ const TotalExpenseComponent = ({ employeeId }) => {
   const [pendingAction, setPendingAction] = useState(null);
   const [pendingBillId, setPendingBillId] = useState(null);
   const [pendingAmount, setPendingAmount] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
-  const { dispatch, store, total, openEmployeeIds, setOpenEmployeeIds, billValidation, totalExpense } = useTotalExpense(employeeId);
+  const {
+    dispatch,
+    store,
+    total,
+    openEmployeeIds,
+    setOpenEmployeeIds,
+    billValidation,
+    totalExpense,
+  } = useTotalExpense(employeeId);
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.1 },
     },
   };
 
@@ -29,12 +36,11 @@ const TotalExpenseComponent = ({ employeeId }) => {
 
   const cardVariants = {
     hidden: { opacity: 0, scale: 0.95 },
-    visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 100 } },
-  };
-
-  const billItemVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: { opacity: 1, x: 0 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { type: "spring", stiffness: 100 },
+    },
   };
 
   const styles = {
@@ -57,9 +63,9 @@ const TotalExpenseComponent = ({ employeeId }) => {
       textDecoration: "none",
       border: "none",
       cursor: "pointer",
-      overflow: 'hidden',
+      overflow: "hidden",
     },
-
+    
     mainTitleStyle: {
       fontSize: "2.25rem",
       fontWeight: "800",
@@ -71,18 +77,7 @@ const TotalExpenseComponent = ({ employeeId }) => {
       fontWeight: "800",
       color: "#1a202c",
       letterSpacing: "-0.025em",
-    }
-  };
-
-  const backButtonVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 120, damping: 10, delay: 0.5 } },
-    hover: {
-      scale: 1.05,
-      boxShadow: "0 6px 12px rgba(16, 185, 129, 0.3)",
-      transition: { duration: 0.2, ease: "easeOut" }
     },
-    tap: { scale: 0.95, transition: { duration: 0.1, ease: "easeIn" } }
   };
 
   if (!total || Object.keys(total).length === 0) {
@@ -95,27 +90,21 @@ const TotalExpenseComponent = ({ employeeId }) => {
 
   const handleAccept = async (billId) => {
     await billValidation(dispatch, billId, "approved");
-    console.log("Accepting", billId);
+    await totalExpense(dispatch, employeeId);
   };
 
   const handleReject = async (billId) => {
     await billValidation(dispatch, billId, "denegated");
-    console.log("Rejecting", billId);
   };
 
   const handleModalConfirm = async () => {
     if (pendingAction === "approved") {
       await handleAccept(pendingBillId);
-      await totalExpense(dispatch, employeeId);
     } else if (pendingAction === "denegated") {
       await handleReject(pendingBillId);
     }
 
-    const modal = window.bootstrap.Modal.getInstance(
-      document.getElementById("exampleModal")
-    );
-    if (modal) modal.hide();
-
+    setShowModal(false);
     setPendingAction(null);
     setPendingBillId(null);
     setPendingAmount(null);
@@ -131,12 +120,16 @@ const TotalExpenseComponent = ({ employeeId }) => {
     <>
       <motion.div
         className="p-4 mx-auto my-4 bg-white rounded shadow-lg"
-        style={{ maxWidth: '700px' }}
+        style={{ maxWidth: "700px" }}
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        <motion.h2 variants={itemVariants} className="text-center mb-4" style={styles.mainTitleStyle}>
+        <motion.h2
+          variants={itemVariants}
+          className="text-center mb-4"
+          style={styles.mainTitleStyle}
+        >
           Departmental Expenses
         </motion.h2>
 
@@ -145,21 +138,26 @@ const TotalExpenseComponent = ({ employeeId }) => {
           variants={itemVariants}
         >
           <p className="fs-5 fw-semibold text-success">
-            Department: <span className="text-dark fw-bold">{total.department.name}</span>
+            Department:{" "}
+            <span className="text-dark fw-bold">{total.department.name}</span>
           </p>
           <p className="fs-4 fw-bold mt-2 text-success">
             General Expense Summary:{" "}
-            <span className="text-dark">${
-              typeof total.department.total_expenses === 'number'
+            <span className="text-dark">
+              {typeof total.department.total_expenses === "number"
                 ? total.department.total_expenses.toFixed(2)
-                : '0.00'
-            }</span>
+                : "0.00"}
+            </span>
           </p>
         </motion.div>
 
         <hr className="my-4 border-success" />
 
-        <motion.h3 variants={itemVariants} className="text-center mb-3" style={styles.subTitleStyle}>
+        <motion.h3
+          variants={itemVariants}
+          className="text-center mb-3"
+          style={styles.subTitleStyle}
+        >
           Expenses by Employee
         </motion.h3>
 
@@ -169,16 +167,23 @@ const TotalExpenseComponent = ({ employeeId }) => {
               key={emp.employee_id}
               className="card shadow-sm overflow-hidden border-success"
               variants={cardVariants}
-              whileHover={{ scale: 1.02, boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.1)" }}
+              whileHover={{
+                scale: 1.02,
+                boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.1)",
+              }}
               transition={{ type: "spring", stiffness: 300 }}
             >
               <button
                 onClick={() => toggleEmployee(emp.employee_id)}
                 className="btn btn-light w-100 text-start py-3 fw-bold text-dark d-flex justify-content-between align-items-center"
               >
-                <span>{emp.name} (ID: {emp.employee_id})</span>
+                <span>
+                  {emp.name} (ID: {emp.employee_id})
+                </span>
                 <motion.span
-                  animate={{ rotate: openEmployeeIds.includes(emp.employee_id) ? 90 : 0 }}
+                  animate={{
+                    rotate: openEmployeeIds.includes(emp.employee_id) ? 90 : 0,
+                  }}
                   transition={{ duration: 0.2 }}
                   className="text-success fs-5"
                 >
@@ -195,69 +200,73 @@ const TotalExpenseComponent = ({ employeeId }) => {
                 >
                   <p className="fw-semibold text-success mb-3">
                     Total Expenses:{" "}
-                    <span className="text-dark fw-bold">${
-                      typeof emp.total_expenses === 'number'
+                    <span className="text-dark fw-bold">
+                      {typeof emp.total_expenses === "number"
                         ? emp.total_expenses.toFixed(2)
-                        : '0.00'
-                    }</span>
+                        : "0.00"}
+                    </span>
                   </p>
                   <div className="mt-3 pt-3 border-top border-success">
                     <h4 className="fs-5 fw-bold mb-3 text-success">Pending Bills:</h4>
-                    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="d-grid gap-2">
-                      {emp.budgets
-                        .flatMap((budget) =>
-                          budget.bills
-                            .map(
-                              (bill) =>
-                                store.bills.find((bil) => bil.id === bill.id) || bill
-                            )
-                            .filter((bill) => bill && bill.state === "PENDING")
-                        )
-                        .map((bill, index) => (
-                          <motion.div
-                            key={bill.id}
-                            className="d-flex justify-content-between align-items-center bg-white p-3 border rounded shadow-sm"
-                            variants={billItemVariants}
-                            custom={index}
-                          >
-                            <div>
-                              <p className="fw-medium text-dark">{bill.trip_description}</p>
-                              <p className="text-muted mt-1">Amount: <span className="fw-semibold">${bill.amount}</span></p>
-                            </div>
-                            <div className="d-grid gap-2 d-md-flex">
-                              <button
-                                className="btn btn-sm btn-success"
-                                data-bs-toggle="modal"
-                                data-bs-target="#exampleModal"
-                                onClick={() => {
-                                  setPendingAction("approved");
-                                  setPendingBillId(bill.id);
-                                  setPendingAmount(bill.amount);
-                                }}
-                              >
-                                Accept
-                              </button>
-                              <button
-                                className="btn btn-sm btn-danger"
-                                data-bs-toggle="modal"
-                                data-bs-target="#exampleModal"
-                                onClick={() => {
-                                  setPendingAction("denegated");
-                                  setPendingBillId(bill.id);
-                                }}
-                              >
-                                Reject
-                              </button>
-                            </div>
-                          </motion.div>
-                        ))}
-                    </motion.div>
-                    {emp.budgets.flatMap((budget) =>
-                      budget.bills
-                        .map((bill) => store.bills.find((bil) => bil.id === bill.id) || bill)
-                        .filter((bill) => bill && bill.state === "PENDING")
-                    ).length === 0 && (
-                        <p className="text-muted fst-italic mt-3 fs-6">No pending bills for this employee.</p>
+                    {emp.budgets
+                      .flatMap((budget) =>
+                        budget.bills
+                          .map(
+                            (bill) =>
+                              store.bills.find((b) => b.id === bill.id) || bill
+                          )
+                          .filter((bill) => bill && bill.state === "PENDING")
+                      )
+                      .map((bill) => (
+                        <motion.div
+                          key={bill.id}
+                          className="d-flex justify-content-between align-items-center bg-white p-3 border rounded shadow-sm mb-2"
+                        >
+                          <div>
+                            <p className="fw-medium text-dark">
+                              {bill.trip_description}
+                            </p>
+                            <p className="text-muted mt-1">
+                              Amount: <span className="fw-semibold">${bill.amount}</span>
+                            </p>
+                          </div>
+                          <div className="d-grid gap-2 d-md-flex">
+                            <button
+                              className="btn btn-sm btn-success"
+                              onClick={() => {
+                                setPendingAction("approved");
+                                setPendingBillId(bill.id);
+                                setPendingAmount(bill.amount);
+                                setShowModal(true);
+                              }}
+                            >
+                              Accept
+                            </button>
+                            <button
+                              className="btn btn-sm btn-danger"
+                              onClick={() => {
+                                setPendingAction("denegated");
+                                setPendingBillId(bill.id);
+                                setShowModal(true);
+                              }}
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        </motion.div>
+                      ))}
+                    {emp.budgets
+                      .flatMap((budget) =>
+                        budget.bills
+                          .map(
+                            (bill) =>
+                              store.bills.find((b) => b.id === bill.id) || bill
+                          )
+                          .filter((bill) => bill && bill.state === "PENDING")
+                      ).length === 0 && (
+                        <p className="text-muted fst-italic mt-3 fs-6">
+                          No pending bills for this employee.
+                        </p>
                       )}
                   </div>
                 </motion.div>
@@ -268,44 +277,86 @@ const TotalExpenseComponent = ({ employeeId }) => {
 
         <motion.div
           style={styles.backButtonWrapper}
-          variants={backButtonVariants}
+          variants={containerVariants}
           initial="hidden"
           animate="visible"
-          whileHover="hover"
-          whileTap="tap"
         >
-          <MotionLinkButton
-            to="/supervisor"
-            style={styles.backButton}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" style={{ marginRight: '8px' }} viewBox="0 0 16 16">
-              <path fillRule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5" />
+          <MotionLinkButton to="/supervisor" style={styles.backButton}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              style={{ marginRight: "8px" }}
+              viewBox="0 0 16 16"
+            >
+              <path
+                fillRule="evenodd"
+                d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5"
+              />
             </svg>
             <span>⬅ Back to Dashboard</span>
           </MotionLinkButton>
         </motion.div>
-
       </motion.div>
 
-      <div className="modal fade" id="exampleModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">Confirm Bill Action</h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div className="modal-body">
-              {pendingAction === "approved"
-                ? `Are you sure you want to accept this bill for €${pendingAmount}?`
-                : "Are you sure you want to reject this bill?"}
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <button type="button" className="btn btn-primary" onClick={handleModalConfirm}>Confirm</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* MODAL ANIMADO */}
+      <AnimatePresence>
+        {showModal && (
+          <motion.div
+            className="modal-backdrop"
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100vw",
+              height: "100vh",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              zIndex: 1050,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="bg-white rounded p-4 shadow-lg"
+              style={{ width: "90%", maxWidth: "400px" }}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <h5 className="mb-3 fw-bold text-dark">
+                {pendingAction === "approved"
+                  ? "Confirm Bill Acceptance"
+                  : "Confirm Bill Rejection"}
+              </h5>
+              <p className="text-muted">
+                {pendingAction === "approved"
+                  ? `Are you sure you want to accept this bill for €${pendingAmount}?`
+                  : "Are you sure you want to reject this bill?"}
+              </p>
+              <div className="d-flex justify-content-end mt-4 gap-2">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={handleModalConfirm}
+                >
+                  Confirm
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
