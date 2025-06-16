@@ -83,9 +83,9 @@ const BudgetsPending = () => {
                     }
                 />
                           {/* NUEVA UBICACIÓN PARA EL BOTÓN*/}
-               <div className="text-center mb-6">
+               {/* <div className="text-center mb-6">
                 <GoBackButton />
-            </div>
+            </div> */}
 
                 {filteredBudgets.length === 0 ? (
                     <motion.p
@@ -96,7 +96,7 @@ const BudgetsPending = () => {
                     >
                         No pending budgets found.
                     </motion.p>
-                ) : (
+                )  : (
                     <BudgetCardGrid>
                         {filteredBudgets.map((budget) => (
                             <PendingBudgetCard
@@ -130,6 +130,9 @@ const BudgetsPending = () => {
                         </button>
                     </motion.div>
                 )}
+            </div>
+            <div className="text-center" style={{ marginTop: '3rem', marginBottom: '3rem' }}> {/* Puedes ajustar 3rem a lo que necesites, quizás 4rem o 5rem */}
+                <GoBackButton />
             </div>
 
             {/* Modal de confirmación con Framer Motion */}
