@@ -87,7 +87,7 @@ export const fetchLogin = async (email, password) => {
     const refreshToken = data.refresh_token;
     localStorage.setItem("token", token);
     localStorage.setItem("refreshToken", refreshToken);
-    
+
     return data;
   } catch (error) {
     console.error(error);
@@ -678,6 +678,48 @@ export const assignDepartmentSupervisor = async (supervisorId, departmentId) => 
     console.error(error)
   }
 }
+
+export const fetchAndSetEmployees = async (dispatch) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Token not found");
+
+    const res = await authFetch("/employees", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!res.ok) throw new Error(`Error fetching employees: ${res.status}`);
+    const data = await res.json();
+    dispatch({ type: "SET_EMPLOYEES", payload: data });
+  } catch (err) {
+    console.error("Error:", err);
+  }
+};
+
+export const fetchAndSetDepartments = async (dispatch) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Token not found");
+
+    const res = await authFetch("/departments", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!res.ok) throw new Error(`Error fetching departments: ${res.status}`);
+    const data = await res.json();
+    dispatch({ type: "SET_DEPARTMENTS", payload: data });
+  } catch (err) {
+    console.error("Error:", err);
+  }
+};
+
+export const fetchAndSetSupervisors = async (dispatch) => {
+  const res = await authFetch("/supervisors");
+  const data = await res.json();
+  dispatch({ type: "SET_SUPERVISORS", payload: data });
+};
 
 export const budgetValidation = async (dispatch, budget_id, state, amount = null) => {
   try {

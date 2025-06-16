@@ -78,7 +78,7 @@ const BudgetAcceptedPage = () => {
                     }}
                     whileTap={{ scale: 0.95, transition: { duration: 0.1, ease: "easeIn" } }}
                 >
-                    ← Back to Home
+                    ⬅ Back to Dashboard
                 </MotionLinkButton>
             </motion.div>
         </motion.div>
