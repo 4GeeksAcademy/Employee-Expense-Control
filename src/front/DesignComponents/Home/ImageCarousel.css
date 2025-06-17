@@ -52,19 +52,20 @@
 
 .hero-carousel-wrapper .hero-subtitle {
   position: absolute;
-  top: 25%;
+  top: 13%;  /* reducir este valor si el texto se sobrepone */
   left: 1rem;
   transform: translateY(-25%);
   z-index: 2;
   color: #fff;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
   font-size: 1.5rem;
   max-width: 60%;
 }
 
+
 .hero-carousel-wrapper .hero-cta {
   position: absolute;
-  top: calc(25% + 3rem);
+  top: 40%;  /* Aumenta el valor para desplazar el botón más abajo */
   left: 1rem;
   transform: translateY(-25%);
   z-index: 2;
@@ -74,7 +75,7 @@
   border-radius: 999px;
   text-decoration: none;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* ====================================================
