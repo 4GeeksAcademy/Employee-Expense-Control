@@ -20,9 +20,9 @@ const BudgetForm = () => {
 
         if (!description.trim() || !amount) {
             setError(true);
-            setShowMessage(true); // show alert
+            setShowMessage(true); 
             setMessage("All fields are required.");
-            setTimeout(() => setShowMessage(false), 5000); // hide alert
+            setTimeout(() => setShowMessage(false), 5000); 
             return;
         }
 
@@ -95,7 +95,6 @@ const BudgetForm = () => {
                     ⬅ Back to Dashboard
                 </motion.button>
 
-                {/* Form Card */}
                 <motion.div
                     whileHover={{ scale: 1.01 }}
                     transition={{ type: "spring", stiffness: 200, damping: 20 }}
@@ -159,7 +158,7 @@ const BudgetForm = () => {
                                 style={{
                                     fontSize: "1.05rem",
                                     fontWeight: "500",
-                                    color: "#9E7515", // Slate-like modern tone
+                                    color: "#9E7515", 
                                     letterSpacing: "0.3px",
                                     marginBottom: "0.4rem",
                                     display: "block",
@@ -191,7 +190,7 @@ const BudgetForm = () => {
                                 style={{
                                     fontSize: "1.05rem",
                                     fontWeight: "500",
-                                    color: "#9E7515", // Slate-like modern tone
+                                    color: "#9E7515", 
                                     letterSpacing: "0.3px",
                                     marginBottom: "0.4rem",
                                     display: "block",

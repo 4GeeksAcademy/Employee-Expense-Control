@@ -27,15 +27,14 @@ const BillForm = () => {
     return () => URL.revokeObjectURL(url);
   }, [image]);
 
-  //suceess and error message appearance control
 
   useEffect(() => {
     if (message) {
       const timeout = setTimeout(() => {
         setMessage("");
-      }, 5000); // 5 seconds
+      }, 5000); 
 
-      return () => clearTimeout(timeout); // cleanup
+      return () => clearTimeout(timeout); 
     }
   }, [message]);
 
@@ -56,14 +55,14 @@ const BillForm = () => {
       setError(false);
       setMessage(result.message);
 
-      //reset form for more bill submission if needed instead of redirecting to dashboard
+  
       setTimeout(() => {
         setDescription("");
         setLocation("");
         setAmount("");
         setImage(null);
         setPreview("");
-        setMessage(""); // optional: clear success message
+        setMessage(""); 
       }, 1500);
     }
 

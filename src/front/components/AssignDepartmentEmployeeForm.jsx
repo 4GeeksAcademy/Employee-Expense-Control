@@ -50,7 +50,6 @@ const AssignDepartmentEmployeeForm = () => {
       animate="visible"
       style={styles.container}
     >
-      {/* Mensaje */}
       {message && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -59,8 +58,8 @@ const AssignDepartmentEmployeeForm = () => {
           style={{
             padding: "10px 20px",
             marginBottom: "20px",
-            marginTop: "40px",       // margen para separarlo del top
-            marginLeft: "auto",      // centrado horizontal
+            marginTop: "40px",       
+            marginLeft: "auto",      
             marginRight: "auto",
             borderRadius: "8px",
             color: messageType === "success" ? "#155724" : "#721c24",
