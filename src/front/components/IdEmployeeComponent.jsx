@@ -67,7 +67,6 @@ const IdEmployeeComponent = () => {
         </motion.button>
       </div>
 
-      {/* Card container centered */}
       <div style={{ maxWidth: "600px", margin: "0 auto" }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
