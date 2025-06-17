@@ -248,7 +248,7 @@ def my_id():
 
 @api.route("/assigndepartment", methods=["PUT"])
 @jwt_required()
-# solo un supervisor puede asignarle el departamento a un empleado
+
 def assign_department():
     supervisor_id = get_jwt_identity()
     supervisor = Employee.query.get(supervisor_id)
