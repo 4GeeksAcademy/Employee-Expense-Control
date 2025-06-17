@@ -207,6 +207,7 @@ def login_user():
                     "user": {"id": user.id, "name": user.name, "rol": user.is_supervisor,
                              }}), 201
 
+
 @api.route("/logout", methods=['POST'])
 @jwt_required()
 def logout():
@@ -219,6 +220,7 @@ def logout():
 def check_if_token_revoked(jwt_header, jwt_payload):
     jti = jwt_payload["jti"]
     return jti in revoked_tokens
+
 
 @api.route("/me", methods=["GET"])
 @jwt_required()
@@ -252,6 +254,9 @@ def assign_department():
     supervisor = Employee.query.get(supervisor_id)
     if supervisor is None or not supervisor.is_supervisor:
         return jsonify({"msg": "unauthorized"}), 403
+
+    if supervisor.department_id is None:
+        return jsonify({"msg": "the employee must have an assigned department"}), 403
 
     data = request.get_json()
     employee_id = data["id_employee"]
@@ -782,6 +787,7 @@ def detete_bill():
     db.session.commit()
     return jsonify({"msg": "bill successfully deleted"}), 200
 
+
 @api.route("/deletebudget", methods=["DELETE"])
 @jwt_required()
 def delete_budget():
@@ -834,6 +840,3 @@ def update_bill():
     db.session.commit()
 
     return jsonify({"msg": "Bill updated successfully", "bill": bill.serialize()}), 200
-
-
-
