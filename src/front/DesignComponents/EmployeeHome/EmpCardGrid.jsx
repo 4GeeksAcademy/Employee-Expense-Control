@@ -1,6 +1,6 @@
 import EmpCardOption from "../EmployeeHome/EmpCard";
 
-import { FaClipboardList, FaChartPie, FaIdBadge, FaFolderOpen , FaPlusCircle, FaCheckCircle, FaDollarSign, FaUserTie, FaUsersCog, FaChartLine, FaHistory, FaFileInvoiceDollar, FaCog, FaUserPlus } from "react-icons/fa";
+import { FaClipboardList, FaChartPie, FaIdBadge, FaFolderOpen, FaPlusCircle, FaCheckCircle, FaDollarSign, FaUserTie, FaUsersCog, FaChartLine, FaHistory, FaFileInvoiceDollar, FaCog, FaUserPlus } from "react-icons/fa";
 
 const EmpCardGrid = () => {
     const cards = [
@@ -30,31 +30,31 @@ const EmpCardGrid = () => {
         },
         {
             title: "Assign to supervisor",
-            to: "#",
+            to: "/underconstruction",
             buttonText: "Coming Soon...",
             icon: <FaUserTie />
         },
         {
             title: "View Spending Analytics",
-            to: "#",
+            to: "/underconstruction",
             buttonText: "Coming Soon...",
             icon: <FaChartLine />
         },
         {
             title: "Review Bill Approvals",
-            to: "#",
+            to: "/underconstruction",
             buttonText: "Coming Soon...",
             icon: <FaFileInvoiceDollar />
         },
         {
             title: "Access Approval History",
-            to: "#",
+            to: "/underconstruction",
             buttonText: "Coming Soon...",
             icon: <FaHistory />
         },
         {
             title: "Manage Department Settings",
-            to: "#",
+            to: "/underconstruction",
             buttonText: "Coming Soon...",
             icon: <FaCog />
         },
@@ -62,9 +62,9 @@ const EmpCardGrid = () => {
 
     return (
         <div
-            className="card-grid" 
+            className="card-grid"
             style={{
-               
+
                 display: "grid",
                 gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
                 gap: "2rem",

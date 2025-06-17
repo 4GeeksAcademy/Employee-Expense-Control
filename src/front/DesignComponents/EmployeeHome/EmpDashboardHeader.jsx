@@ -1,9 +1,8 @@
 import { motion } from "framer-motion";
 import { useAuth } from "../../hooks/AuthContext";
-//import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const EmpDashboardHeader = () => {
-    //const { store } = useGlobalReducer();
+
      const { user } = useAuth();
 
     const containerVariants = {
