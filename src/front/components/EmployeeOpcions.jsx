@@ -18,6 +18,7 @@ const EmployeeOpcions = () => {
 
   const [showLargeScreenElements, setShowLargeScreenElements] = useState(window.innerWidth >= 768);
   const {user} = useAuth();
+  const [hasAcceptedBudget, setHasAcceptedBudgets]= useState(false)
 
   useEffect(() => {
     const handleResize = () => {

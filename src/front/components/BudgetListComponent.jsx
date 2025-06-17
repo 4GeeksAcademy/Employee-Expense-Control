@@ -53,6 +53,15 @@ const BudgetListComponent = () => {
 
     return (
         <div className="py-5 px-4 ">
+              <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.7, duration: 0.5 }}
+                        className="text-gray-600 text-center mt-8"
+                    >
+                        No pending budgets found.
+                    </motion.p>
+                
     
             <motion.button
                 whileHover={{ scale: 1.05 }}

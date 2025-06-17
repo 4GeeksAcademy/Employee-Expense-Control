@@ -62,7 +62,7 @@ const styles = {
     color: "#2d3748",
     boxSizing: "border-box",
     transition: "border-color 0.3s ease, box-shadow 0.3s ease",
-    "&:focus": { // Esto es CSS-in-JS, en React se manejaría con estado o una librería como emotion/styled-components
+    "&:focus": {
       borderColor: "#4f46e5",
       boxShadow: "0 0 0 3px rgba(79, 70, 229, 0.2)",
       outline: "none",
@@ -83,7 +83,7 @@ const styles = {
       transform: "translateY(-2px)",
       boxShadow: "0 6px 15px rgba(79, 70, 229, 0.4)",
     },
-    //#404040
+   
   },
     buttonWrapperBottom: {
     display: "flex",
