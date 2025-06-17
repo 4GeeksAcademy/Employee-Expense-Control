@@ -25,13 +25,13 @@ const AssignDepartmentEmployeeForm = () => {
 
   return (
     <motion.div
-      className="container d-flex flex-column justify-content-center align-items-center min-vh-100" // AÑADE flex-column aquí
+      className="container d-flex flex-column justify-content-center align-items-center min-vh-100" 
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      style={styles.container} // Este styles.container debe ser solo para el contenedor principal
+      style={styles.container} 
     >
-      {/* Este es el componente de la tarjeta */}
+  
       <AssignEmployeeCard
         idEmployee={idEmployee}
         setIdEmployee={setIdEmployee}
