@@ -21,15 +21,7 @@ function ResetPassword() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token, password }), // mandamos token + contraseña en body
     });
-
-    const res = await fetch(
-      "https://laughing-sniffle-56x47xpqvr62q7q-3000.app.github.dev/api/reset-password",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, password }),
-      }
-    );
+    
     const data = await res.json();
     setMsg(data.msg);
   };
