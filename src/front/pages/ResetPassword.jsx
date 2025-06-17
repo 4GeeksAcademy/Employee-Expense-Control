@@ -12,9 +12,9 @@ function ResetPassword() {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (password !== confirm) return setMsg("Las contraseñas no coinciden");
+    if (password !== confirm) return setMsg("The passowrds do not match");
 
-    const res = await fetch("https://cautious-orbit-44wgpwrxxvp2jrg7-3001.app.github.dev/api/reset-password", {  // POST al backend sin token en URL
+    const res = await fetch("https://opulent-capybara-q7pw5qxjgw4v29rww-3001.app.github.dev/api/reset-password", {  // POST al backend sin token en URL
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token, password }), // mandamos token + contraseña en body
@@ -26,22 +26,22 @@ function ResetPassword() {
   
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Establece una nueva contraseña</h2>
+      <h2>Create a new password</h2>
       <input
         type="password"
-        placeholder="Nueva contraseña"
+        placeholder="New password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         required
       />
       <input
         type="password"
-        placeholder="Confirmar contraseña"
+        placeholder="Confirm password"
         value={confirm}
         onChange={(e) => setConfirm(e.target.value)}
         required
       />
-      <button type="submit">Restablecer</button>
+      <button type="submit">Reset</button>
       <p>{msg}</p>
     </form>
   );
