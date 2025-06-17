@@ -566,7 +566,7 @@ export const totalExpense = async (dispatch, employeeId = null) => {
       payload: data
     }
     dispatch(action)
-    // console.log(data)
+
 
   } catch (error) {
     console.error(error)
@@ -621,22 +621,29 @@ export const assignDepartmentSupervisor = async (supervisorId, departmentId) => 
   try {
     const token = localStorage.getItem("token");
     if (!token) {
-      throw new Error("Token not found")
+      return { success: false, message: "Token not found" };
     }
     if (!supervisorId || supervisorId.trim() === "" || !departmentId || departmentId.trim() === "") {
-      throw new Error("the data has not been passed correctly")
+      return { success: false, message: "The data has not been passed correctly" };
     }
-    const rawData = JSON.stringify({ id_employee: supervisorId, id_department: departmentId })
-    const response = await authFetch(`/assign-supervisor-department`, { method: "PUT", headers: { "Content-Type": "application/json", }, body: rawData })
+    const rawData = JSON.stringify({ id_employee: supervisorId, id_department: departmentId });
+    const response = await authFetch(`/assign-supervisor-department`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: rawData,
+    });
     if (!response.ok) {
-      throw new Error(`Error fetching data ${response.status}`)
+      const errorData = await response.json();
+      return { success: false, message: errorData.msg || `Error fetching data ${response.status}` };
     }
-    const data = await response.json()
-
+    const data = await response.json();
+    return { success: true, message: data.msg || "Supervisor assigned successfully" };
   } catch (error) {
-    console.error(error)
+    console.error(error);
+    return { success: false, message: error.message || "Unknown error occurred" };
   }
-}
+};
+
 
 export const fetchAndSetEmployees = async (dispatch) => {
   try {
