@@ -300,7 +300,7 @@ export const fetchImageBill = async (image, description, location, amount) => {
     });
 
     if (!billResponse.ok) {
-      return { ok: false, message: "Unable to create bill. Your budget must be accepted first."};
+      return { ok: false, message: "Unable to create bill. Your budget must be accepted first." };
     }
     // return { ok: false, message: `Failed to create bill (${billResponse.status})` };
     const data = await billResponse.json();
@@ -311,65 +311,6 @@ export const fetchImageBill = async (image, description, location, amount) => {
   }
 };
 
-
-// export const fetchImageBill = async (image, description, location, amount) => {
-//   try {
-//     if (
-//       description.trim() === "" ||
-//       location.trim() === "" ||
-//       amount.trim() === ""
-//     ) {
-//       throw new Error("fields cannot be empty");  
-//     }
-
-
-//     if (!image) {
-//       return { ok: false, message: "You must upload an image of the receipt." };
-//     }
-
-//     const token = localStorage.getItem("token");
-//     if (token == null) {
-//       throw new Error("token dont exist");
-//     }
-//     const rawData = JSON.stringify({
-//       description: description,
-//       location: location,
-//       amount: amount,
-//       date: new Date().toISOString(),
-//     });
-//     const formData = new FormData();
-//     formData.append("bill", image);
-
-//     if (!formData.has("bill")) {
-//       throw new Error("The image has not been loaded correctly");
-//     }
-//     const response = await fetch(`${backendUrl}/upload`, {
-//       method: "POST",
-//       body: formData,
-//     });
-//     if (!response.ok) {
-//       throw new Error(`Error fetching data ${response.status}`);
-//     }
-//     const data = await response.json();
-//     console.log(data);
-
-//     //USAR authFetch en las rutas que requieran token
-//     const billResponse = await authFetch('/bill', {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: rawData,
-//     });
-//     if (!billResponse.ok) {
-//       throw new Error(`Error fetching data ${billResponse.status}`);
-//     }
-//     const billData = await billResponse.json();
-//     console.log(billData);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
 
 export const editBill = async (billId, editedBill, dispatch) => {
   try {
@@ -460,12 +401,12 @@ export const deleteBill = async (billId, budgetId, dispatch) => {
 
 export const deleteBudget = async (budgetId, dispatch) => {
   try {
-    
+
     if (!budgetId) {
       throw new Error("the ids have not been passed");
     }
     const rawData = JSON.stringify({ budget_id: budgetId });
-  const response = await authFetch('/deletebudget', {
+    const response = await authFetch('/deletebudget', {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -479,12 +420,12 @@ export const deleteBudget = async (budgetId, dispatch) => {
     if (!data) {
       throw new Error("Error fetching data");
     }
-   
+
     const action = {
       type: "DELETE_BUDGET",
-      payload: {budgetId},  //payload: { budgetId: budgetId }
+      payload: { budgetId },  //payload: { budgetId: budgetId }
     };
-     dispatch(action);
+    dispatch(action);
   } catch (error) {
     console.error(error);
   }
@@ -625,7 +566,7 @@ export const totalExpense = async (dispatch, employeeId = null) => {
       payload: data
     }
     dispatch(action)
-    // console.log(data)
+
 
   } catch (error) {
     console.error(error)
@@ -636,42 +577,73 @@ export const assignDepartmentEmployee = async (employeeId, departmentId) => {
   try {
     const token = localStorage.getItem("token");
     if (!token) {
-      throw new Error("Token not found")
+      return { success: false, message: "Token not found" };
     }
-    if (!employeeId || employeeId.trim() === "" || !departmentId || departmentId.trim() === "") {
-      throw new Error("the data has not been passed correctly")
+
+    if (!employeeId?.trim() || !departmentId?.trim()) {
+      return { success: false, message: "The data has not been passed correctly" };
     }
-    const rawData = JSON.stringify({ id_employee: employeeId, id_department: departmentId })
-    const response = await authFetch('/assigndepartment', { method: "PUT", headers: { "Content-Type": "application/json", }, body: rawData })
+
+    const rawData = JSON.stringify({
+      id_employee: employeeId,
+      id_department: departmentId,
+    });
+
+    const response = await authFetch("/assigndepartment", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: rawData,
+    });
+
+    const data = await response.json();
+
     if (!response.ok) {
-      throw new Error(`Error fetching data ${response.status}`)
+      return {
+        success: false,
+        message: data.msg || `Error (${response.status})`,
+      };
     }
-    const data = await response.json()
+
+    return {
+      success: true,
+      message: data.msg || "Successfully assigned",
+    };
   } catch (error) {
-    console.error(error)
+    console.error("Fetch error:", error);
+    return { success: false, message: error.message || "Unexpected error" };
   }
-}
+};
+
 
 export const assignDepartmentSupervisor = async (supervisorId, departmentId) => {
   try {
     const token = localStorage.getItem("token");
     if (!token) {
-      throw new Error("Token not found")
+      return { success: false, message: "Token not found" };
     }
     if (!supervisorId || supervisorId.trim() === "" || !departmentId || departmentId.trim() === "") {
-      throw new Error("the data has not been passed correctly")
+      return { success: false, message: "The data has not been passed correctly" };
     }
-    const rawData = JSON.stringify({ id_employee: supervisorId, id_department: departmentId })
-    const response = await authFetch(`/assign-supervisor-department`, { method: "PUT", headers: { "Content-Type": "application/json", }, body: rawData })
+    const rawData = JSON.stringify({ id_employee: supervisorId, id_department: departmentId });
+    const response = await authFetch(`/assign-supervisor-department`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: rawData,
+    });
     if (!response.ok) {
-      throw new Error(`Error fetching data ${response.status}`)
+      const errorData = await response.json();
+      return { success: false, message: errorData.msg || `Error fetching data ${response.status}` };
     }
-    const data = await response.json()
-
+    const data = await response.json();
+    return { success: true, message: data.msg || "Supervisor assigned successfully" };
   } catch (error) {
-    console.error(error)
+    console.error(error);
+    return { success: false, message: error.message || "Unknown error occurred" };
   }
-}
+};
+
 
 export const fetchAndSetEmployees = async (dispatch) => {
   try {

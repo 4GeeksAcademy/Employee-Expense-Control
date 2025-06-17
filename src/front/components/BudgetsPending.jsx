@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import GoBackButton from "../DesignComponents/GoBackButton/GoBackButton";
 
 const BudgetsPending = () => {
-    const [pendingAction, setPendingAction] = useState(null); // 'accept' or 'reject'
+    const [pendingAction, setPendingAction] = useState(null); 
     const [pendingBudgetId, setPendingBudgetId] = useState(null);
     const [pendingAmount, setPendingAmount] = useState(null);
 
@@ -26,13 +26,12 @@ const BudgetsPending = () => {
         setEditedAmount((prev) => ({ ...prev, [budgetId]: newAmount }));
     };
 
-    // --- NUEVA FUNCIÓN PARA ABRIR EL MODAL ---
+
     const handleOpenModal = (action, budgetId, amount = null) => {
         setPendingAction(action);
         setPendingBudgetId(budgetId);
         setPendingAmount(amount);
     };
-    // --- FIN NUEVA FUNCIÓN ---
 
 
     const handleModalConfirm = async () => {
@@ -42,15 +41,6 @@ const BudgetsPending = () => {
             await handleReject(pendingBudgetId);
         }
 
-        // --- IMPORTANTE: ELIMINAMOS LA LÓGICA DE BOOTSTRAP AQUÍ ---
-        // Si usamos Framer Motion para el modal, no necesitamos esto.
-        // const modal = window.bootstrap.Modal.getInstance(
-        //     document.getElementById("exampleModal")
-        // );
-        // if (modal) modal.hide();
-        // --- FIN ELIMINACIÓN ---
-
-        // Reset modal state (esto cerrará el modal de Framer Motion)
         setPendingAction(null);
         setPendingBudgetId(null);
         setPendingAmount(null);
@@ -82,10 +72,7 @@ const BudgetsPending = () => {
                             : "Review and manage the pending budget requests below."
                     }
                 />
-                          {/* NUEVA UBICACIÓN PARA EL BOTÓN*/}
-               {/* <div className="text-center mb-6">
-                <GoBackButton />
-            </div> */}
+   
 
                 {filteredBudgets.length === 0 ? (
                     <motion.p
@@ -105,10 +92,10 @@ const BudgetsPending = () => {
                                 editedAmount={editedAmount[budget.id]}
                                 onAmountChange={handleAmountChange}
                                 onSelectEmployee={setSelectedEmployeeId}
-                                // --- AHORA USAMOS handleOpenModal AQUÍ ---
+
                                 onAcceptClick={(id) => handleOpenModal("accept", id, editedAmount[id] || budget.amount)}
                                 onRejectClick={(id) => handleOpenModal("reject", id)}
-                                // --- FIN CAMBIO ---
+
                                 employeeName={getEmployeeName(budget.employee_id)}
                             />
                         ))}
@@ -131,13 +118,13 @@ const BudgetsPending = () => {
                     </motion.div>
                 )}
             </div>
-            <div className="text-center" style={{ marginTop: '3rem', marginBottom: '3rem' }}> {/* Puedes ajustar 3rem a lo que necesites, quizás 4rem o 5rem */}
+            <div className="text-center" style={{ marginTop: '3rem', marginBottom: '3rem' }}> 
                 <GoBackButton />
             </div>
 
-            {/* Modal de confirmación con Framer Motion */}
+
             <AnimatePresence>
-                {pendingAction && ( // El modal se muestra si pendingAction no es null
+                {pendingAction && ( 
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -152,7 +139,7 @@ const BudgetsPending = () => {
                             display: "flex",
                             justifyContent: "center",
                             alignItems: "center",
-                            zIndex: 9999 // Asegura que el modal esté por encima de todo
+                            zIndex: 9999 
                         }}
                     >
                         <motion.div
@@ -180,7 +167,7 @@ const BudgetsPending = () => {
                             <div style={{ display: "flex", justifyContent: "flex-end", gap: "1rem" }}>
                                 <button
                                     onClick={() => {
-                                        setPendingAction(null); // Esto cierra el modal de Framer Motion
+                                        setPendingAction(null); 
                                         setPendingBudgetId(null);
                                         setPendingAmount(null);
                                     }}
@@ -200,7 +187,7 @@ const BudgetsPending = () => {
                                     onClick={handleModalConfirm}
                                     style={{
                                         padding: "0.5rem 1rem",
-                                        // Colores dinámicos para el botón de confirmar
+                                        
                                         backgroundColor: pendingAction === "accept" ? "#4CAF50" : "#DC3545",
                                         color: "white",
                                         border: "none",
