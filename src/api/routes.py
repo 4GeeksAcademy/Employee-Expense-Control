@@ -252,6 +252,9 @@ def assign_department():
     supervisor = Employee.query.get(supervisor_id)
     if supervisor is None or not supervisor.is_supervisor:
         return jsonify({"msg": "unauthorized"}), 403
+    
+    if supervisor.department_id is None:
+        return jsonify({"msg": "You need to be assigned to a department to proceed"}), 403
 
     data = request.get_json()
     employee_id = data["id_employee"]
