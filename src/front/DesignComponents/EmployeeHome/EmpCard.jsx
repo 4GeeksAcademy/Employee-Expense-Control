@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
-const EmpCardOption = ({ title, to, buttonText, icon }) => {
+const EmpCardOption = ({ title, to, buttonText, icon, disabled = false}) => {
   const greenStart = "#9E7515";
   const greenEnd = "#059669";
   const mainGreen = "#9E7515";
@@ -63,15 +63,20 @@ const EmpCardOption = ({ title, to, buttonText, icon }) => {
         <Link
           to={to}
           style={{
-            display: "inline-block",
-            padding: "0.75rem 1.5rem",
-            background: `linear-gradient(135deg, ${greenStart}, ${greenEnd})`,
-            color: "white",
-            borderRadius: "10px",
-            fontWeight: "600",
-            textDecoration: "none",
-            transition: "background 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
-            boxShadow: `0 2px 5px ${mainGreen}20`,
+             display: "inline-block",
+             padding: "0.75rem 1.5rem",
+             background: disabled
+              ? "#d1d5db" // gris claro
+              : `linear-gradient(135deg, ${greenStart}, ${greenEnd})`,
+               color: "white",
+               borderRadius: "10px",
+              fontWeight: "600",
+              textDecoration: "none",
+              pointerEvents: disabled ? "none" : "auto",
+              opacity: disabled ? 0.6 : 1,
+              cursor: disabled ? "not-allowed" : "pointer",
+             transition: "background 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
+            boxShadow: disabled ? "none" : `0 2px 5px ${mainGreen}20`,
           }}
         >
           {buttonText}

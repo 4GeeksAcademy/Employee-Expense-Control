@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { authFetch } from "../services/apiInterceptor";
 
 import { FileText, FilePlus, Folder } from "lucide-react";
 import { Link } from 'react-router-dom';
@@ -18,7 +19,8 @@ const EmployeeOpcions = () => {
 
   const [showLargeScreenElements, setShowLargeScreenElements] = useState(window.innerWidth >= 768);
   const {user} = useAuth();
-  const [hasAcceptedBudget, setHasAcceptedBudgets]= useState(false)
+  const [hasAcceptedBudget, setHasAcceptedBudget]= useState(false)
+  const [loadingBudgets, setLoadingBudgets] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
@@ -31,6 +33,31 @@ const EmployeeOpcions = () => {
     };
   }, []);
 
+
+useEffect(() => {
+  const checkAcceptedBudgets = async () => {
+    try {
+      const response = await authFetch('/mybudgets', { method: 'GET' });
+      const data = await response.json();
+      const budgetList = data?.budget_list || [];
+
+        const accepted = budgetList.some(b => {
+                return b.state?.toUpperCase() === 'ACCEPTED';
+                
+            });
+      setHasAcceptedBudget(accepted);
+    } catch (error) {
+      console.error("Error checking accepted budgets", error);
+    } finally {
+      setLoadingBudgets(false);
+    }
+  };
+
+  if (user?.id) {
+    checkAcceptedBudgets();
+  }
+}, [user]);
+
   const options = [
     {
       label: "Create New Budget",
@@ -40,11 +67,12 @@ const EmployeeOpcions = () => {
       hoverColor: "hover:bg-blue-700"
     },
     {
-      label: "Enter New Bill",
-      icon: <FilePlus size={28} />,
-      to: "/enterbill",
-      bgColor: "bg-green-600",
-      hoverColor: "hover:bg-green-700"
+       label: "Enter New Bill",
+    icon: <FilePlus size={28} />,
+    to: hasAcceptedBudget ? "/enterbill" : "#",
+    bgColor: hasAcceptedBudget ? "bg-green-600" : "bg-gray-400",
+    hoverColor: hasAcceptedBudget ? "hover:bg-green-700" : "cursor-not-allowed",
+    disabled: !hasAcceptedBudget
     },
     {
       label: "My Budgets",
@@ -76,17 +104,15 @@ const EmployeeOpcions = () => {
           {showLargeScreenElements && <EmpWelcomePanel />}
           <EmpSectionDivider />
 
-          <div className="text-center mb-10">
-            <h1 className="text-4xl font-extrabold text-gray-800 mb-2">Hello {user.name}!</h1>
-            <p className="text-gray-600 text-lg hello-employee">
-              If you don't have a budget yet, create one and then enter your bills.
-            </p>
-          </div>
-
-          <EmpCardGrid/>
+          {!loadingBudgets && (
+           <EmpCardGrid hasAcceptedBudget={hasAcceptedBudget} />
+                                      )}
         </motion.div>
+        
       </main>
+      
     </div>
+    
   );
 };
 

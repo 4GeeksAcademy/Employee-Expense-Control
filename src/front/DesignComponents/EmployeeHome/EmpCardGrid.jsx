@@ -2,7 +2,7 @@ import EmpCardOption from "../EmployeeHome/EmpCard";
 
 import { FaClipboardList, FaChartPie, FaIdBadge, FaFolderOpen, FaPlusCircle, FaCheckCircle, FaDollarSign, FaUserTie, FaUsersCog, FaChartLine, FaHistory, FaFileInvoiceDollar, FaCog, FaUserPlus } from "react-icons/fa";
 
-const EmpCardGrid = () => {
+const EmpCardGrid = ({ hasAcceptedBudget }) => {
     const cards = [
         {
             title: "Start a New Budget",
@@ -12,9 +12,10 @@ const EmpCardGrid = () => {
         },
         {
             title: "Log a New Expense",
-            to: "/enterbill",
+            to: hasAcceptedBudget ? "/enterbill" : "#",
             buttonText: "Add Expense",
-            icon: <FaPlusCircle />
+            icon: <FaPlusCircle />,
+            disabled: !hasAcceptedBudget,
         },
         {
             title: "View & Manage Budgets",
