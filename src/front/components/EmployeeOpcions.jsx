@@ -49,7 +49,7 @@ useEffect(() => {
     } catch (error) {
       console.error("Error checking accepted budgets", error);
     } finally {
-     
+      setLoadingBudgets(false);
     }
   };
 
