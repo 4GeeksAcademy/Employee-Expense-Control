@@ -54,7 +54,6 @@ const AssignEmployeeCard = ({
         </motion.h2>
 
         <form onSubmit={handleSubmit}>
-          {/* Employee Select */}
           <motion.div className="mb-3" variants={inputVariants}>
             <label htmlFor="idEmployee" style={styles.label}>
               Select Employee
@@ -74,8 +73,6 @@ const AssignEmployeeCard = ({
               ))}
             </select>
           </motion.div>
-
-          {/* Department Select */}
           <motion.div className="mb-3" variants={inputVariants}>
             <label htmlFor="idDepartment" style={styles.label}>
               Select Department
@@ -96,7 +93,6 @@ const AssignEmployeeCard = ({
             </select>
           </motion.div>
 
-          {/* Submit Button */}
           <motion.button
             type="submit"
             style={styles.button}
@@ -109,7 +105,6 @@ const AssignEmployeeCard = ({
         </form>
       </motion.div>
 
-      {/* Back Home Button */}
       <motion.div
         initial={{ x: -50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}

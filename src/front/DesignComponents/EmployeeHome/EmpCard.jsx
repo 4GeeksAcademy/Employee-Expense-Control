@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
-const EmpCardOption = ({ title, to, buttonText, icon }) => {
+const EmpCardOption = ({ title, to, buttonText, icon, disabled = false}) => {
   const greenStart = "#9E7515";
   const greenEnd = "#059669";
   const mainGreen = "#9E7515";
@@ -21,14 +21,14 @@ const EmpCardOption = ({ title, to, buttonText, icon }) => {
         borderRadius: "20px",
         padding: "2rem",
         boxShadow: "0 6px 15px rgba(0,0,0,0.05)",
-        width: "100%", // makes sure it fills its grid cell
-        minHeight: "320px", // FIX: consistent height
+        width: "100%", 
+        minHeight: "320px", 
         maxWidth: "300px",
         textAlign: "center",
-        border: "1px solid #9E7515", // #e0e0e0
+        border: "1px solid #9E7515", 
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between", // ensures vertical spacing is consistent
+        justifyContent: "space-between", 
         alignItems: "center",
       }}
     >
@@ -47,7 +47,7 @@ const EmpCardOption = ({ title, to, buttonText, icon }) => {
         color: "#333333",
         marginBottom: "1rem",
         lineHeight: "1.4",
-        wordBreak: "break-word", // handles long titles
+        wordBreak: "break-word", 
       }}>
         {title}
       </h2>
@@ -63,15 +63,20 @@ const EmpCardOption = ({ title, to, buttonText, icon }) => {
         <Link
           to={to}
           style={{
-            display: "inline-block",
-            padding: "0.75rem 1.5rem",
-            background: `linear-gradient(135deg, ${greenStart}, ${greenEnd})`,
-            color: "white",
-            borderRadius: "10px",
-            fontWeight: "600",
-            textDecoration: "none",
-            transition: "background 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
-            boxShadow: `0 2px 5px ${mainGreen}20`,
+             display: "inline-block",
+             padding: "0.75rem 1.5rem",
+             background: disabled
+              ? "#d1d5db" // gris claro
+              : `linear-gradient(135deg, ${greenStart}, ${greenEnd})`,
+               color: "white",
+               borderRadius: "10px",
+              fontWeight: "600",
+              textDecoration: "none",
+              pointerEvents: disabled ? "none" : "auto",
+              opacity: disabled ? 0.6 : 1,
+              cursor: disabled ? "not-allowed" : "pointer",
+             transition: "background 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
+            boxShadow: disabled ? "none" : `0 2px 5px ${mainGreen}20`,
           }}
         >
           {buttonText}

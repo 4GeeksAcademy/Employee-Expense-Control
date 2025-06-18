@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
-
 const BudgetListComponent = () => {
     const navigate = useNavigate();
     const {
@@ -52,8 +51,7 @@ const BudgetListComponent = () => {
     }
 
     return (
-        <div className="py-5 px-4 ">
-    
+        <div className="py-5 px-4" style={{ display: "flex", flexDirection: "column", minHeight: "calc(100vh - 50px)" }}>
             <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -72,6 +70,27 @@ const BudgetListComponent = () => {
             </motion.button>
 
             <AnimatePresence>
+                {budgets.length === 0 && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8 }}
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "flex-end", 
+                            justifyContent: "flex-start", 
+                            flexGrow: 1,
+                            textAlign: "right",
+                            paddingRight: "60px"
+                        }}
+                    >
+                        <p className="fs-5 m-0" style={{ fontWeight: "bold", color: "#333" }}>
+                            No budgets to display.
+                        </p>
+                    </motion.div>
+                )}
+
                 {budgets.map((budget, index) => {
                     const totalBills = budget.bills.reduce((acc, bill) => acc + parseFloat(bill.amount || 0), 0);
 

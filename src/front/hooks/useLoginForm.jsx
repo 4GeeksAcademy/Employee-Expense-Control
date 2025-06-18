@@ -8,7 +8,7 @@ const useLoginForm = ({ initialEmail = "", initialPassword = "" } = {}) => {
 
     const rolNavigate = (userData) => {
         if (!userData.rol === undefined) { // Verifica si existe el rol
-            console.error("Rol no definido en userData");
+            console.error("Rol not defined in userData");
             return;
         }
         const isSupervisor = Boolean(userData.rol === true || userData.rol === "true");
