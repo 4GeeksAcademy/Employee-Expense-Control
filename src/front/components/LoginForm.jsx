@@ -6,6 +6,7 @@ import { fetchLogin } from "../services/apiServicesFetch";
 import { Link } from "react-router-dom"
 import "../DesignComponents/SignUp/signup.css";
 import AnimatedBackground from "../DesignComponents/GlobalComponents/AnimatedBackground";
+import { AnimatePresence, motion } from "framer-motion";
 
 const LoginForm = () => {
 
@@ -92,8 +93,28 @@ const LoginForm = () => {
 
                     </div>
 
-                    {error && <div className="alert alert-danger errorAlert">{error}</div>}
-                    {msg && <div className="alert alert-success successAlert">{msg}</div>}
+                    <AnimatePresence mode="wait">
+                        {(error || msg) && (
+                            <motion.div
+                                key={error ? "error" : "success"}
+                                initial={{ opacity: 0, y: -30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -30 }}
+                                transition={{ duration: 0.6, ease: "easeInOut" }}
+                                className={`alert ${error ? "alert-danger errorAlert" : "alert-success successAlert"}`}
+                                style={{
+                                    borderRadius: "12px",
+                                    fontSize: "1rem",
+                                    fontWeight: "500",
+                                    marginBottom: "1rem",
+                                }}
+                                role="alert"
+                            >
+                                {error || msg}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
 
                     <div className="d-grid gap-2 contBtn">
                         <button type="submit" className="btnSign btn">
