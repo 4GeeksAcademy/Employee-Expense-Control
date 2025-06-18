@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import useTotalExpense from "../hooks/useTotalExpense";
-import { Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 const MotionLinkButton = motion(Link);
@@ -82,30 +82,40 @@ const TotalExpenseComponent = ({ employeeId }) => {
 
   if (!total || Object.keys(total).length === 0) {
     return (
-        <div className="d-flex flex-column justify-content-center align-items-center vh-100 bg-light">
-          <div>
-            <p className="text-muted fs-5">No expenses available to see yet.</p>
-          </div>
-          <motion.div>
+      <div className="d-flex flex-column justify-content-center align-items-center vh-100 bg-light">
+        <div>
+          <p className="text-muted fs-5">No expenses available to see yet.</p>
+        </div>
+        <motion.div
+          initial={{ x: -50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+                >
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate("/supervisor")}
-            className="btn mb-4 align-self-start go-back-btn"
+            className="btn mb-4 align-self-start"
             style={{
-              borderRadius: "2rem",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "12px 24px",
+              background: "linear-gradient(to right, #10b981, #059669)",
+              color: "white",
               fontWeight: "600",
-              padding: "0.75rem 1.5rem",
-              border: "2px groove grey",
-              background: "var(--ghost-green)",
-              color: "var(--ghost-white)",
+              borderRadius: "8px",
+              boxShadow: "0 8px 12px rgba(16, 185, 129, 0.4)",
+              textDecoration: "none",
+              border: "none",
+              cursor: "pointer",
             }}
           >
             ⬅ Back to Dashboard
           </motion.button>
-          </motion.div>
-        </div>
-    
+        </motion.div>
+      </div>
+
     );
   }
 
