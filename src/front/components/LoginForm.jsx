@@ -1,6 +1,8 @@
 import useLoginForm from "../hooks/useLoginForm"
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../hooks/AuthContext"
+import { fetchLogin } from "../services/apiServicesFetch";
 import { Link } from "react-router-dom"
 import "../DesignComponents/SignUp/signup.css";
 import AnimatedBackground from "../DesignComponents/GlobalComponents/AnimatedBackground";
@@ -11,19 +13,39 @@ const LoginForm = () => {
     const { login } = useAuth();
     const navigate = useNavigate();
 
+    const [error, setError] = useState("");
+    const [msg, setMsg] = useState("");
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(""); // clear previous error
+        setMsg("");
         try {
             const userData = await login(email, password);
-            rolNavigate(userData);
+            setMsg("Login successful! Redirecting...");
+            setTimeout(() => {
+                rolNavigate(userData);
+            }, 2000);
         } catch (error) {
             console.error(error);
-
+            setError(error.message); // Show the specific error message
         }
     };
 
+    useEffect(() => {
+        if (error || msg) {
+            const timeout = setTimeout(() => {
+                setError("");
+                setMsg("");
+            }, 5000); // hide after 5 seconds
 
-return (
+            return () => clearTimeout(timeout);
+        }
+    }, [error, msg]);
+
+
+
+    return (
         <div className="signMain">
             <AnimatedBackground />
             <form onSubmit={handleSubmit} className="signForm">
@@ -65,19 +87,22 @@ return (
                             required
                         />
                         <div className="form-text emailHelp">
-                             Forgot your password? <Link className="linkColor" to="/forgot-password">Reset it here</Link>
+                            Forgot your password? <Link className="linkColor" to="/forgot-password">Reset it here</Link>
                         </div>
-                        
+
                     </div>
+
+                    {error && <div className="alert alert-danger errorAlert">{error}</div>}
+                    {msg && <div className="alert alert-success successAlert">{msg}</div>}
 
                     <div className="d-grid gap-2 contBtn">
                         <button type="submit" className="btnSign btn">
                             Login
-                        </button>  
+                        </button>
                     </div>
-                     <div className="form-text emailHelp">
-                              Need an account? <Link className="linkColor" to="/signup">Register</Link>
-                        </div>
+                    <div className="form-text emailHelp">
+                        Need an account? <Link className="linkColor" to="/signup">Register</Link>
+                    </div>
                 </div>
             </form>
         </div>

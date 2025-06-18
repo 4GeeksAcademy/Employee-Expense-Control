@@ -668,7 +668,7 @@ def budget_create():
     except Exception as e:
         print(e)
         return jsonify({"msg": "error"}), 500
-
+#you don't have a department assigned yet
 
 @api.route("/mybudgets", methods=["GET"])
 @jwt_required()
