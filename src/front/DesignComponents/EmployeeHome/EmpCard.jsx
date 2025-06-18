@@ -21,14 +21,14 @@ const EmpCardOption = ({ title, to, buttonText, icon, disabled = false}) => {
         borderRadius: "20px",
         padding: "2rem",
         boxShadow: "0 6px 15px rgba(0,0,0,0.05)",
-        width: "100%", // makes sure it fills its grid cell
-        minHeight: "320px", // FIX: consistent height
+        width: "100%", 
+        minHeight: "320px", 
         maxWidth: "300px",
         textAlign: "center",
-        border: "1px solid #9E7515", // #e0e0e0
+        border: "1px solid #9E7515", 
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between", // ensures vertical spacing is consistent
+        justifyContent: "space-between", 
         alignItems: "center",
       }}
     >
@@ -47,7 +47,7 @@ const EmpCardOption = ({ title, to, buttonText, icon, disabled = false}) => {
         color: "#333333",
         marginBottom: "1rem",
         lineHeight: "1.4",
-        wordBreak: "break-word", // handles long titles
+        wordBreak: "break-word", 
       }}>
         {title}
       </h2>

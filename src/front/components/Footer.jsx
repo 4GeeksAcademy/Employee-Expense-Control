@@ -1,7 +1,6 @@
 import React from "react";
 import ghostLogo from "../assets/img/ghost.png";
 import "../DesignComponents/Footer/footer.css";
-// importar aqui algún ícono o hook si lo necesitamos más adelante equipo
 
 export function Footer() {
   return (

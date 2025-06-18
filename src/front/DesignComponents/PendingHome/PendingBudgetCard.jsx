@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from "framer-motion";
 import BudgetInfoDisplay from './BudgetInfoDisplay';
-import EmployeeLink from './EmployeeLink';
 import BudgetActions from './BudgetActions';
 
 const colors = {
@@ -15,7 +14,6 @@ const PendingBudgetCard = ({
     budget,
     editedAmount,
     onAmountChange,
-    onSelectEmployee,
     onAcceptClick,
     onRejectClick,
     employeeName
@@ -25,10 +23,10 @@ const PendingBudgetCard = ({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            whileHover={{ 
+            whileHover={{
                 scale: 1.02,
                 boxShadow: `0 12px 30px ${colors.boxShadowHover}`
-            }} 
+            }}
             style={{
                 backgroundColor: colors.backgroundWhite,
                 borderRadius: "16px",
@@ -48,11 +46,9 @@ const PendingBudgetCard = ({
                 budgetId={budget.id}
             />
 
-            <EmployeeLink
-                employeeName={employeeName}
-                employeeId={budget.employee_id}
-                onSelectEmployee={onSelectEmployee}
-            />
+            <p style={{ marginBottom: "1rem", fontSize: "1rem", color: "#212121" }}>
+                <strong>Employee:</strong> {employeeName}
+            </p>
 
             <BudgetActions
                 budgetId={budget.id}

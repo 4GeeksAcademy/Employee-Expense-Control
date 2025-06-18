@@ -1,8 +1,5 @@
 import React from 'react';
 import { motion } from "framer-motion";
-
-// Definimos nuestra paleta de colores (se repetirá en cada archivo,
-// pero en un proyecto real la importarías desde un archivo de utilidades/tema)
 const colors = {
     textDark: "#212121",
     inputBorder: "#CCCCCC",
