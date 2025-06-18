@@ -3,10 +3,8 @@ import { useState, useEffect } from "react";
 import { useNavigate, NavLink, Link} from "react-router-dom";
 import LoginButton from "./LoginButton";
 import { useAuth } from "../hooks/AuthContext";
-import ghostLogo from "../assets/img/ghost.png";
+
 import "../DesignComponents/Navbar/navbar.css";
-//import { Companiesprofile } from "./pages/Companiesprofile";
-//import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -31,15 +29,13 @@ export const Navbar = () => {
  <nav className="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
   <div className="container-fluid">
 
-    {/* 👈 Logo on the left */}
     <div className="navbar-brand d-flex align-items-center">
       <Link to="/" className="d-flex align-items-center">
-        <img src={ghostLogo} alt="Ghost Bill" className="navbar-logo" />
+        <img src="https://res.cloudinary.com/dzcl2whin/image/upload/v1750099848/ghost_g2nv7j.png" alt="Ghost Bill" className="navbar-logo" />
       </Link>
       <span className="brand-text ms-2">Ghost Bill</span>
     </div>
 
-    {/* 👉 Auth buttons on the right BEFORE the toggler */}
     <div className="d-flex align-items-center order-sm-last ms-auto">
       <div className="navbar-actions d-flex align-items-center me-2">
         {isAuthenticated ? (
@@ -52,7 +48,6 @@ export const Navbar = () => {
         )}
       </div>
 
-      {/* Toggler icon at the far right */}
       <button
         className="navbar-toggler"
         type="button"
@@ -66,7 +61,6 @@ export const Navbar = () => {
       </button>
     </div>
 
-    {/* Collapsible nav links */}
     <div className="collapse navbar-collapse" id="collapsibleNavbar">
       <ul className="navbar-nav mainLinks">
         <li>
@@ -95,8 +89,3 @@ export const Navbar = () => {
 
   );
 };
-
-
-
-
-// position-absolute top-100 start-0 w-100 bg-dark

@@ -1,7 +1,7 @@
 import { FaUserShield, FaChartPie, FaSignOutAlt, FaMoneyBillWave, FaDollarSign, FaFileInvoiceDollar, FaRegChartBar, FaUsers, FaCog, FaHistory } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useNavigate} from "react-router-dom";
-import { useAuth } from "/workspaces/Employee-Expense-Control/src/front/hooks/AuthContext.jsx";
+import { useAuth } from "../../hooks/AuthContext";
 import { useState, useEffect } from "react";
 
 // No es necesario importar SupervisorHome.css aquí si ya está importado en SupervisorOpcions.jsx
@@ -118,7 +118,6 @@ const EmpSidebar = ({ className }) => { // Acepta la prop className
                 flexDirection: "column",
                 padding: "1.5rem",
                 boxShadow: "2px 0 8px rgba(0,0,0,0.1)",
-                borderRadius: "0.75rem",
             }}
             variants={sidebarVariants}
             initial="hidden"

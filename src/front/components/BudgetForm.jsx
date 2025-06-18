@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
-import BudgetTitlePanel from "/workspaces/Employee-Expense-Control/src/front/DesignComponents/PendingHome/BudgetTitlePanel.jsx";
-import "/workspaces/Employee-Expense-Control/src/front/DesignComponents/EmployeeHome/EmployeePanel.css"
+import BudgetTitlePanel from "../DesignComponents/PendingHome/BudgetTitlePanel.jsx";
+import "../DesignComponents/EmployeeHome/EmployeePanel.css"
 
 const BudgetForm = () => {
     const { navigate: formNavigate, description, setDescription, amount, setAmount } = useBudgetForm();
@@ -17,11 +17,12 @@ const BudgetForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+
         if (!description.trim() || !amount) {
             setError(true);
-            setShowMessage(true); // show alert
+            setShowMessage(true); 
             setMessage("All fields are required.");
-            setTimeout(() => setShowMessage(false), 5000); // hide alert
+            setTimeout(() => setShowMessage(false), 5000); 
             return;
         }
 
@@ -36,10 +37,12 @@ const BudgetForm = () => {
 
         try {
             const res = await budgetFetch(description, amount);
-
+            console.log(res)
             if (res.ok === false || res.error) {
                 setError(true);
                 setMessage(res.message || "Error creating budget.");
+                setShowMessage(true);
+                setTimeout(() => setShowMessage(false), 5000);
                 return;
             }
 
@@ -63,9 +66,9 @@ const BudgetForm = () => {
     };
 
     return (
-        <div className="container py-5 no-top-space">
+        <div className="container py-5 no-top-space-budgetForm">
             <BudgetTitlePanel
-                title="Create New Budget 💰"
+                title="💰 Create New Budget"
                 description="Fill in the details below to start a new budget record."
                 style={{
                     background: "linear-gradient(135deg,#9E7515, #059669)",
@@ -73,7 +76,7 @@ const BudgetForm = () => {
                 }}
             />
 
-            <div className="d-flex justify-content-center align-items-center flex-column">
+            <div className="d-flex justify-content-center align-items-center flex-column budget-form-btn">
                 {/* Back Button */}
                 <motion.button
                     whileHover={{ scale: 1.05 }}
@@ -92,7 +95,6 @@ const BudgetForm = () => {
                     ⬅ Back to Dashboard
                 </motion.button>
 
-                {/* Form Card */}
                 <motion.div
                     whileHover={{ scale: 1.01 }}
                     transition={{ type: "spring", stiffness: 200, damping: 20 }}
@@ -156,7 +158,7 @@ const BudgetForm = () => {
                                 style={{
                                     fontSize: "1.05rem",
                                     fontWeight: "500",
-                                    color: "#9E7515", // Slate-like modern tone
+                                    color: "#9E7515", 
                                     letterSpacing: "0.3px",
                                     marginBottom: "0.4rem",
                                     display: "block",
@@ -188,7 +190,7 @@ const BudgetForm = () => {
                                 style={{
                                     fontSize: "1.05rem",
                                     fontWeight: "500",
-                                    color: "#9E7515", // Slate-like modern tone
+                                    color: "#9E7515", 
                                     letterSpacing: "0.3px",
                                     marginBottom: "0.4rem",
                                     display: "block",
@@ -215,11 +217,13 @@ const BudgetForm = () => {
                             />
                         </div>
 
-                        <button
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                             type="submit"
                             className="btn w-100 mb-2"
                             style={{
-                                background: "linear-gradient(to right, #404040, #9E7515)",
+                                background: "linear-gradient(to right, #8c8c8c, #9E7515, #8c8c8c)",
                                 color: "#fff",
                                 fontSize: "1.2rem",
                                 padding: "0.75rem",
@@ -230,7 +234,7 @@ const BudgetForm = () => {
                             }}
                         >
                             Submit Budget
-                        </button>
+                        </motion.button>
 
                     </form>
                 </motion.div>

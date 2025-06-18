@@ -48,7 +48,7 @@ def signup():
 
     if not email or not password:
         return jsonify({"Error": "Email and Password are required"}), 400
-    if "@" not in email or "." not in email:
+    if "@" not in email or "." not in email or "com" not in email:
         return jsonify({"Error": "Invalid email format"}), 400
     if len(password) < 8:
         return jsonify({"Error": "Password must be at least 8 characters long"}), 400
@@ -121,7 +121,6 @@ def forgot_password():
                     El Melena de cangrejo support team (Bless, Juan, Giovanny, Carlos)
             """
     print(msg)
-    # Envía el correo
     mail.send(msg)
 
     # Responde al frontend confirmando que el correo fue enviado
@@ -208,6 +207,20 @@ def login_user():
                              }}), 201
 
 
+@api.route("/logout", methods=['POST'])
+@jwt_required()
+def logout():
+    jti = get_jwt()["jti"]
+    revoked_tokens.add(jti)
+    return jsonify({"msg": "User logged out"})
+
+
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(jwt_header, jwt_payload):
+    jti = jwt_payload["jti"]
+    return jti in revoked_tokens
+
+
 @api.route("/me", methods=["GET"])
 @jwt_required()
 def get_me_user():
@@ -234,12 +247,17 @@ def my_id():
 
 @api.route("/assigndepartment", methods=["PUT"])
 @jwt_required()
-# solo un supervisor puede asignarle el departamento a un empleado
 def assign_department():
     supervisor_id = get_jwt_identity()
     supervisor = Employee.query.get(supervisor_id)
     if supervisor is None or not supervisor.is_supervisor:
         return jsonify({"msg": "unauthorized"}), 403
+    
+    if supervisor.department_id is None:
+        return jsonify({"msg": "You need to be assigned to a department to proceed"}), 403
+
+    if supervisor.department_id is None:
+        return jsonify({"msg": "the supervisor must have an assigned department"}), 403
 
     data = request.get_json()
     employee_id = data["id_employee"]
@@ -291,6 +309,31 @@ def assign_supervisor_department():
     db.session.commit()
 
     return jsonify({"msg": "Supervisor assigned to department successfully"}), 200
+
+
+@api.route("/employees", methods=["GET"])
+@jwt_required()
+def get_employees():
+    employees = Employee.query.filter_by(is_supervisor=False).all()
+    result = [{"id": emp.id, "name": emp.name} for emp in employees]
+    return jsonify(result), 200
+
+
+@api.route("/departments", methods=["GET"])
+@jwt_required()
+def get_departments():
+    departments = Department.query.all()
+    result = [{"id": dept.id, "name": dept.name} for dept in departments]
+    return jsonify(result), 200
+
+
+@api.route("/supervisors", methods=["GET"])
+@jwt_required()
+def get_supervisors():
+    supervisors = Employee.query.filter_by(is_supervisor=True).all()
+    result = [{"id": sup.id, "name": sup.name}
+              for sup in supervisors]
+    return jsonify(result), 200
 
 
 @api.route("/supervisor-area", methods=["GET"])
@@ -371,7 +414,6 @@ def update_budget_state(budget_id):
     supervisor_id = get_jwt_identity()
     supervisor = Employee.query.get(supervisor_id)
 
-    # Ensure requester is a supervisor
     if supervisor is None or not supervisor.is_supervisor:
         return jsonify({"msg": "Unauthorized"}), 403
 
@@ -388,7 +430,6 @@ def update_budget_state(budget_id):
     if budget is None:
         return jsonify({"msg": "Budget not found"}), 404
 
-    # Prevents re-approval/denial
     if budget.state in [StateBudget.ACCEPTED, StateBudget.REJECTED]:
         return jsonify({"msg": f"Budget already {budget.state.name.lower()}."}), 400
 
@@ -412,7 +453,6 @@ def update_budget_state(budget_id):
     except KeyError:
         return jsonify({"msg": "Invalid state"}), 400
 
-    # Assign evaluator to budget (supervisor who approved/denied the bill)
     budget.evaluator_id = supervisor_id
     budget.date_approved = datetime.now(timezone.utc)
 
@@ -421,10 +461,6 @@ def update_budget_state(budget_id):
     return jsonify({"msg": f"Budget {budget_id} successfully {new_state}.",
                     "budget": budget.serialize()}
                    ), 200
-
-# un endpoint (GET) donde el supervisor pueda obtener todos los budget de su departmento. Serialize
-# y enviar a frontend. y una vez en el frontend, guardar los datos en el store. Una vez guardado en el store
-# usar useParams para acceder al ID.
 
 
 @api.route("/supervisor-budgets-bills", methods=["GET"])
@@ -495,13 +531,8 @@ def get_total_expense():
     if not department_id:
         return jsonify({"error": "Supervisor has no department assigned"}), 400
 
-# #AÑADIR UN FILTRO PARA DIVIDIR UNA LISTA DE TODOS LOS EMPLEADOS Y DEPARTAMENTOS DE FORMA INDIVIDUAL
-# #USAMOS REQUEST.ARGS.GET PARA OBTENER LOS PARAMETROS A TRAVES DE LA URL Y AÑADIMOS TYPE=INT PARA
-# #BUSCAR EL PARAMETRO EMPLOYEE_ID EN LA URL SI EXISTE LO CONVIERTE EN INT AUTOMATICAMENTE Y SI NO DEVUELVE NONE
-#
     department = Department.query.get(department_id)
 
-    # Obtener parámetro employee_id desde la URL
     employee_id_param = request.args.get("employee_id", type=int)
     if employee_id_param:
         employees = Employee.query.filter_by(
@@ -519,12 +550,11 @@ def get_total_expense():
         employee_budgets = []
 
         for budget in employee.budgets:
-            # Get all bills (approved, pending, rejected)
+
             all_bills = budget.bills
             approved_bills = [
                 bill for bill in all_bills if bill.state == StateType.APPROVED]
 
-            #  Only approved bills count toward totals
             budget_total = sum(float(bill.amount) for bill in approved_bills)
 
             if approved_bills:
@@ -544,14 +574,14 @@ def get_total_expense():
         employees_data.append({
             "employee_id": employee.id,
             "name": employee.name,
-            "total_expenses": employee_total,  # only approved
+            "total_expenses": employee_total,
             "budgets": employee_budgets
         })
 
     return {
         "department": {
             "name": department.name,
-            "total_expenses": department_total  # only approved
+            "total_expenses": department_total
         },
         "employees": employees_data,
         "total_active_budgets": total_active_budgets
@@ -595,7 +625,6 @@ def budget_create():
     existing_pending_budget = Budget.query.filter_by(
         employee_id=user.id, state=StateBudget.PENDING).first()
     if existing_pending_budget:
-        # 409 Conflict
         return jsonify({"msg": "You already have a pending budget"}), 409
 
     body = request.get_json(silent=True)
@@ -631,7 +660,7 @@ def budget_create():
     except Exception as e:
         print(e)
         return jsonify({"msg": "error"}), 500
-
+#you don't have a department assigned yet
 
 @api.route("/mybudgets", methods=["GET"])
 @jwt_required()
@@ -693,7 +722,7 @@ def bill_create():
                     trip_address=trip_address, state="PENDING", amount=amount, evaluator_id=supervisor.id, date_approved=None, budget_id=budget.id)
     db.session.add(new_bill)
     db.session.commit()
-    return jsonify({"msg": "bill created successfully"}), 201
+    return jsonify({"msg": "Bill created successfully"}), 201
 
 
 @api.route("/mybills", methods=["GET"])
@@ -710,8 +739,6 @@ def my_bills():
             return jsonify({"msg": "Employee not found"}), 404
 
         budgets = Budget.query.filter_by(employee_id=employee_id).all()
-
-        # collect all bills from all budgets
         all_bills = []
         for budget in budgets:
             all_bills.extend(budget.bills)
@@ -746,6 +773,29 @@ def detete_bill():
     return jsonify({"msg": "bill successfully deleted"}), 200
 
 
+@api.route("/deletebudget", methods=["DELETE"])
+@jwt_required()
+def delete_budget():
+    user_id = get_jwt_identity()
+    user = Employee.query.get(user_id)
+    if user is None:
+        return jsonify({"msg": "Invalid credentials"}), 401
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({"msg": "Invalid object"}), 400
+    fields_required = ["budget_id"]
+    for field in fields_required:
+        if field not in body:
+            return jsonify({"msg": "Invalid credentials"}), 400
+    budget_id = body["budget_id"]
+    budget = Budget.query.filter_by(id=budget_id).first()
+    if budget is None:
+        return jsonify({"msg": "Not found"}), 404
+    db.session.delete(budget)
+    db.session.commit()
+    return jsonify({"msg": "budget successfully deleted"}), 200
+
+
 @api.route("/updatebill", methods=["PUT"])
 @jwt_required()
 def update_bill():
@@ -775,17 +825,3 @@ def update_bill():
     db.session.commit()
 
     return jsonify({"msg": "Bill updated successfully", "bill": bill.serialize()}), 200
-
-
-@api.route("/logout", methods=['POST'])
-@jwt_required()
-def logout():
-    jti = get_jwt()["jti"]
-    revoked_tokens.add(jti)
-    return jsonify({"msg": "User logged out"})
-
-
-@jwt.token_in_blocklist_loader
-def check_if_token_revoked(jwt_header, jwt_payload):
-    jti = jwt_payload["jti"]
-    return jti in revoked_tokens
