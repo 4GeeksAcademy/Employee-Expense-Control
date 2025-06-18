@@ -39,18 +39,13 @@ useEffect(() => {
     try {
       const response = await authFetch('/mybudgets', { method: 'GET' });
       const data = await response.json();
-      console.log("Respuesta completa de /mybudgets:", data);
       const budgetList = data?.budget_list || [];
 
-            console.log("Lista de presupuestos recibida:", budgetList);
         const accepted = budgetList.some(b => {
-                console.log(`Presupuesto ID: ${b.id}, State: ${b.state}`);//PRUEBA CARLOS SI FUNCIONA QUITA LOS CONSOLE.LOG
-                // *** CAMBIO AQUÍ ***
                 return b.state?.toUpperCase() === 'ACCEPTED';
                 
             });
       setHasAcceptedBudget(accepted);
-      console.log("¿Hay algún presupuesto 'accepted'?", accepted); //QUITARLO SI PASA LA PRUEBA
     } catch (error) {
       console.error("Error checking accepted budgets", error);
     } finally {
