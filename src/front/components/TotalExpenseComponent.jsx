@@ -274,7 +274,6 @@ const TotalExpenseComponent = ({ employeeId }) => {
           ))}
         </motion.div>
 
-        {/* ✅ Botón de regreso actualizado con animación */}
         <motion.div
           style={styles.backButtonWrapper}
           variants={containerVariants}
