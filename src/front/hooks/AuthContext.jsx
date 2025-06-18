@@ -57,7 +57,7 @@ export const AuthProvider = ({children}) => {
             return userData;
         } catch (error){
             console.error("Login error:", error.message)
-            throw new Error("Login failed");
+            throw new Error("Invalid credentials");
         } finally {
             setLoading(false)
         }
