@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import useTotalExpense from "../hooks/useTotalExpense";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 const MotionLinkButton = motion(Link);
 
 const TotalExpenseComponent = ({ employeeId }) => {
+  const navigate = useNavigate();
   const [pendingAction, setPendingAction] = useState(null);
   const [pendingBillId, setPendingBillId] = useState(null);
   const [pendingAmount, setPendingAmount] = useState(null);
@@ -81,9 +82,30 @@ const TotalExpenseComponent = ({ employeeId }) => {
 
   if (!total || Object.keys(total).length === 0) {
     return (
-      <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-        <p className="text-muted fs-5">Loading information or no data available...</p>
-      </div>
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100 bg-light">
+          <div>
+            <p className="text-muted fs-5">No expenses available to see yet.</p>
+          </div>
+          <motion.div>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate("/supervisor")}
+            className="btn mb-4 align-self-start go-back-btn"
+            style={{
+              borderRadius: "2rem",
+              fontWeight: "600",
+              padding: "0.75rem 1.5rem",
+              border: "2px groove grey",
+              background: "var(--ghost-green)",
+              color: "var(--ghost-white)",
+            }}
+          >
+            ⬅ Back to Dashboard
+          </motion.button>
+          </motion.div>
+        </div>
+    
     );
   }
 
@@ -117,6 +139,7 @@ const TotalExpenseComponent = ({ employeeId }) => {
 
   return (
     <>
+
       <motion.div
         className="p-4 mx-auto my-4 bg-white rounded shadow-lg"
         style={{ maxWidth: "700px" }}
