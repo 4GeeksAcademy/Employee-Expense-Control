@@ -6,6 +6,7 @@ import { createSignup } from "../services/apiServicesFetch";
 import "../DesignComponents/SignUp/signup.css";
 import AnimatedBackground from "../DesignComponents/GlobalComponents/AnimatedBackground";
 import { useAuth } from "../hooks/AuthContext";
+import { AnimatePresence, motion } from "framer-motion";
 
 const SignUp = () => {
     const navigate = useNavigate();
@@ -68,13 +69,24 @@ const SignUp = () => {
                 setJustLoggedIn(true); // marca que ya estamos logueados
                 setMsg("Signup successful! Redirecting...");
             } else {
-                setError(response.message || "An error occurred during registration.");
+                setError(response.message || response.error || "An error occurred during registration.");
             }
         } catch (err) {
             setError("Error during signup or login.");
             console.error(err);
         }
     };
+
+    useEffect(() => {
+        if (error || msg) {
+            const timeout = setTimeout(() => {
+                setError("");
+                setMsg("");
+            }, 5000); // hide after 5 seconds
+
+            return () => clearTimeout(timeout);
+        }
+    }, [error, msg]);
 
     useEffect(() => {
         if (justLoggedIn && user && !loading) {
@@ -189,8 +201,29 @@ const SignUp = () => {
                         </label>
                     </div>
 
-                    {error && <div className="alert alert-danger errorAlert">{error}</div>}
-                    {msg && <div className="alert alert-success successAlert">{msg}</div>}
+                    <AnimatePresence mode="wait">
+                        {(error || msg) && (
+                            <motion.div
+                                key={error ? "error" : "success"}
+                                initial={{ opacity: 0, y: -30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -30 }}
+                                transition={{ duration: 0.6, ease: "easeInOut" }}
+                                className={`alert ${error ? "alert-danger errorAlert" : "alert-success successAlert"}`}
+                                style={{
+                                    borderRadius: "12px",
+                                    fontSize: "1rem",
+                                    fontWeight: "500",
+                                    marginBottom: "1rem",
+                                }}
+                                role="alert"
+                            >
+                                {error || msg}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+
 
                     <div className="mb-3 d-grid gap-2 contBtn">
                         <button className="btnSign btn" type="submit" disabled={loading}>

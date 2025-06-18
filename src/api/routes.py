@@ -48,7 +48,7 @@ def signup():
 
     if not email or not password:
         return jsonify({"Error": "Email and Password are required"}), 400
-    if "@" not in email or "." not in email:
+    if "@" not in email or "." not in email or "com" not in email:
         return jsonify({"Error": "Invalid email format"}), 400
     if len(password) < 8:
         return jsonify({"Error": "Password must be at least 8 characters long"}), 400
@@ -252,6 +252,9 @@ def assign_department():
     supervisor = Employee.query.get(supervisor_id)
     if supervisor is None or not supervisor.is_supervisor:
         return jsonify({"msg": "unauthorized"}), 403
+    
+    if supervisor.department_id is None:
+        return jsonify({"msg": "You need to be assigned to a department to proceed"}), 403
 
     if supervisor.department_id is None:
         return jsonify({"msg": "the supervisor must have an assigned department"}), 403
