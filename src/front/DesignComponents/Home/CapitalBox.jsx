@@ -8,10 +8,10 @@ const CapitalBox = () => {
     { letter: "O", title: "Optimized", description: "Optimized expense tracking that provides detailed visibility into spending patterns and budget adherence.",                   color: "var(--ghost-green)" },
     { letter: "S", title: "Secure",    description: "Secure cloud-based storage guarantees your financial data is protected with the highest industry standards.",             color: "var(--ghost-green)"    },
     { letter: "T", title: "Transparent",    description: "Transparent budgeting and reporting features enable clear, real-time insights so you always know where your money is going.",                    color: "var(--ghost-green)"     },
-    { letter: "B", title: "Business automation",       description: "Business automation designed to streamline repetitive tasks such as invoice approval workflows and expense reconciliation, freeing your team to focus on strategic initiatives.",                      color: "var(--ghost-green)"    },
-    { letter: "I", title: "Intuitive ",  description: "Intuitive interfaces crafted for ease of use, ensuring all employees—from finance teams to individual contributors—can navigate and manage expenses effortlessly.",                    color: "var(--ghost-green)"     },
-    { letter: "L", title: "Live tracking",    description: "Live tracking and notifications that keep you updated on budget statuses and pending approvals, so no expense goes unnoticed or delayed.",                     color: "var(--ghost-green)" },
-    { letter: "L", title: "Logic",         description: "Logic-based analytics and customizable reports turn raw data into actionable insights, empowering decision-makers with the knowledge needed to optimize resource allocation and control costs effectively.",                      color: "var(--ghost-green)"    },
+    { letter: "B", title: "Business automation",       description: "Business automation designed to streamline repetitive tasks such as invoice.",                      color: "var(--ghost-green)"    },
+    { letter: "I", title: "Intuitive ",  description: "Intuitive interfaces crafted for ease of use, ensuring all employees—from finance teams.",                    color: "var(--ghost-green)"     },
+    { letter: "L", title: "Live tracking",    description: "Live tracking and notifications that keep you updated on budget statuses.",                     color: "var(--ghost-green)" },
+    { letter: "L", title: "Logic",         description: "Logic-based analytics and customizable reports turn raw data into actionable insights.",                      color: "var(--ghost-green)"    },
   ];
 
   return (
