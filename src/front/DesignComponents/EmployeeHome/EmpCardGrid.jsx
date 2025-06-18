@@ -31,31 +31,31 @@ const EmpCardGrid = ({ hasAcceptedBudget }) => {
         },
         {
             title: "Assign to supervisor",
-            to: "#",
+            to: "/underconstruction",
             buttonText: "Coming Soon...",
             icon: <FaUserTie />
         },
         {
             title: "View Spending Analytics",
-            to: "#",
+            to: "/underconstruction",
             buttonText: "Coming Soon...",
             icon: <FaChartLine />
         },
         {
             title: "Review Bill Approvals",
-            to: "#",
+            to: "/underconstruction",
             buttonText: "Coming Soon...",
             icon: <FaFileInvoiceDollar />
         },
         {
             title: "Access Approval History",
-            to: "#",
+            to: "/underconstruction",
             buttonText: "Coming Soon...",
             icon: <FaHistory />
         },
         {
             title: "Manage Department Settings",
-            to: "#",
+            to: "/underconstruction",
             buttonText: "Coming Soon...",
             icon: <FaCog />
         },
