@@ -247,7 +247,6 @@ def my_id():
 
 @api.route("/assigndepartment", methods=["PUT"])
 @jwt_required()
-
 def assign_department():
     supervisor_id = get_jwt_identity()
     supervisor = Employee.query.get(supervisor_id)
@@ -258,7 +257,7 @@ def assign_department():
         return jsonify({"msg": "You need to be assigned to a department to proceed"}), 403
 
     if supervisor.department_id is None:
-        return jsonify({"msg": "the employee must have an assigned department"}), 403
+        return jsonify({"msg": "the supervisor must have an assigned department"}), 403
 
     data = request.get_json()
     employee_id = data["id_employee"]
@@ -454,7 +453,6 @@ def update_budget_state(budget_id):
     except KeyError:
         return jsonify({"msg": "Invalid state"}), 400
 
-
     budget.evaluator_id = supervisor_id
     budget.date_approved = datetime.now(timezone.utc)
 
@@ -557,7 +555,6 @@ def get_total_expense():
             approved_bills = [
                 bill for bill in all_bills if bill.state == StateType.APPROVED]
 
-
             budget_total = sum(float(bill.amount) for bill in approved_bills)
 
             if approved_bills:
@@ -577,14 +574,14 @@ def get_total_expense():
         employees_data.append({
             "employee_id": employee.id,
             "name": employee.name,
-            "total_expenses": employee_total, 
+            "total_expenses": employee_total,
             "budgets": employee_budgets
         })
 
     return {
         "department": {
             "name": department.name,
-            "total_expenses": department_total  
+            "total_expenses": department_total
         },
         "employees": employees_data,
         "total_active_budgets": total_active_budgets
