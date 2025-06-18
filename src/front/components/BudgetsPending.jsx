@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import useSupervisorBudget from "../hooks/useSupervisorBudget";
-import { Link } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import PendingBudgetCard from "../DesignComponents/PendingHome/PendingBudgetCard";
 import BudgetTitlePanel from "../DesignComponents/PendingHome/BudgetTitlePanel";
 import BudgetCardGrid from "../DesignComponents/PendingHome/BudgetCardGrid";
-import { AnimatePresence, motion } from "framer-motion";
 import GoBackButton from "../DesignComponents/GoBackButton/GoBackButton";
 
 const BudgetsPending = () => {
@@ -26,13 +25,11 @@ const BudgetsPending = () => {
         setEditedAmount((prev) => ({ ...prev, [budgetId]: newAmount }));
     };
 
-
     const handleOpenModal = (action, budgetId, amount = null) => {
         setPendingAction(action);
         setPendingBudgetId(budgetId);
         setPendingAmount(amount);
     };
-
 
     const handleModalConfirm = async () => {
         if (pendingAction === "accept") {
@@ -72,7 +69,6 @@ const BudgetsPending = () => {
                             : "Review and manage the pending budget requests below."
                     }
                 />
-   
 
                 {filteredBudgets.length === 0 ? (
                     <motion.p
@@ -83,7 +79,7 @@ const BudgetsPending = () => {
                     >
                         No pending budgets found.
                     </motion.p>
-                )  : (
+                ) : (
                     <BudgetCardGrid>
                         {filteredBudgets.map((budget) => (
                             <PendingBudgetCard
@@ -92,39 +88,21 @@ const BudgetsPending = () => {
                                 editedAmount={editedAmount[budget.id]}
                                 onAmountChange={handleAmountChange}
                                 onSelectEmployee={setSelectedEmployeeId}
-
                                 onAcceptClick={(id) => handleOpenModal("accept", id, editedAmount[id] || budget.amount)}
                                 onRejectClick={(id) => handleOpenModal("reject", id)}
-
                                 employeeName={getEmployeeName(budget.employee_id)}
                             />
                         ))}
                     </BudgetCardGrid>
                 )}
-
-                {selectedEmployeeId && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.8, duration: 0.5 }}
-                        className="mt-6 text-center"
-                    >
-                        <button
-                            onClick={() => setSelectedEmployeeId(null)}
-                            className="text-sm text-gray-500 underline hover:text-gray-700 transition"
-                        >
-                            Ver todos los budgets
-                        </button>
-                    </motion.div>
-                )}
             </div>
-            <div className="text-center" style={{ marginTop: '3rem', marginBottom: '3rem' }}> 
+
+            <div className="text-center" style={{ marginTop: '3rem', marginBottom: '3rem' }}>
                 <GoBackButton />
             </div>
 
-
             <AnimatePresence>
-                {pendingAction && ( 
+                {pendingAction && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -139,7 +117,7 @@ const BudgetsPending = () => {
                             display: "flex",
                             justifyContent: "center",
                             alignItems: "center",
-                            zIndex: 9999 
+                            zIndex: 9999
                         }}
                     >
                         <motion.div
@@ -167,7 +145,7 @@ const BudgetsPending = () => {
                             <div style={{ display: "flex", justifyContent: "flex-end", gap: "1rem" }}>
                                 <button
                                     onClick={() => {
-                                        setPendingAction(null); 
+                                        setPendingAction(null);
                                         setPendingBudgetId(null);
                                         setPendingAmount(null);
                                     }}
@@ -187,7 +165,6 @@ const BudgetsPending = () => {
                                     onClick={handleModalConfirm}
                                     style={{
                                         padding: "0.5rem 1rem",
-                                        
                                         backgroundColor: pendingAction === "accept" ? "#4CAF50" : "#DC3545",
                                         color: "white",
                                         border: "none",

@@ -121,7 +121,6 @@ def forgot_password():
                     El Melena de cangrejo support team (Bless, Juan, Giovanny, Carlos)
             """
     print(msg)
-    # Envía el correo
     mail.send(msg)
 
     # Responde al frontend confirmando que el correo fue enviado
@@ -413,7 +412,6 @@ def update_budget_state(budget_id):
     supervisor_id = get_jwt_identity()
     supervisor = Employee.query.get(supervisor_id)
 
-    # Ensure requester is a supervisor
     if supervisor is None or not supervisor.is_supervisor:
         return jsonify({"msg": "Unauthorized"}), 403
 
@@ -430,7 +428,6 @@ def update_budget_state(budget_id):
     if budget is None:
         return jsonify({"msg": "Budget not found"}), 404
 
-    # Prevents re-approval/denial
     if budget.state in [StateBudget.ACCEPTED, StateBudget.REJECTED]:
         return jsonify({"msg": f"Budget already {budget.state.name.lower()}."}), 400
 
@@ -454,7 +451,7 @@ def update_budget_state(budget_id):
     except KeyError:
         return jsonify({"msg": "Invalid state"}), 400
 
-    # Assign evaluator to budget (supervisor who approved/denied the bill)
+
     budget.evaluator_id = supervisor_id
     budget.date_approved = datetime.now(timezone.utc)
 
@@ -463,10 +460,6 @@ def update_budget_state(budget_id):
     return jsonify({"msg": f"Budget {budget_id} successfully {new_state}.",
                     "budget": budget.serialize()}
                    ), 200
-
-# un endpoint (GET) donde el supervisor pueda obtener todos los budget de su departmento. Serialize
-# y enviar a frontend. y una vez en el frontend, guardar los datos en el store. Una vez guardado en el store
-# usar useParams para acceder al ID.
 
 
 @api.route("/supervisor-budgets-bills", methods=["GET"])
@@ -537,13 +530,8 @@ def get_total_expense():
     if not department_id:
         return jsonify({"error": "Supervisor has no department assigned"}), 400
 
-# #AÑADIR UN FILTRO PARA DIVIDIR UNA LISTA DE TODOS LOS EMPLEADOS Y DEPARTAMENTOS DE FORMA INDIVIDUAL
-# #USAMOS REQUEST.ARGS.GET PARA OBTENER LOS PARAMETROS A TRAVES DE LA URL Y AÑADIMOS TYPE=INT PARA
-# #BUSCAR EL PARAMETRO EMPLOYEE_ID EN LA URL SI EXISTE LO CONVIERTE EN INT AUTOMATICAMENTE Y SI NO DEVUELVE NONE
-#
     department = Department.query.get(department_id)
 
-    # Obtener parámetro employee_id desde la URL
     employee_id_param = request.args.get("employee_id", type=int)
     if employee_id_param:
         employees = Employee.query.filter_by(
@@ -561,12 +549,12 @@ def get_total_expense():
         employee_budgets = []
 
         for budget in employee.budgets:
-            # Get all bills (approved, pending, rejected)
+
             all_bills = budget.bills
             approved_bills = [
                 bill for bill in all_bills if bill.state == StateType.APPROVED]
 
-            #  Only approved bills count toward totals
+
             budget_total = sum(float(bill.amount) for bill in approved_bills)
 
             if approved_bills:
@@ -586,14 +574,14 @@ def get_total_expense():
         employees_data.append({
             "employee_id": employee.id,
             "name": employee.name,
-            "total_expenses": employee_total,  # only approved
+            "total_expenses": employee_total, 
             "budgets": employee_budgets
         })
 
     return {
         "department": {
             "name": department.name,
-            "total_expenses": department_total  # only approved
+            "total_expenses": department_total  
         },
         "employees": employees_data,
         "total_active_budgets": total_active_budgets
@@ -637,7 +625,6 @@ def budget_create():
     existing_pending_budget = Budget.query.filter_by(
         employee_id=user.id, state=StateBudget.PENDING).first()
     if existing_pending_budget:
-        # 409 Conflict
         return jsonify({"msg": "You already have a pending budget"}), 409
 
     body = request.get_json(silent=True)
@@ -752,8 +739,6 @@ def my_bills():
             return jsonify({"msg": "Employee not found"}), 404
 
         budgets = Budget.query.filter_by(employee_id=employee_id).all()
-
-        # collect all bills from all budgets
         all_bills = []
         for budget in budgets:
             all_bills.extend(budget.bills)

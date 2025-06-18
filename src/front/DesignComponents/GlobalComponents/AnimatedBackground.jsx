@@ -80,7 +80,7 @@ const AnimatedBackground = () => {
       p5.mouseY >= y &&
       p5.mouseY <= y + h
     ) {
-      navigate("/"); // Change this to your desired route
+      navigate("/"); 
     }
   };
 
@@ -103,7 +103,7 @@ const AnimatedBackground = () => {
         width: "100vw",
         height: "100vh",
         zIndex: 0,
-        pointerEvents: "auto", // Allow mouse interaction
+        pointerEvents: "auto", 
       }}
     />
   );

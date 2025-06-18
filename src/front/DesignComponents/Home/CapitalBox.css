@@ -19,10 +19,10 @@
   color: var(--ghost-black);
 }
 
-/* Contenedor horizontal sin wrap */
+
 .capital-boxes-container {
   display: flex;
-  flex-wrap: nowrap;            /* Una sola fila */
+  flex-wrap: nowrap;            
   gap: 2rem;
   overflow-x: auto;
   padding: 1rem 0;
@@ -72,7 +72,7 @@
   font-size: 4rem;
   font-weight: 700;
   line-height: 1;
-   /* font-size: 8rem; */
+
 }
 
 .box-head-text {
