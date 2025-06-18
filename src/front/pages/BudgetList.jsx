@@ -11,7 +11,6 @@ const BudgetList = () => {
                 style={{
                     background: "linear-gradient(135deg,#9E7515, #059669)",
                 }}
-                //  className="large-enough "
             />
             <div className="row">
                 <div className="col-sm-12 col-md-10 col-lg-8 col-xl-8 col-xxl-8 ms-3">
