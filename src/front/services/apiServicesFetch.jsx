@@ -4,13 +4,6 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 if (!backendUrl) {
   throw new Error("VITE_BACKEND_URL is not defined in .env file");
 }
-
-//MEJORAS AGREGADAS AHORA QUE TENEMOS UN apiInterceptor.jsx COMO NUEVO SERVICE ESTE SE ENCARGA DE OBTENER.
-//AUTORIZAR Y REFRESCAR EL TOKEN AL HACER UN FETCH DE UNA RUTA PROTEGIDA NO HACE FALTA AÑADIR
-//Authorization: `Bearer ${token}` PORQUE ES ALGO QUE SE ENCARGA DE HACER APIINTERCEPTOR SIEMPRE Y CUANDO
-//LE AÑADAS A EL FETCH authFetch MAS ("NOMBRE DE LA RUTA")
-
-
 export const createSignup = async (dispatch, info) => {
   try {
     const response = await fetch(`${backendUrl}/signup`, {
@@ -98,8 +91,6 @@ export const fetchId = async () => {
     if (!token) {
       throw new Error("Token not found");
     }
-
-    //USAR authFetch en las rutas que requieran token
     const response = await authFetch('/myid', {
       method: "GET"
     });
@@ -121,8 +112,6 @@ export const fetchUserProfile = async () => {
   if (!token) {
     throw new Error("No token found");
   }
-
-  //USAR authFetch en las rutas que requieran token
 
   const response = await authFetch('/me', {
     method: "GET",
@@ -152,8 +141,6 @@ export const budgetFetch = async (description, amount) => {
       amount: amount,
     });
     const token = localStorage.getItem("token");
-
-    //USAR authFetch en las rutas que requieran token
     const response = await authFetch('/budget', {
       method: "POST",
       headers: {
@@ -162,8 +149,6 @@ export const budgetFetch = async (description, amount) => {
       body: rawData,
     });
     const data = await response.json();
-
-    //NUEVO CAMPO AÑADIDO PARA DEVOLVER OBJETO CON LAS SIGUIENTES PROPIEDADES A BUDGET FORM 
     return {
       ok: response.ok,
       status: response.status,
@@ -245,10 +230,6 @@ export const billListFetch = async (dispatch) => {
     console.error(error);
   }
 };
-//REFACTORIZADO EL CODIGO ANTES ENVIABAMOS CONSOLE.ERROR Y NO SE INFORMABA AL USUARIO
-//NO SE SABIA SI LA IMAGEN SE SUBIA CORRECTAMENTE Y TODO ESTABA MEZCLADO Y SEPARAMOS RESPONSABILIDADES 
-//AÑADIMOS SOPORTE DE PREVISUALIZACION PARA MOSTRAR UNA VISTA PREVIA DE IMAGEN
-//DEVOLVEMOS MENSAJES CLAROS CON "OK:" PARA QUE NUESTRO BILLFORM PUEDA MANEJARLOS E INFORMARLOS AL USUARIO
 
 export const fetchImageBill = async (image, description, location, amount) => {
   try {
@@ -302,7 +283,6 @@ export const fetchImageBill = async (image, description, location, amount) => {
     if (!billResponse.ok) {
       return { ok: false, message: "Unable to create bill. Your budget must be accepted first." };
     }
-    // return { ok: false, message: `Failed to create bill (${billResponse.status})` };
     const data = await billResponse.json();
     return { ok: true, message: data?.msg || "Bill created successfully." };
   } catch (error) {
@@ -333,7 +313,6 @@ export const editBill = async (billId, editedBill, dispatch) => {
 
     filteredFields.id_bill = billId;
 
-    //USAR authFetch en las rutas que requieran token
     const token = localStorage.getItem("token");
     const response = await authFetch('/updatebill', {
       method: "PUT",
@@ -370,8 +349,6 @@ export const deleteBill = async (billId, budgetId, dispatch) => {
       throw new Error("the ids have not been passed");
     }
     const rawData = JSON.stringify({ id_bill: billId });
-
-    //USAR authFetch en las rutas que requieran token
 
     const response = await authFetch('/deletebill', {
       method: "DELETE",
@@ -423,7 +400,7 @@ export const deleteBudget = async (budgetId, dispatch) => {
 
     const action = {
       type: "DELETE_BUDGET",
-      payload: { budgetId },  //payload: { budgetId: budgetId }
+      payload: { budgetId }, 
     };
     dispatch(action);
   } catch (error) {
@@ -443,60 +420,6 @@ export const sendResetEmail = async (email) => {
   if (!res.ok) throw new Error("Email couldn't be sent");
   return await res.json();
 };
-
-///export const sendResetEmail = async (email) => {
-///const res = await fetch(process.env.BACKEND_URL + "/forgot-password", {
-//method: "POST",
-//headers: {
-//"Content-Type": "application/json",
-//},
-//body: JSON.stringify({ email }),
-//});
-//if (!res.ok) throw new Error("No se pudo enviar el correo");
-//return await res.json();
-//};
-
-//Desde la linea 357 hasta la 377 Comentada para pruebas no borrar hasta que hayamos concluido todo
-// export const refreshAccessToken = async () => {
-//   const refreshToken = JSON.parse(localStorage.getItem("refreshToken"));
-//   if (!refreshToken) {
-//     throw new Error("no refresh token ivailable");
-//   }
-//   const response = await fetch(`${backendUrl}/refresh-token`, {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({ refresh_token: refreshToken }),
-//   });
-//   if (!response.ok) {
-//     throw new Error("failed to refresh access token");
-//   }
-//   const data = await response.json();
-//   if (!data.token) {
-//     throw new Error("New access token not recived");
-//   }
-//   localStorage.setItem("token", JSON.stringify(data.token));
-//   return data.token;
-// };
-
-// export const authFetch = async (url, options = {}) => {
-//   let token = JSON.parse(localStorage.getItem("token"));
-//   options.headers = {
-//     ...(options.headers || {}),
-//     Authorization: `Bearer ${token}`,
-//   };
-//   let response = await fetch(url, options);
-//   if (response.status === 401) {
-//     try {
-//       const newToken = await refreshAccessToken();
-//       options.headers.Authorization = `Bearer ${newToken}`;
-//       response = await fetch(url, options);
-//     } catch (err) {
-//       console.error("Token refresh failed", err);
-//       throw new Error("Session expired. Please log in again..");
-//     }
-//   }
-//   return response;
-// };
 
 export const supervisorBudgetFetch = async (dispatch) => {
   try {
@@ -726,4 +649,3 @@ export const billValidation = async (dispatch, bill_id, state) => {
   }
 }
 
-// export const employeeSpense = async()
