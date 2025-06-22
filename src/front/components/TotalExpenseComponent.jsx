@@ -90,7 +90,7 @@ const TotalExpenseComponent = ({ employeeId }) => {
           initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-                >
+        >
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -370,7 +370,7 @@ const TotalExpenseComponent = ({ employeeId }) => {
                   Cancel
                 </button>
                 <button
-                  className="btn btn-primary"
+                  className="btn btn-success"
                   onClick={handleModalConfirm}
                 >
                   Confirm
