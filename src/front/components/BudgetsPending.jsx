@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import useSupervisorBudget from "../hooks/useSupervisorBudget";
 import { AnimatePresence, motion } from "framer-motion";
 import PendingBudgetCard from "../DesignComponents/PendingHome/PendingBudgetCard";
@@ -7,11 +7,19 @@ import BudgetCardGrid from "../DesignComponents/PendingHome/BudgetCardGrid";
 import GoBackButton from "../DesignComponents/GoBackButton/GoBackButton";
 
 const BudgetsPending = () => {
-    const [pendingAction, setPendingAction] = useState(null); 
+    const [pendingAction, setPendingAction] = useState(null);
     const [pendingBudgetId, setPendingBudgetId] = useState(null);
     const [pendingAmount, setPendingAmount] = useState(null);
 
-    const { store, dispatch, selectedEmployeeId, setSelectedEmployeeId, editedAmount, setEditedAmount, budgetValidation } = useSupervisorBudget();
+    const {
+        store,
+        dispatch,
+        selectedEmployeeId,
+        setSelectedEmployeeId,
+        editedAmount,
+        setEditedAmount,
+        budgetValidation
+    } = useSupervisorBudget();
 
     const handleAccept = async (budgetId, amount) => {
         await budgetValidation(dispatch, budgetId, "accepted", amount);
@@ -88,7 +96,9 @@ const BudgetsPending = () => {
                                 editedAmount={editedAmount[budget.id]}
                                 onAmountChange={handleAmountChange}
                                 onSelectEmployee={setSelectedEmployeeId}
-                                onAcceptClick={(id) => handleOpenModal("accept", id, editedAmount[id] || budget.amount)}
+                                onAcceptClick={(id) =>
+                                    handleOpenModal("accept", id, editedAmount[id] || budget.amount)
+                                }
                                 onRejectClick={(id) => handleOpenModal("reject", id)}
                                 employeeName={getEmployeeName(budget.employee_id)}
                             />
@@ -97,7 +107,7 @@ const BudgetsPending = () => {
                 )}
             </div>
 
-            <div className="text-center" style={{ marginTop: '3rem', marginBottom: '3rem' }}>
+            <div className="text-center" style={{ marginTop: "3rem", marginBottom: "3rem" }}>
                 <GoBackButton />
             </div>
 
@@ -126,7 +136,7 @@ const BudgetsPending = () => {
                             exit={{ scale: 0.9, opacity: 0 }}
                             transition={{ duration: 0.3 }}
                             style={{
-                                background: "white",
+                                background: "#F7FAFC", // gris claro (como en el otro componente)
                                 borderRadius: "12px",
                                 padding: "2rem",
                                 maxWidth: "400px",
@@ -134,7 +144,13 @@ const BudgetsPending = () => {
                                 boxShadow: "0 10px 30px rgba(0,0,0,0.2)"
                             }}
                         >
-                            <h3 style={{ fontSize: "1.25rem", marginBottom: "1rem", color: "#212121" }}>
+                            <h3
+                                style={{
+                                    fontSize: "1.25rem",
+                                    marginBottom: "1rem",
+                                    color: "#212121"
+                                }}
+                            >
                                 Confirm Budget Action
                             </h3>
                             <p style={{ marginBottom: "1.5rem", color: "#4A5568" }}>
@@ -151,12 +167,11 @@ const BudgetsPending = () => {
                                     }}
                                     style={{
                                         padding: "0.5rem 1rem",
-                                        border: "1px solid #ccc",
+                                        border: "none",
                                         borderRadius: "8px",
-                                        background: "white",
-                                        cursor: "pointer",
-                                        color: "#333",
-                                        transition: "background-color 0.2s ease, border-color 0.2s ease"
+                                        backgroundColor: "#6c757d", 
+                                        color: "white",
+                                        cursor: "pointer"
                                     }}
                                 >
                                     Cancel
@@ -165,12 +180,11 @@ const BudgetsPending = () => {
                                     onClick={handleModalConfirm}
                                     style={{
                                         padding: "0.5rem 1rem",
-                                        backgroundColor: pendingAction === "accept" ? "#4CAF50" : "#DC3545",
+                                        backgroundColor: pendingAction === "accept" ? "#198754" : "#DC3545",
                                         color: "white",
                                         border: "none",
                                         borderRadius: "8px",
-                                        cursor: "pointer",
-                                        transition: "background-color 0.2s ease"
+                                        cursor: "pointer"
                                     }}
                                 >
                                     Confirm

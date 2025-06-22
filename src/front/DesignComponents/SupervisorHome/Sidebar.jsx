@@ -87,14 +87,14 @@ const Sidebar = ({ className }) => {
         { icon: <FaHistory />, text: "Approval History" },
         { icon: <FaUsers />, text: "Manage Users" },
         { icon: <FaCog />, text: "Settings" },
-        { icon: <FaSignOutAlt />, text: "Logout" }, // ✅ ya no tiene onClick
+        { icon: <FaSignOutAlt />, text: "Logout" },
     ];
 
     return (
         <motion.div
             className={className}
             style={{
-                backgroundColor: "#1f2937",
+                backgroundColor: "#404040",
                 color: "white",
                 display: "flex",
                 flexDirection: "column",
