@@ -71,7 +71,7 @@ const BudgetForm = () => {
                 title="💰 Create New Budget"
                 description="Fill in the details below to start a new budget record."
                 style={{
-                    background: "linear-gradient(135deg,#9E7515, #059669)",
+                    background: "linear-gradient(135deg,rgb(224, 160, 10), #9E7515)",
 
                 }}
             />
@@ -223,7 +223,7 @@ const BudgetForm = () => {
                             type="submit"
                             className="btn w-100 mb-2"
                             style={{
-                                background: "linear-gradient(to right, #8c8c8c, #9E7515, #8c8c8c)",
+                                background: "linear-gradient(135deg,rgb(224, 160, 10), #9E7515)",
                                 color: "#fff",
                                 fontSize: "1.2rem",
                                 padding: "0.75rem",

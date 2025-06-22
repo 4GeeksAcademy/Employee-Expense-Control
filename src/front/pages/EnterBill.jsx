@@ -11,7 +11,7 @@ const EnterBill = () => {
                 title="🧾 Submit your bills here."
                 description="Enter all necessary details accurately to ensure your expenses are recorded and linked to the correct budget."
                 style={{
-                    background: "linear-gradient(135deg,#9E7515, #059669)",
+                    background: "linear-gradient(135deg,rgb(224, 160, 10), #9E7515)",
                 }}
                 //  className="large-enough "
             />

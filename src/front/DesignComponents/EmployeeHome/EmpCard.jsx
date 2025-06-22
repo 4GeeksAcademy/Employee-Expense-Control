@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 const EmpCardOption = ({ title, to, buttonText, icon, disabled = false}) => {
-  const greenStart = "#9E7515";
+  const greenStart = "rgb(224, 160, 10)";
   const greenEnd = "#9E7515";
   const mainGreen = "#9E7515";
 
