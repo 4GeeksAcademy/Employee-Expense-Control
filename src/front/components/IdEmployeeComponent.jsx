@@ -107,7 +107,7 @@ const IdEmployeeComponent = () => {
             style={{
               fontSize: "1.3rem",
               fontWeight: "600",
-              color: "#9E7515",
+              color: "rgb(167, 158, 149)",
               marginBottom: "1.5rem",
             }}
           >
@@ -123,7 +123,7 @@ const IdEmployeeComponent = () => {
               fontWeight: "700",
               padding: "1rem 2rem",
               borderRadius: "16px",
-              background: "linear-gradient(90deg, #059669, #9E7515)",
+              background: "linear-gradient(180deg, #448F73, #9E7515)",
               color: "#fff",
               display: "block",
               boxShadow: "0 8px 20px rgba(5, 150, 105, 0.3)",
@@ -141,12 +141,11 @@ const IdEmployeeComponent = () => {
             onClick={copyToClipboard}
             className="btn"
             style={{
-              background: "var(--ghost-green)",
+              background: "linear-gradient(135deg,rgb(224, 160, 10), #9E7515)",
               color: "var(--ghost-white)",
               fontWeight: "600",
               padding: "0.5rem 1.5rem",
               borderRadius: "12px",
-              border: "2px groove grey",
             }}
           >
             Copy ID

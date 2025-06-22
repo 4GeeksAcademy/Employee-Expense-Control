@@ -32,9 +32,9 @@ const BillForm = () => {
     if (message) {
       const timeout = setTimeout(() => {
         setMessage("");
-      }, 5000); 
+      }, 5000);
 
-      return () => clearTimeout(timeout); 
+      return () => clearTimeout(timeout);
     }
   }, [message]);
 
@@ -55,14 +55,14 @@ const BillForm = () => {
       setError(false);
       setMessage(result.message);
 
-  
+
       setTimeout(() => {
         setDescription("");
         setLocation("");
         setAmount("");
         setImage(null);
         setPreview("");
-        setMessage(""); 
+        setMessage("");
       }, 1500);
     }
 
@@ -261,21 +261,46 @@ const BillForm = () => {
               onChange={(e) => setImage(e.target.files[0])}
               style={{
                 fontSize: "1.1rem",
+                fontStyle: "italic",
                 padding: "0.5rem 0.75rem",
                 borderRadius: "12px",
                 backgroundColor: "#f1f5f9",
               }}
             />
             {preview && (
-              <div className="mt-3 text-center">
+              <div className="mt-3 text-center position-relative" style={{ display: 'inline-block' }}>
                 <img
                   src={preview}
                   alt="Bill preview"
                   className="img-thumbnail shadow"
                   style={{ maxHeight: "200px", borderRadius: "12px" }}
                 />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setImage(null);
+                    setPreview("");
+                  }}
+                  className="btn btn-sm btn-danger"
+                  style={{
+                    position: "absolute",
+                    top: "-10px",
+                    right: "-10px",
+                    borderRadius: "50%",
+                    width: "30px",
+                    height: "30px",
+                    padding: 0,
+                    fontWeight: "bold",
+                    fontSize: "1rem",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+                  }}
+                  aria-label="Remove image"
+                >
+                  &times;
+                </button>
               </div>
             )}
+
           </div>
 
           <motion.button
@@ -285,7 +310,7 @@ const BillForm = () => {
             disabled={loading}
             className="btn w-100 mb-2"
             style={{
-              background: "linear-gradient(to right, #8c8c8c, #9E7515, #8c8c8c)",
+              background: "linear-gradient(135deg,rgb(224, 160, 10), #9E7515)",
               color: "#fff",
               fontSize: "1.2rem",
               padding: "0.75rem",

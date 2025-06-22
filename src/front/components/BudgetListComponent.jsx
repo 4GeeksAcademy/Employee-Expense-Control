@@ -78,8 +78,8 @@ const BudgetListComponent = () => {
                         style={{
                             display: "flex",
                             flexDirection: "column",
-                            alignItems: "flex-end", 
-                            justifyContent: "flex-start", 
+                            alignItems: "flex-end",
+                            justifyContent: "flex-start",
                             flexGrow: 1,
                             textAlign: "right",
                             paddingRight: "60px"
@@ -109,8 +109,11 @@ const BudgetListComponent = () => {
                                     <motion.button
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
-                                        className="btn btn-success"
+                                        className="btn"
                                         onClick={() => toggleBills(index)}
+                                        style={{
+                                            background: "linear-gradient(135deg, #448F73",
+                                        }}
                                     >
                                         {expandedBudgets[index] ? "Hide Bills" : "See Bills"}
                                     </motion.button>
@@ -183,13 +186,13 @@ const BudgetListComponent = () => {
                                                                     setModalAction("editBill");
                                                                     setModalPayload({ billId: bill.id });
                                                                 }}
-                                                                className="btn btn-sm confirm-btn"
+                                                                className=" btn-sm confirm-btn"
                                                             >
                                                                 Save
                                                             </button>
                                                             <button
                                                                 onClick={() => setEditingBillId(null)}
-                                                                className="btn btn-sm btn-secondary"
+                                                                className=" btn-sm btn-secondary"
                                                             >
                                                                 Cancel
                                                             </button>
@@ -205,7 +208,10 @@ const BudgetListComponent = () => {
                                                         <div className="d-flex gap-2">
                                                             <button
                                                                 onClick={() => handleEditClick(bill)}
-                                                                className="btn btn-sm btn-warning"
+                                                                className="btn btn-sm"
+                                                                style={{
+                                                                   background: "linear-gradient(135deg,rgb(224, 160, 10), #9E7515)",
+                                                                }}
                                                             >
                                                                 Edit
                                                             </button>

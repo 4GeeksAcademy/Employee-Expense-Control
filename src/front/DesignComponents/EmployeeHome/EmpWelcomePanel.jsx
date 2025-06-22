@@ -8,7 +8,7 @@ const EmpWelcomePanel = () => {
             whileTap={{ scale: 0.97 }}
             transition={{ type: "spring", stiffness: 200, damping: 10 }}
             style={{
-                background: "linear-gradient(135deg,#9E7515, #059669)",
+                background: "linear-gradient(135deg,rgb(224, 160, 10), #9E7515)",
                 padding: "1.5rem",
                 borderRadius: "16px",
                 color: "white",
