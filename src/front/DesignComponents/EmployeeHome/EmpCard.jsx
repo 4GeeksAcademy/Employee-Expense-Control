@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 const EmpCardOption = ({ title, to, buttonText, icon, disabled = false}) => {
-  const greenStart = "#9E7515";
-  const greenEnd = "#059669";
+  const greenStart = "rgb(224, 160, 10)";
+  const greenEnd = "#9E7515";
   const mainGreen = "#9E7515";
 
   return (
@@ -25,7 +25,7 @@ const EmpCardOption = ({ title, to, buttonText, icon, disabled = false}) => {
         minHeight: "320px", 
         maxWidth: "300px",
         textAlign: "center",
-        border: "1px solid #9E7515", 
+        border: "1px solid #404040", 
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between", 

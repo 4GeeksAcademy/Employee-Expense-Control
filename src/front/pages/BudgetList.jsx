@@ -9,7 +9,7 @@ const BudgetList = () => {
                 title="📊 Manage your budgets and related bills below"
                 description="Review the status of each budget, edit or delete budgets and bills as needed to keep your records up to date."
                 style={{
-                    background: "linear-gradient(135deg,#9E7515, #059669)",
+                     background: "linear-gradient(135deg,rgb(224, 160, 10), #9E7515)",
                 }}
             />
             <div className="row">

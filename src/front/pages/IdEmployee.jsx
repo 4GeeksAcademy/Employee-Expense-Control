@@ -9,7 +9,7 @@ const IdEmployee = () => {
                 title="🔑 Your Employee ID is shown below."
                 description="Use this ID to verify your identity and gain full access to all app features designed to simplify your expense management."
                 style={{
-                    background: "linear-gradient(135deg,#9E7515, #059669)",
+                    background: "linear-gradient(135deg,rgb(224, 160, 10), #9E7515)",
 
                 }}
             />
